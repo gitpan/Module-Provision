@@ -1,0 +1,71 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.66.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 038ade40aa2a3ac15fc85193394c4e556e79cbd7 Build.PL
+SHA1 af97394c547c9522ad83587449f2537df25b40af Changes
+SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
+SHA1 84469b54dec87c599da538e44cc29f25aa30ea25 MANIFEST
+SHA1 ac5616c2f67239e63fbad7eff3b68937774638f8 META.json
+SHA1 2dc6525d4b48ea4d0cf94fc577a51f9e7357b4c3 META.yml
+SHA1 68b6b48bea37cd32103e522995bb57e986d5dcd9 README
+SHA1 80a6ac1376747848a5b7757496c2a860e658af3f bin/module_provision
+SHA1 4efd622830066cf222e8f2542024a7fed26666a2 inc/Bob.pm
+SHA1 b2daf2d6d3f2158b33d84a79ea725c922f508718 inc/CPANTesting.pm
+SHA1 32d0d60cba78d86b9c2cc6ce3b511c0fbe6e0b91 inc/SubClass.pm
+SHA1 a88dec07d68d31f56c2faccf807b528d237f3b6c lib/Module/Provision.pm
+SHA1 5b418179c13d5f6c7995c9021ec067a20cab70dc share/01always_pass.t
+SHA1 63d0ae5dd612cb8292e67139d9d9b58e8c1d7905 share/02pod.t
+SHA1 b6a92328fc19edd2e59965eb5ac88db82980aaad share/03podcoverage.t
+SHA1 a341a5d4eacb336989d38f69b34f9ccccd534aca share/04critic.t
+SHA1 9b4e87e07848b2f616554d04c1c4834fe63377ec share/05kwalitee.t
+SHA1 2f5dc5c33534886b65390d8f22c6c8c252024118 share/06yaml.t
+SHA1 dea5d1fb94f4cb8de514a3a25874b9fa78a4d4ed share/07podspelling.t
+SHA1 1e6c11996ed2da440378a1b0b9496b8d1bfcb631 share/10test_script.t
+SHA1 4efd622830066cf222e8f2542024a7fed26666a2 share/Bob.pm
+SHA1 c37105b377754ae6187cb68c2c269bc1a5d95578 share/Build.PL
+SHA1 b2daf2d6d3f2158b33d84a79ea725c922f508718 share/CPANTesting.pm
+SHA1 5fa97b095257652d65e7007e3e0fcb343aa0f848 share/Changes
+SHA1 39e49d86602b8e2b22fe0e6f9ad63e99eaa08905 share/EUMM_Makefile.PL
+SHA1 f2bd4114b9c6ac64a6064b4d93af8c7ba4b1c86c share/MANIFEST.SKIP
+SHA1 d39577e4fc8c9865d0c80bd1f8d6b01320961dcd share/MI_Makefile.PL
+SHA1 32d0d60cba78d86b9c2cc6ce3b511c0fbe6e0b91 share/SubClass.pm
+SHA1 54de88c5acbc2dfd9ba4b1a9327f4bb2f3b2b317 share/data_dumper.pm
+SHA1 93a56e8c9365d46e5271cb453ba00b166ffdad0a share/dist.ini
+SHA1 907f42c8b132dc29a75232db0221b5bcea23a11a share/gitcommit-msg
+SHA1 f483f42b04198b7de96071c6ca8e8737c13d139a share/gitignore
+SHA1 2783f3f13b3fa2916933ddd57a3c6e5578a9294f share/gitpre-commit
+SHA1 eaec63fe1f7e5b0510a92d1c8bcf52d6b5c9e709 share/perl_module.pm
+SHA1 4e1cef811fca6689dff96e1aba68912c6b5a0632 share/perl_program.pl
+SHA1 5b418179c13d5f6c7995c9021ec067a20cab70dc t/01always_pass.t
+SHA1 8b856dd72d0f214751ec6b1847565845f0f23949 t/02pod.t
+SHA1 3e9fe2a7c72e82caa0ac4cd64ea1e0220f12db46 t/03podcoverage.t
+SHA1 2a5f579bfbb5aa6e9a05e2b38235d51575c0915e t/04critic.t
+SHA1 c089ddce2b520194d6718f805caa5b23ae8c5fe3 t/05kwalitee.t
+SHA1 faa43d5f8663a943d7a7bfdd29015e871592c9b0 t/06yaml.t
+SHA1 68f759558d9f2b523946373ade72df68bcf20099 t/07podspelling.t
+SHA1 054d1be6060b67ac0632c97dc75f655857fe669f t/10test_script.t
+SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQEcBAEBAgAGBQJRawEzAAoJEK492j4Im1Bp6/YH+QH7iSivUHofZn1jSzd/nZXU
+7AgaVKiPqurYj75qH7CsRonUHu6nDYiEhPuXDybn6L+ZwOlwNuXH/cAsjjAceUcZ
+9+ZSOf7AfLqNYYtnnUXPFmg+i8Dd08H9hKCduZsGpnJqv0JNs7HWexKSpoxiBFQz
+6B8z5VElAJgs8dsAyDlV9K6jj/U1uUhvNs4+KxVEV7WNrBxgPksUiMhuFtyd6c4f
+m2PYt//p+AaIVi68RQKLrdHEAE9lWI6pBUNiTQof/vniUIGZEQvvc2M+i1VNmHKh
+pe6PClw+hQysSbgUc0GVTdX6pDc9nge53Bnv+KRWcLh/WlPMl2e4eL4jVrbFxdM=
+=gWyL
+-----END PGP SIGNATURE-----

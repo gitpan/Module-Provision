@@ -1,0 +1,34 @@
+Revision history for Module::Provision
+
+0.3.43    2013-04-14 20:11:51
+          Bumped Class::Usul version number. Updated POD
+          Added author_id to stash
+          Added DZ and MI builders
+          Can create a test distribution in t with relative paths
+          Updated POD. Added novcs attribute
+          Propagated .gitpre-commit to share dir
+          Added .gitignore-rev to skip Rev keyword expansion in share dir
+          Use Perl::Version for better changelog headers
+
+0.2.37    2013-04-05 14:00:09
+          Releasing
+          Renamed t/test_script.t to t/10test_script.t for consistancy
+
+0.1.35    2013-04-05 13:37:11
+          Automated git commit messages from Changes file
+
+0.1.34    2013-04-02
+          Added commit-msg hook
+          Updated inc::Bob to v1.11
+
+0.1.30    2013-04-02
+          Updated inc::Bob to v1.9
+          Add global revision number to .gitpre-commit
+          Fixed file creation permissions
+
+0.1.2     2013-03-27
+          Fixed repository for Git in metadata
+          Updated inc::Bob to 1.8
+
+0.1.1     2013-03-27
+          Created master
