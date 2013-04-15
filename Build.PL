@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 43 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 44 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Module::Provision),
@@ -36,6 +36,7 @@ Bob->new( {
       'Exception::Class' => 1.23,
       'File::DataClass'  => q(0.16.0),
       'Test::More'       => 0.74, },
+   no_index_dir          => [ qw(bin examples inc share t) ],
 } )->create_build_script; # Goal!
 
 # Local Variables:

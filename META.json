@@ -15,8 +15,10 @@
    "name" : "Module-Provision",
    "no_index" : {
       "directory" : [
+         "bin",
          "examples",
          "inc",
+         "share",
          "t"
       ]
    },
@@ -63,7 +65,7 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.3.43"
+         "version" : "v0.3.44"
       }
    },
    "release_status" : "stable",
@@ -79,5 +81,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.3.43"
+   "version" : "v0.3.44"
 }
