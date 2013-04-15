@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-14 19:05 pjf ;
+# @(#)Ident: Provision.pm 2013-04-15 13:52 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 44 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 45 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -584,14 +584,11 @@ sub _render_template {
 sub _test_distribution {
    my ($self, $args) = @_; __chdir( $self->_appldir );
 
+   my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
+
    $ENV{TEST_SPELLING} = TRUE;
    $self->output ( 'Testing '.$self->_appldir );
-
-   if ($self->builder eq 'DZ') {
-      $self->run_cmd( 'dzil test', $self->quiet ? {} : { out => 'stdout' } );
-   }
-   else { $self->run_cmd( 'prove t', $self->quiet ? {} : { out => 'stdout' } ) }
-
+   $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
    return;
 }
 
@@ -620,7 +617,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.3.$Rev: 44 $ of L<Module::Provision>
+This documents version v0.3.$Rev: 45 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -860,4 +857,3 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
-

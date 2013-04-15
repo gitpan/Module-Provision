@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-04-09 17:04 pjf ;
+# @(#)Ident: perl_program.pl 2013-04-15 15:16 pjf ;
 
 use strict;
 use warnings;
@@ -23,6 +23,8 @@ exit [% project %]->new_with_options( appclass => '[% project %]' )->run;
 __END__
 
 =pod
+
+=encoding utf8
 
 =head1 NAME
 
@@ -48,7 +50,7 @@ Lists the methods available in this program
 
 =head1 VERSION
 
-This documents version v0.1.$Rev: 1 $ of L<[% project %]>
+This documents version v0.1.$Rev: 1 $ of L<[% program_name %]>
 
 =head1 DESCRIPTION
 

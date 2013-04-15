@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-04-09 17:04 pjf ;
+# @(#)Ident: perl_module.pm 2013-04-15 15:15 pjf ;
 
 package [% module %];
 
@@ -15,6 +15,8 @@ __PACKAGE__->meta->make_immutable;
 __END__
 
 =pod
+
+=encoding utf8
 
 =head1 Name
 

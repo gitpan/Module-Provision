@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-04-12 18:50 pjf ;
+# @(#)Ident: 10test_script.t 2013-04-15 17:30 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 43 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 45 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -24,15 +24,16 @@ use_ok 'Module::Provision';
 my $owd = getcwd; my $prog;
 
 sub test_mp {
-   my $builder = shift;
+   my ($builder, $method) = @_; $method ||= 'dist';
 
    return Module::Provision->new_with_options
       ( appclass  => 'Module::Provision',
         base      => 't',
         builder   => $builder,
-        method    => 'dist',
+        method    => $method,
         nodebug   => 1,
         novcs     => 1,
+        quiet     => 1,
         project   => 'Foo::Bar',
         templates => catdir( 't', 'code_templates' ) );
 }
@@ -45,23 +46,49 @@ sub test_cleanup {
    return;
 }
 
-$prog = test_mp( 'DZ' );
+$prog = test_mp( 'MB', 'init_templates' ); $prog->run;
 
-is $prog->run, 0, 'Dist DZ returns zero';
+ok -f catfile( qw(t code_templates index.json) ), 'Creates template index';
+
+my $args = $prog->pre_hook;
+
+like $args->{appbase}->name, qr{ Foo-Bar \z }mx, 'Sets appbase';
+
+$prog->create_directories( $args );
+
+ok -d catdir( qw(lib Foo) ), 'Creates lib/Foo dir';
+ok -d 'inc', 'Creates inc dir';
+ok -d 't', 'Creates t dir';
+
+$prog->render_templates( $args );
+
+ok -f catfile( qw(lib Foo Bar.pm) ), 'Creates lib/Foo/Bar.pm';
+ok -f 'Build.PL', 'Creates Build.PL';
 
 test_cleanup( $owd );
 
-$prog = test_mp( 'MB' );
+SKIP: {
+   not -e catfile( $Bin, updir, q(MANIFEST.SKIP) )
+      and skip 'Only for developers', 3;
 
-is $prog->run, 0, 'Dist MB returns zero';
+   $prog = test_mp( 'DZ' );
 
-test_cleanup( $owd );
+   is $prog->run, 0, 'Dist DZ returns zero';
 
-$prog = test_mp( 'MI' );
+   test_cleanup( $owd );
 
-is $prog->run, 0, 'Dist MI returns zero';
+   $prog = test_mp( 'MB' );
 
-test_cleanup( $owd );
+   is $prog->run, 0, 'Dist MB returns zero';
+
+   test_cleanup( $owd );
+
+   $prog = test_mp( 'MI' );
+
+   is $prog->run, 0, 'Dist MI returns zero';
+
+   test_cleanup( $owd );
+}
 
 done_testing;
 

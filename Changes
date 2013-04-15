@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.3.44    2013-04-15 13:44:35
+0.3.45    2013-04-15 18:32:08
+          Added more tests
           Added share to no_index
           Bumped Class::Usul version number. Updated POD
           Added author_id to stash
