@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-04-15 15:15 pjf ;
+# @(#)Ident: perl_module.pm 2013-04-21 02:45 pjf ;
 
 package [% module %];
 
@@ -7,6 +7,8 @@ use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use Class::Usul::Moose;
 use Class::Usul::Constants;
 use Class::Usul::Functions qw(throw);
+
+extends qw(Class::Usul::Programs);
 
 __PACKAGE__->meta->make_immutable;
 
@@ -20,7 +22,7 @@ __END__
 
 =head1 Name
 
-[% module %] - <One-line description of module's purpose>
+[% module %] - I<[% abstract %]>
 
 =head1 Synopsis
 

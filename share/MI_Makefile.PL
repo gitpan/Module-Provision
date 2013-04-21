@@ -21,8 +21,8 @@ build_requires
 
 requires
    ( 'version'          => 0.77,
-     'Class::Usul'      => q(0.12.0),
-     'File::DataClass'  => q(0.15.0), );
+     'Class::Usul'      => q(0.13.0),
+     'File::DataClass'  => q(0.16.0), );
 
 recommends
    ( 'App::cpanminus'   => 1.6005,

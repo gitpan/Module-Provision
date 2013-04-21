@@ -1,24 +1,25 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-04-15 15:16 pjf ;
+# @(#)Ident: perl_program.pl 2013-04-21 14:15 pjf ;
 
 use strict;
 use warnings;
 
-use English qw( -no_match_vars );
-use FindBin qw( $Bin );
-use File::Spec;
+use English               qw( -no_match_vars );
+use File::Spec::Functions qw( catdir catfile updir );
+use FindBin               qw( $Bin );
+use lib               catdir( $Bin, updir, q(lib) );
 
 BEGIN {
-   my $path = File::Spec->catfile( $Bin, '[% prefix %]-localenv' );
+   my $path = catfile( $Bin, '[% prefix %]-localenv' );
 
-   do $path or die $EVAL_ERROR || "Path ${path} not done\n";
+   -f $path and (do $path or die $EVAL_ERROR || "Path ${path} not done\n");
 }
 
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
-use [% project %];
+use [% module %];
 
-exit [% project %]->new_with_options( appclass => '[% project %]' )->run;
+exit [% module %]->new_with_options( nodebug => 1 )->run;
 
 __END__
 
@@ -28,7 +29,7 @@ __END__
 
 =head1 NAME
 
-[% program_name %] - I<One line abstract describing the programs purpose>
+[% program_name %] - I<[% abstract %]>
 
 =head1 SYNOPSIS
 

@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-15 13:52 pjf ;
+# @(#)Ident: Provision.pm 2013-04-21 15:24 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 45 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 47 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -68,8 +68,7 @@ has 'vcs'         => is => 'ro',   isa => NonEmptySimpleStr,
 
 # Private attributes
 
-has '_appbase'       => is => 'lazy', isa => NonEmptySimpleStr,
-   default           => sub { distname $_[ 0 ]->project };
+has '_appbase'       => is => 'lazy', isa => Path, coerce => TRUE;
 
 has '_appldir'       => is => 'lazy', isa => Path, coerce => TRUE;
 
@@ -85,10 +84,14 @@ has '_binsdir'       => is => 'lazy', isa => Path, coerce => TRUE,
 has '_dist_module'   => is => 'lazy', isa => Path, coerce => TRUE,
    default           => sub { [ $_[ 0 ]->_homedir.'.pm' ] };
 
+has '_distname'      => is => 'lazy', isa => NonEmptySimpleStr,
+   default           => sub { distname $_[ 0 ]->project };
+
 has '_home'          => is => 'lazy', isa => Path, coerce => TRUE,
    default           => sub { $_[ 0 ]->config->my_home };
 
-has '_homedir'       => is => 'lazy', isa => Path, coerce => TRUE;
+has '_homedir'       => is => 'lazy', isa => Path, coerce => TRUE,
+   default           => sub { [ $_[ 0 ]->_libdir, classdir $_[ 0 ]->project ] };
 
 has '_home_page'     => is => 'lazy', isa => NonEmptySimpleStr;
 
@@ -101,24 +104,21 @@ has '_initial_wd'    => is => 'ro',   isa => Directory, coerce => TRUE,
 has '_libdir'        => is => 'lazy', isa => Path, coerce => TRUE,
    default           => sub { [ $_[ 0 ]->_appldir, 'lib' ] };
 
-has '_license_keys'  => is => 'ro',   isa => HashRef,
-   builder           => '_build_license_keys';
+has '_license_keys'  => is => 'lazy', isa => HashRef;
 
 has '_project_file'  => is => 'lazy', isa => NonEmptySimpleStr;
 
-has '_stash'         => is => 'lazy', isa => HashRef, reader => 'stash';
+has '_stash'         => is => 'lazy', isa => HashRef;
 
-has '_template_list' => is => 'lazy', isa => ArrayRef,
-   reader            => 'template_list';
+has '_template_list' => is => 'lazy', isa => ArrayRef;
 
-has '_template_dir'  => is => 'lazy', isa => Directory, coerce => TRUE,
-   reader            => 'template_dir';
+has '_template_dir'  => is => 'lazy', isa => Directory, coerce => TRUE;
 
 has '_testdir'       => is => 'lazy', isa => Path, coerce => TRUE,
    default           => sub { [ $_[ 0 ]->_appldir, 't' ] };
 
 sub create_directories {
-   my ($self, $args) = @_; my $perms = $self->_exec_perms;
+   my $self = shift; my $perms = $self->_exec_perms;
 
    $self->_appldir->exists or $self->_appldir->mkpath( $perms );
    $self->builder eq 'MB' and ($self->_incdir->exists
@@ -129,67 +129,58 @@ sub create_directories {
 }
 
 sub dist : method {
-   my $self = shift; my $args = $self->pre_hook( {} );
+   my $self = shift;
 
-   $self->create_directories( $args );
-   $self->render_templates( $args );
-   $self->post_hook( $args );
+   $self->pre_hook;
+   $self->create_directories;
+   $self->render_templates;
+   $self->post_hook;
    return OK;
 }
 
 sub init_templates : method {
-   my $self = shift; $self->template_list; return OK;
+   my $self = shift; $self->_template_list; return OK;
 }
 
 sub module : method {
-   my $self   = shift;
-   my $module = $self->extra_argv->[ 0 ];
-   my $target = $self->_get_target( '_libdir', \&classfile );
+   my $self = shift; my $target = $self->_get_target( '_libdir', \&classfile );
 
-   $self->stash->{module} = $module;
    $target = $self->_render_template( 'perl_module.pm', $target );
-   $self->_add_to_vcs( { target => $target, type => 'module' } );
+   $self->_add_to_vcs( $target, 'module' );
    return OK;
 }
 
 sub post_hook {
-   my ($self, $args) = @_;
+   my $self = shift;
 
-   $self->_initialize_vcs( $args );
-   $self->_initialize_distribution( $args );
-   $self->_test_distribution( $args );
+   $self->_initialize_vcs;
+   $self->_initialize_distribution;
+   $self->_test_distribution;
    return;
 }
 
 sub pre_hook {
-   my ($self, $args) = @_; $args ||= {}; umask $self->_create_mask;
+   my $self = shift; my $argv = $self->extra_argv; umask $self->_create_mask;
 
-   my $base    = $self->base->absolute( $self->_initial_wd );
-   my $appbase = $args->{appbase} = $base->catdir( $self->_appbase );
-
-   $appbase->exists or $appbase->mkpath( $self->_exec_perms );
-
-   __chdir( $appbase ); $args->{templates} = $self->template_list;
-
-   return $args;
+   $self->_appbase->exists or $self->_appbase->mkpath( $self->_exec_perms );
+   $self->_stash->{abstract} = shift @{ $argv } || $self->_stash->{abstract};
+   __chdir( $self->_appbase );
+   return;
 }
 
 sub program : method {
-   my $self    = shift;
-   my $program = $self->extra_argv->[ 0 ];
-   my $target  = $self->_get_target( '_binsdir' );
+   my $self = shift; my $target = $self->_get_target( '_binsdir' );
 
-   $self->stash->{program_name} = $program;
    $target = $self->_render_template( 'perl_program.pl', $target );
    chmod $self->_exec_perms, $target->pathname;
-   $self->_add_to_vcs( { target => $target, type => 'program' } );
+   $self->_add_to_vcs( $target, 'program' );
    return OK;
 }
 
 sub render_templates {
-   my ($self, $args) = @_; my $templates = $args->{templates};
+   my $self = shift;
 
-   for my $tuple (@{ $templates }) {
+   for my $tuple (@{ $self->_template_list }) {
       for (my $i = 0, my $max = @{ $tuple }; $i < $max; $i++) {
          if (is_arrayref $tuple->[ $i ]) {
             my $method = $tuple->[ $i ]->[ 0 ];
@@ -214,8 +205,8 @@ sub render_templates {
 sub test : method {
    my $self = shift; my $target = $self->_get_target( '_testdir' );
 
-   $target = $self->_render_template( 'test_script.t', $target );
-   $self->_add_to_vcs( { target => $target, type => 'test' } );
+   $target = $self->_render_template( '10test_script.t', $target );
+   $self->_add_to_vcs( $target, 'test' );
    return OK;
 }
 
@@ -231,48 +222,50 @@ sub _add_hook {
 }
 
 sub _add_to_git {
-   my ($self, $args) = @_; my $target = $args->{target};
+   my ($self, $target, $type) = @_;
 
    my $params = $self->quiet ? {} : { out => 'stdout' };
 
    $self->run_cmd( "git add ${target}", $params );
-
-   return TRUE;
+   return;
 }
 
 sub _add_to_svn {
-   my ($self, $args) = @_; my $target = $args->{target};
+   my ($self, $target, $type) = @_;
 
    my $params = $self->quiet ? {} : { out => 'stdout' };
 
    $self->run_cmd( "svn add ${target} --parents", $params );
    $self->run_cmd( "svn propset svn:keywords 'Id Revision Auth' ${target}",
                    $params );
-   $args->{type} and $args->{type} eq 'program'
+   $type and $type eq 'program'
       and $self->run_cmd( "svn propset svn:executable '*' ${target}", $params );
    return;
 }
 
 sub _add_to_vcs {
-   my ($self, $args) = @_; $args ||= {};
-
-   $args->{target} or throw 'VCS target not specified';
+   my ($self, $target, $type) = @_; $target or throw 'VCS target not specified';
 
    $self->novcs and return;
-   $self->vcs eq 'git' and $self->_add_to_git( $args );
-   $self->vcs eq 'svn' and $self->_add_to_svn( $args );
+   $self->vcs eq 'git' and $self->_add_to_git( $target, $type );
+   $self->vcs eq 'svn' and $self->_add_to_svn( $target, $type );
    return;
 }
 
-sub _build__appldir {
+sub _build__appbase {
    my $self = shift; my $base = $self->base->absolute( $self->_initial_wd );
 
-   return $self->vcs eq 'git' ? [ $base, $self->_appbase ]
-                              : [ $base, $self->_appbase, $self->branch ];
+   return $base->catdir( $self->_distname );
+}
+
+sub _build__appldir {
+   $_[ 0 ]->vcs eq 'git' and return $_[ 0 ]->_appbase;
+
+   return $_[ 0 ]->_appbase->catdir( $_[ 0 ]->branch );
 }
 
 sub _build__author {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author' );
+   my $path      = $_[ 0 ]->_template_dir->catfile( 'author' );
    my $from_file = $path->exists ? trim $path->getline : FALSE;
 
    if ($from_file) { $from_file =~ s{ [\'] }{\'}gmx; return $from_file }
@@ -286,7 +279,7 @@ sub _build__author {
 }
 
 sub _build__author_email {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author_email' );
+   my $path      = $_[ 0 ]->_template_dir->catfile( 'author_email' );
    my $from_file = $path->exists ? trim $path->getline : FALSE;
 
    if ($from_file) { $from_file =~ s{ [\'] }{\'}gmx; return $from_file }
@@ -298,7 +291,7 @@ sub _build__author_email {
 }
 
 sub _build__author_id {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author_id' );
+   my $path      = $_[ 0 ]->_template_dir->catfile( 'author_id' );
    my $from_file = $path->exists ? trim $path->getline : FALSE;
 
    $from_file and return $from_file;
@@ -310,16 +303,12 @@ sub _build__author_id {
 }
 
 sub _build__home_page {
-   my $path = $_[ 0 ]->template_dir->catfile( 'home_page' );
+   my $path = $_[ 0 ]->_template_dir->catfile( 'home_page' );
 
    return $path->exists ? trim $path->getline : 'http://example.com';
 }
 
-sub _build__homedir {
-   return [ $_[ 0 ]->_libdir, classdir $_[ 0 ]->project ];
-}
-
-sub _build_license_keys {
+sub _build__license_keys {
    return {
       perl       => 'Perl_5',
       perl_5     => 'Perl_5',
@@ -334,8 +323,10 @@ sub _build_license_keys {
 }
 
 sub _build_project {
-   my $project = $_[ 0 ]->extra_argv->[ 0 ]
-      or throw 'Project class not specified';
+   my $self = shift; my $project = shift @{ $self->extra_argv };
+
+   $project or $project = $self->_get_main_module_name;
+   $project or throw 'Main module name not found';
 
    return $project;
 }
@@ -347,8 +338,10 @@ sub _build__project_file {
 sub _build__stash {
    my $self = shift; my $project = $self->project; my $author = $self->_author;
 
-   return { appbase        => $self->_appbase,
-            appdir         => class2appdir $self->_appbase,
+   my $abstract = $self->loc( 'One-line description of the modules purpose' );
+
+   return { abstract       => $abstract,
+            appdir         => class2appdir $self->_distname,
             author         => $author,
             author_email   => $self->_author_email,
             author_id      => $self->_author_id,
@@ -356,7 +349,7 @@ sub _build__stash {
             copyright_year => time2str( '%Y' ),
             creation_date  => time2str,
             dist_module    => $self->_dist_module->abs2rel( $self->_appldir ),
-            distname       => distname $project,
+            distname       => $self->_distname,
             first_name     => lc ((split SPC, $author)[ 0 ]),
             home_page      => $self->_home_page,
             last_name      => lc ((split SPC, $author)[ -1 ]),
@@ -384,12 +377,11 @@ sub _build__template_dir {
 }
 
 sub _build__template_list {
-   my $self = shift; my $index = $self->template_dir->catfile( 'index.json' );
+   my $self = shift; my $index = $self->_template_dir->catfile( 'index.json' );
 
    my $data; $index->exists and $data = $self->file->data_load
       ( paths => [ $index ], storage_class => 'Any' )
       and return $self->_merge_lists( $data );
-
    my $builders  = {
       DZ => [ [ 'dist.ini',           '_appldir' ], ],
       MB => [ [ 'Build.PL',           '_appldir' ],
@@ -418,7 +410,6 @@ sub _build__template_list {
    $self->output( "Creating index ${index}" );
    $self->file->data_dump
       ( data => $data, path => $index, storage_class => 'Any' );
-
    return $self->_merge_lists( $data );
 }
 
@@ -430,12 +421,15 @@ sub _exec_perms {
    my $self = shift; return (($self->perms & oct q(0444)) >> 2) | $self->perms;
 }
 
-sub _find_appldir {
+sub _get_main_module_name {
    my $self = shift; my $dir = $self->io( getcwd ); my $prev;
 
    while (not $prev or $prev ne $dir) {
-      $dir->catfile( 'Build.PL'    )->exists and return $dir;
-      $dir->catfile( 'Makefile.PL' )->exists and return $dir;
+      for my $file (map { $dir->catfile( $_ ) }
+                    qw(dist.ini Build.PL Makefile.PL)) {
+         $file->exists and return __get_module_from( $file->all );
+      }
+
       $prev = $dir; $dir = $dir->parent;
    }
 
@@ -444,24 +438,30 @@ sub _find_appldir {
 }
 
 sub _get_target {
-   my ($self, $dir, $f) = @_;
+   my ($self, $dir, $f) = @_; my $argv = $self->extra_argv;
 
-   my $car = shift @{ $self->extra_argv } or throw 'No target specified';
+   my $car      = shift @{ $argv } or throw 'No target specified';
+   my $abstract = shift @{ $argv }
+               || ($self->method eq 'program'
+                ? $self->loc( 'One-line description of the programs purpose' )
+                : $self->loc( 'One-line description of the modules purpose' ) );
 
-   unless ($self->extra_argv->[ 0 ]) {
-      my $meta = $self->get_meta( $self->_find_appldir );
+   $self->project;
 
-      push @{ $self->extra_argv }, prefix2class $meta->name;
-   }
-
-   my $target = $self->$dir->catfile( $f ? $f->( $car ) : $car );
+   my $target   = $self->$dir->catfile( $f ? $f->( $car ) : $car );
 
    $target->perms( $self->perms )->assert_filepath;
+
+   if    ($self->method eq 'module')  { $self->_stash->{module      } = $car }
+   elsif ($self->method eq 'program') { $self->_stash->{program_name} = $car }
+
+   $self->method ne 'test' and $self->_stash->{abstract} = $abstract;
+
    return $target;
 }
 
 sub _initialize_distribution {
-   my ($self, $args) = @_; my $mdf; __chdir( $self->_appldir );
+   my $self = shift; my $mdf; __chdir( $self->_appldir );
 
    if ($self->builder eq 'DZ') {
       $self->run_cmd( 'dzil build' );
@@ -483,14 +483,12 @@ sub _initialize_distribution {
    }
 
    $mdf and $self->_appldir->catfile( $mdf )->exists
-        and $self->_add_to_vcs( { target => $mdf } );
+        and $self->_add_to_vcs( $mdf );
    return;
 }
 
 sub _initialize_git {
-   my ($self, $args) = @_; __chdir( $self->_appldir );
-
-   my $branch = $self->branch;
+   my $self = shift; my $branch = $self->branch; __chdir( $self->_appldir );
 
    $self->run_cmd  ( 'git init'   );
    $self->_add_hook( 'commit-msg' );
@@ -501,9 +499,9 @@ sub _initialize_git {
 }
 
 sub _initialize_svn {
-   my ($self, $args) = @_; my $appbase = $args->{appbase}; __chdir( $appbase );
+   my $self = shift; __chdir( $self->_appbase );
 
-   my $repository = $appbase->catdir( $self->repository );
+   my $repository = $self->_appbase->catdir( $self->repository );
 
    $self->run_cmd( "svnadmin create ${repository}" );
 
@@ -528,20 +526,20 @@ sub _initialize_svn {
 }
 
 sub _initialize_vcs {
-   my ($self, $args) = @_;
+   my $self = shift;
 
    $self->novcs and return;
    $self->output( 'Initializing VCS' );
-   $self->vcs eq 'git' and $self->_initialize_git( $args );
-   $self->vcs eq 'svn' and $self->_initialize_svn( $args );
+   $self->vcs eq 'git' and $self->_initialize_git;
+   $self->vcs eq 'svn' and $self->_initialize_svn;
    return;
 }
 
 sub _merge_lists {
-   my ($self, $data) = @_; my $list = $data->{templates};
+   my ($self, $args) = @_; my $list = $args->{templates};
 
-   push @{ $list }, @{ $data->{builders}->{ $self->builder } };
-   not $self->novcs and push @{ $list }, @{ $data->{vcs}->{ $self->vcs } };
+   push @{ $list }, @{ $args->{builders}->{ $self->builder } };
+   not $self->novcs and push @{ $list }, @{ $args->{vcs}->{ $self->vcs } };
 
    return $list;
 }
@@ -554,7 +552,7 @@ sub _render_template {
 
    $target->exists and $target->is_dir
       and $target = $target->catfile( $template );
-   $template = $self->template_dir->catfile( $template );
+   $template = $self->_template_dir->catfile( $template );
 
    $template->exists or
       return $self->log->warn( $self->loc( 'Path [_1] not found', $template ) );
@@ -566,23 +564,20 @@ sub _render_template {
       and not $self->yorn( $prompt, FALSE, TRUE )
       and return $target;
 
-   my $conf  = { ABSOLUTE => TRUE, };
+   my $conf  = { ABSOLUTE => TRUE, }; my $text = NUL;
 
    $conf->{VARIABLES}->{loc} = sub { return $self->loc( @_ ) };
 
    my $tmplt = Template->new( $conf ) or throw $Template::ERROR;
-   my $text  = NUL;
 
-   $tmplt->process( $template->pathname, $self->stash, \$text )
+   $tmplt->process( $template->pathname, $self->_stash, \$text )
       or throw $tmplt->error();
-
    $target->perms( $self->perms )->print( $text ); $target->close;
-
    return $target;
 }
 
 sub _test_distribution {
-   my ($self, $args) = @_; __chdir( $self->_appldir );
+   my $self = shift; __chdir( $self->_appldir );
 
    my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
 
@@ -601,6 +596,15 @@ sub __chdir {
    return $_[ 0 ];
 }
 
+sub __get_module_from {
+   return
+      (map    { s{ [-] }{::}gmx; $_ }
+       map    { m{ \A [q\'\"] }mx ? eval $_ : $_ }
+       map    { m{ \A \s* (?:module|name) \s+ [=]?[>]? \s* ([^,;]+) [,;]? }imx }
+       grep   { m{ \A \s*   (module|name) }imx }
+       split m{ [\n] }mx, $_[ 0 ])[ 0 ];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -609,7 +613,7 @@ __END__
 
 =pod
 
-=encoding utf-8
+=encoding utf8
 
 =head1 Name
 
@@ -617,22 +621,22 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.3.$Rev: 45 $ of L<Module::Provision>
+This documents version v0.4.$Rev: 47 $ of L<Module::Provision>
 
 =head1 Synopsis
 
    # To reduce typing define a shell alias
    alias mp='module_provision --base ~/Projects'
 
-   # Create a new distribution in your Projects directory
-   mp dist Foo::Bar
+   # Create a new distribution in your Projects directory with Git VCS
+   mp dist Foo::Bar [ 'Optional one line abstract' ]
 
    # Add another module
    cd ~/Projects/Foo-Bar
-   mp module Foo::Bat
+   mp module Foo::Bat [ 'Optional one line abstract' ]
 
    # Add a program to the bin directory
-   mp program foo-cli
+   mp program bar-cli [ 'Optional one line abstract' ]
 
    # Add another test script
    mp test 11another-one.t
@@ -672,6 +676,60 @@ change log no other commit message text is required. The following
 makes for a suitable C<git log> alias:
 
    alias gl='git log -10 --pretty=format:"%h %ci %s"'
+
+The templates contain comment lines like:
+
+   # @(#)Ident: Provision.pm 2013-04-15 13:52 pjf ;
+
+These are expanded automatically by Emacs using this Lisp code:
+
+   (setq time-stamp-active     t
+         time-stamp-line-limit 10
+         time-stamp-format     " %f %04y-%02m-%02d %02H:%02M %u "
+         time-stamp-start      "Ident:"
+         time-stamp-time-zone  "GMT"
+         time-stamp-end        ";")
+
+The alias:
+
+   alias ident='ack "@\(#\)"'
+
+uses the L<App::Ack> program to implement the old SYSV R4 C<ident>
+command
+
+The template for F<Build.PL> contains the following comment which is
+interpreted by Emacs:
+
+   # Local Variables:
+   # eval: (load-project-state "[% appdir %]")
+   # mode: perl
+   # tab-title: [% project %]
+   # tab-width: 3
+   # End:
+
+Perl mode is prefered over C-Perl mode since the former has better
+syntax highlighting. Tabs are expanded to three spaces. The
+C<tab-title> variable is used by L<Yakuake::Sessions> to set the tab
+title for the terminal emulator. The C<load-project-state> Lisp looks
+like this:
+
+   (defun load-project-state (state-file) "Recovers the TinyDesk state from file"
+     (let ((session-path (concat "~/.emacs.d/config/state." state-file)))
+       (if (file-exists-p session-path) (tinydesk-recover-state session-path)
+         (message (concat "Not found: " state-file)))))
+
+It assumes that the TinyDesk state file containing the list of files to edit
+for the project has been saved in F<~/.emacs.d/config/state.[% appdir %]>. To
+work on a project; change directory to the working copy, edit the project
+file F<Build.PL> with Emacs, this will load all of the other files in the
+project into separate buffers displaying each in the tab bar. This Lisp code
+will load TinyDesk and turn tab bar mode on whenever a Perl file is edited:
+
+   (add-hook 'perl-mode-hook
+             '(lambda ()
+               (require 'fic-mode) (turn-on-fic-mode) (diminish 'fic-mode nil)
+               (require 'psvn) (require 'tinydesk) (tabbar-mode t)
+               (require 'tinyperl) (diminish 'tinyperl-mode nil)))
 
 =head1 Configuration and Environment
 
@@ -740,7 +798,7 @@ The following methods constitute the public API
 
 =head2 create_directories
 
-   $self->create_directories( $args );
+   $self->create_directories;
 
 Creates the required directories for the new distribution
 
@@ -764,13 +822,13 @@ Creates a new module specified by the class name on the command line
 
 =head2 post_hook
 
-   $self->post_hook( $args );
+   $self->post_hook;
 
 Runs after the new distribution has been created
 
 =head2 pre_hook
 
-   $args = $self->pre_hook( {} );
+   $self->pre_hook;
 
 Runs before the new distribution is created
 
@@ -782,10 +840,10 @@ Creates a new program specified by the program name on the command line
 
 =head2 render_templates
 
-   $self->render_templates( $args );
+   $self->render_templates;
 
-Renders the list of templates in C<<$args->templates>> be repeatedly calling
-calling L<Template> passing in the C<stash>
+Renders the list of templates in C<< $self->_template_list >> be
+repeatedly calling calling L<Template> passing in the C<< $self->_stash >>
 
 =head2 test
 

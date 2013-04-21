@@ -65,7 +65,7 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.3.45"
+         "version" : "v0.4.47"
       }
    },
    "release_status" : "stable",
@@ -81,5 +81,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.3.45"
+   "version" : "v0.4.47"
 }

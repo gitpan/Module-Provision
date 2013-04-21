@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-04-15 17:30 pjf ;
+# @(#)Ident: 10test_script.t 2013-04-21 01:09 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.3.%d', q$Rev: 45 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 47 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -50,17 +50,17 @@ $prog = test_mp( 'MB', 'init_templates' ); $prog->run;
 
 ok -f catfile( qw(t code_templates index.json) ), 'Creates template index';
 
-my $args = $prog->pre_hook;
+$prog->pre_hook;
 
-like $args->{appbase}->name, qr{ Foo-Bar \z }mx, 'Sets appbase';
+like $prog->_appbase->name, qr{ Foo-Bar \z }mx, 'Sets appbase';
 
-$prog->create_directories( $args );
+$prog->create_directories;
 
 ok -d catdir( qw(lib Foo) ), 'Creates lib/Foo dir';
 ok -d 'inc', 'Creates inc dir';
 ok -d 't', 'Creates t dir';
 
-$prog->render_templates( $args );
+$prog->render_templates;
 
 ok -f catfile( qw(lib Foo Bar.pm) ), 'Creates lib/Foo/Bar.pm';
 ok -f 'Build.PL', 'Creates Build.PL';

@@ -23,8 +23,8 @@ WriteMakefile
      },
      PREREQ_PM => {
         'version'          => 0.77,
-        'Class::Usul'      => q(0.12.0),
-        'File::DataClass'  => q(0.15.0),
+        'Class::Usul'      => q(0.13.0),
+        'File::DataClass'  => q(0.16.0),
      },
      dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
      clean => { FILES => '[% distname %]-*' }, );

@@ -1,6 +1,11 @@
 Revision history for Module::Provision
 
-0.3.45    2013-04-15 18:32:08
+0.4.47    2013-04-21 16:41:37
+          Added support for command line abstracts
+
+0.3.46    2013-04-16 23:18:07
+          Documented Emacs usage
+          Added optional v to distname in MANIFEST.SKIP
           Added more tests
           Added share to no_index
           Bumped Class::Usul version number. Updated POD
