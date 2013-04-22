@@ -21,7 +21,7 @@ build_requires
 
 requires
    ( 'version'          => 0.77,
-     'Class::Usul'      => q(0.13.0),
+     'Class::Usul'      => q(0.14.0),
      'File::DataClass'  => q(0.16.0), );
 
 recommends

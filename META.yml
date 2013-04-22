@@ -26,11 +26,11 @@ no_index:
 provides:
   Module::Provision:
     file: lib/Module/Provision.pm
-    version: v0.4.47
+    version: v0.4.51
 recommends:
   App::cpanminus: 1.6005
 requires:
-  Class::Usul: v0.13.0
+  Class::Usul: v0.14.0
   Date::Format: 2.24
   Dist::Zilla: 4.300033
   Dist::Zilla::Plugin::ReadmeAnyFromPod: 0.12012
@@ -46,6 +46,7 @@ requires:
   Perl::Version: 1.011
   Pod::Markdown: 1.322
   Template: 2.22
+  Text::Format: 0.53
   perl: 5.01
   version: 0.77
 resources:
@@ -53,4 +54,4 @@ resources:
   homepage: http://www.roxsoft.co.uk
   license: http://dev.perl.org/licenses/
   repository: git://github.com/pjfl/Module-Provision.git
-version: v0.4.47
+version: v0.4.51

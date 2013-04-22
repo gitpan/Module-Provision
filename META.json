@@ -41,7 +41,7 @@
             "App::cpanminus" : "1.6005"
          },
          "requires" : {
-            "Class::Usul" : "v0.13.0",
+            "Class::Usul" : "v0.14.0",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
             "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.12012",
@@ -57,6 +57,7 @@
             "Perl::Version" : "1.011",
             "Pod::Markdown" : "1.322",
             "Template" : "2.22",
+            "Text::Format" : "0.53",
             "perl" : "5.01",
             "version" : "0.77"
          }
@@ -65,7 +66,7 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.4.47"
+         "version" : "v0.4.51"
       }
    },
    "release_status" : "stable",
@@ -81,5 +82,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.4.47"
+   "version" : "v0.4.51"
 }

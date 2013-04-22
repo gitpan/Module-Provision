@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.4.$Rev: 47 $ of Module::Provision
+    This documents version v0.4.$Rev: 51 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -55,7 +55,7 @@ Description
     message text is required. The following makes for a suitable "git log"
     alias:
 
-       alias gl='git log -10 --pretty=format:"%h %ci %s"'
+       alias gl='git log -10 --pretty=format:"%h %ci %s" | cut -c1-79'
 
     The templates contain comment lines like:
 

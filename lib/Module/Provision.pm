@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-21 15:24 pjf ;
+# @(#)Ident: Provision.pm 2013-04-22 15:00 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 47 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 51 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -13,7 +13,6 @@ use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
 use English                      qw(-no_match_vars);
 use File::DataClass::Constraints qw(Directory OctalNum Path);
-use File::Spec::Functions        qw(catdir);
 use File::ShareDir                 ();
 use Template;
 use User::pwent;
@@ -23,11 +22,12 @@ extends q(Class::Usul::Programs);
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map( Path, '=s' );
 
 enum 'Module::Provision::Builder' => qw(DZ MB MI);
+enum 'Module::Provision::VCS'     => qw(git svn);
 
 # Public attributes
 
 has 'base'        => is => 'lazy', isa => Path, coerce => TRUE,
-   documentation  => 'The directory which will contain the new project',
+   documentation  => 'Directory containing new projects',
    default        => sub { $_[ 0 ]->config->my_home };
 
 has 'branch'      => is => 'lazy', isa => NonEmptySimpleStr,
@@ -35,11 +35,11 @@ has 'branch'      => is => 'lazy', isa => NonEmptySimpleStr,
    default        => sub { $_[ 0 ]->vcs eq 'git' ? 'master' : 'trunk' };
 
 has 'builder'     => is => 'ro',   isa => 'Module::Provision::Builder',
-   documentation  => 'Which of the three build systems to use',
+   documentation  => 'Which build system to use: DZ, MB, or MI',
    default        => 'MB';
 
 has 'force'       => is => 'ro',   isa => Bool, default => FALSE,
-   documentation  => 'Overwrite the output file if it already exists',
+   documentation  => 'Overwrite files if they already exist',
    traits         => [ 'Getopt' ], cmd_aliases => q(f), cmd_flag => 'force';
 
 has 'license'     => is => 'ro',   isa => NonEmptySimpleStr, default => 'perl',
@@ -53,17 +53,17 @@ has 'perms'       => is => 'ro',   isa => OctalNum, coerce => TRUE,
    default        => '640';
 
 has 'project'     => is => 'lazy', isa => NonEmptySimpleStr,
-   documentation  => 'The class name of the new project';
+   documentation  => 'Package name of the new projects main module';
 
 has 'repository'  => is => 'ro',   isa => NonEmptySimpleStr,
-   documentation  => 'Name of the directory containing the SVN repository',
+   documentation  => 'Directory containing the SVN repository',
    default        => 'repository';
 
 has 'templates'   => is => 'ro',   isa => SimpleStr, default => NUL,
    documentation  => 'Non default location of the code templates';
 
-has 'vcs'         => is => 'ro',   isa => NonEmptySimpleStr,
-   documentation  => 'The version control system to use',
+has 'vcs'         => is => 'ro',   isa => 'Module::Provision::VCS',
+   documentation  => 'Which VCS to use: git or svn',
    default        => 'git';
 
 # Private attributes
@@ -110,7 +110,8 @@ has '_project_file'  => is => 'lazy', isa => NonEmptySimpleStr;
 
 has '_stash'         => is => 'lazy', isa => HashRef;
 
-has '_template_list' => is => 'lazy', isa => ArrayRef;
+has '_template_list' => is => 'lazy', isa => ArrayRef, traits => [ 'Array' ],
+   handles           => { all_templates => 'elements', };
 
 has '_template_dir'  => is => 'lazy', isa => Directory, coerce => TRUE;
 
@@ -121,8 +122,8 @@ sub create_directories {
    my $self = shift; my $perms = $self->_exec_perms;
 
    $self->_appldir->exists or $self->_appldir->mkpath( $perms );
-   $self->builder eq 'MB' and ($self->_incdir->exists
-                               or $self->_incdir->mkpath( $perms ));
+   $self->builder eq 'MB'
+      and ($self->_incdir->exists or $self->_incdir->mkpath( $perms ));
    $self->_testdir->exists or $self->_testdir->mkpath( $perms );
    $self->_homedir->parent->exists or $self->_homedir->parent->mkpath( $perms );
    return;
@@ -155,6 +156,7 @@ sub post_hook {
 
    $self->_initialize_vcs;
    $self->_initialize_distribution;
+   $self->vcs eq 'svn' and $self->_svn_ignore_meta_files;
    $self->_test_distribution;
    return;
 }
@@ -180,7 +182,7 @@ sub program : method {
 sub render_templates {
    my $self = shift;
 
-   for my $tuple (@{ $self->_template_list }) {
+   for my $tuple ($self->all_templates) {
       for (my $i = 0, my $max = @{ $tuple }; $i < $max; $i++) {
          if (is_arrayref $tuple->[ $i ]) {
             my $method = $tuple->[ $i ]->[ 0 ];
@@ -259,9 +261,9 @@ sub _build__appbase {
 }
 
 sub _build__appldir {
-   $_[ 0 ]->vcs eq 'git' and return $_[ 0 ]->_appbase;
+   my $self = shift; $self->vcs eq 'git' and return $self->_appbase;
 
-   return $_[ 0 ]->_appbase->catdir( $_[ 0 ]->branch );
+   return $self->_appbase->catdir( $self->branch );
 }
 
 sub _build__author {
@@ -332,7 +334,8 @@ sub _build_project {
 }
 
 sub _build__project_file {
-   return $_[ 0 ]->builder eq 'MB' ? 'Build.PL' : 'Makefile.PL';
+   return $_[ 0 ]->builder eq 'DZ' ? 'dist.ini' :
+          $_[ 0 ]->builder eq 'MB' ? 'Build.PL' : 'Makefile.PL';
 }
 
 sub _build__stash {
@@ -488,13 +491,13 @@ sub _initialize_distribution {
 }
 
 sub _initialize_git {
-   my $self = shift; my $branch = $self->branch; __chdir( $self->_appldir );
+   my $self = shift; __chdir( $self->_appldir );
 
    $self->run_cmd  ( 'git init'   );
    $self->_add_hook( 'commit-msg' );
    $self->_add_hook( 'pre-commit' );
    $self->run_cmd  ( 'git add .'  );
-   $self->run_cmd  ( "git commit -m 'Created Git ${branch}'" );
+   $self->run_cmd  ( "git commit -m 'Initialized by ".__PACKAGE__."'" );
    return;
 }
 
@@ -506,8 +509,8 @@ sub _initialize_svn {
    $self->run_cmd( "svnadmin create ${repository}" );
 
    my $branch = $self->branch;
-   my $msg    = "Created SVN ${branch}";
-   my $url    = 'file://'.catdir( $repository, $branch );
+   my $msg    = 'Initialized by '.__PACKAGE__;
+   my $url    = 'file://'.$repository->catdir( $branch );
 
    $self->run_cmd( "svn import ${branch} ${url} -m '${msg}'" );
 
@@ -520,8 +523,10 @@ sub _initialize_svn {
       $self->run_cmd( "svn propset svn:keywords 'Id Revision Auth' ${target}" );
    }
 
-   $msg = "Add RCS keywords to ${branch}";
+   $msg = "Add RCS keywords to project files";
    $self->run_cmd( "svn commit ${branch} -m '${msg}'" );
+   __chdir( $self->_appldir );
+   $self->run_cmd( 'svn update' );
    return;
 }
 
@@ -576,6 +581,17 @@ sub _render_template {
    return $target;
 }
 
+sub _svn_ignore_meta_files {
+   my $self = shift; __chdir( $self->_appldir );
+
+   my $ignores = "LICENSE\nMANIFEST\nMETA.json\nMETA.yml\nREADME";
+
+   $self->run_cmd( "svn propset svn:ignore '${ignores}' ." );
+   $self->run_cmd( 'svn commit -m "Ignoring meta files" .' );
+   $self->run_cmd( 'svn update' );
+   return;
+}
+
 sub _test_distribution {
    my $self = shift; __chdir( $self->_appldir );
 
@@ -621,7 +637,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.4.$Rev: 47 $ of L<Module::Provision>
+This documents version v0.4.$Rev: 51 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -675,7 +691,7 @@ body. This means that so long as one detail line is added to the
 change log no other commit message text is required. The following
 makes for a suitable C<git log> alias:
 
-   alias gl='git log -10 --pretty=format:"%h %ci %s"'
+   alias gl='git log -10 --pretty=format:"%h %ci %s" | cut -c1-79'
 
 The templates contain comment lines like:
 
