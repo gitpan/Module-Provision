@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-04-21 14:15 pjf ;
+# @(#)Ident: perl_program.pl 2013-04-23 02:42 pjf ;
 
 use strict;
 use warnings;
@@ -51,7 +51,7 @@ Lists the methods available in this program
 
 =head1 VERSION
 
-This documents version v0.1.$Rev: 1 $ of L<[% program_name %]>
+This documents version v0.1.$Rev: 1 $ of C<[% program_name %]>
 
 =head1 DESCRIPTION
 

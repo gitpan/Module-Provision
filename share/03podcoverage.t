@@ -1,4 +1,4 @@
-# @(#)Ident: 03podcoverage.t 2013-04-12 18:56 pjf ;
+# @(#)Ident: 03podcoverage.t 2013-04-22 22:44 pjf ;
 
 use strict;
 use warnings;
@@ -11,9 +11,8 @@ use English qw(-no_match_vars);
 use Test::More;
 
 BEGIN {
-   not (-e catfile( $Bin, updir, 'MANIFEST.SKIP' )
-     or -e catfile( $Bin, updir, updir, updir, 'MANIFEST.SKIP'))
-      and plan skip_all => 'POD coverage test only for developers';
+   $ENV{AUTHOR_TESTING}
+      or plan skip_all => 'POD coverage test only for developers';
 }
 
 eval "use Test::Pod::Coverage 1.04";

@@ -1,8 +1,8 @@
-# @(#)Ident: 07podspelling.t 2013-04-06 17:06 pjf ;
+# @(#)Ident: 07podspelling.t 2013-04-22 22:53 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 47 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 58 $ =~ /\d+/gmx );
 use File::Spec::Functions qw(catdir catfile updir);
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -11,8 +11,8 @@ use English qw(-no_match_vars);
 use Test::More;
 
 BEGIN {
-   ! -e catfile( $Bin, updir, q(MANIFEST.SKIP) )
-      and plan skip_all => 'POD spelling test only for developers';
+   $ENV{AUTHOR_TESTING}
+      or plan skip_all => 'POD spelling test only for developers';
 }
 
 eval "use Test::Spelling";
@@ -46,6 +46,8 @@ CPAN
 Github
 RCS
 SVN
+SYSV
+TinyDesk
 inline
 toolchain
 vcs

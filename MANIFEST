@@ -4,6 +4,7 @@ Changes
 inc/Bob.pm
 inc/CPANTesting.pm
 inc/SubClass.pm
+lib/Dist/Zilla/Plugin/ManifestInRoot.pm
 lib/Module/Provision.pm
 LICENSE
 MANIFEST			This list of files

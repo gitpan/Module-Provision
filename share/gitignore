@@ -19,5 +19,6 @@ nytprof.out
 pm_to_blib
 README
 README.pod
+t/ipc_srlock*
 *.tar.gz
 [% distname %]-*

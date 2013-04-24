@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-22 15:00 pjf ;
+# @(#)Ident: Provision.pm 2013-04-24 04:10 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 51 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 59 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -21,8 +21,8 @@ extends q(Class::Usul::Programs);
 
 MooseX::Getopt::OptionTypeMap->add_option_type_to_map( Path, '=s' );
 
-enum 'Module::Provision::Builder' => qw(DZ MB MI);
-enum 'Module::Provision::VCS'     => qw(git svn);
+enum __PACKAGE__.'::Builder' => qw(DZ MB MI);
+enum __PACKAGE__.'::VCS'     => qw(git svn);
 
 # Public attributes
 
@@ -34,7 +34,7 @@ has 'branch'      => is => 'lazy', isa => NonEmptySimpleStr,
    documentation  => 'The name of the initial branch to create',
    default        => sub { $_[ 0 ]->vcs eq 'git' ? 'master' : 'trunk' };
 
-has 'builder'     => is => 'ro',   isa => 'Module::Provision::Builder',
+has 'builder'     => is => 'ro',   isa => __PACKAGE__.'::Builder',
    documentation  => 'Which build system to use: DZ, MB, or MI',
    default        => 'MB';
 
@@ -62,9 +62,8 @@ has 'repository'  => is => 'ro',   isa => NonEmptySimpleStr,
 has 'templates'   => is => 'ro',   isa => SimpleStr, default => NUL,
    documentation  => 'Non default location of the code templates';
 
-has 'vcs'         => is => 'ro',   isa => 'Module::Provision::VCS',
-   documentation  => 'Which VCS to use: git or svn',
-   default        => 'git';
+has 'vcs'         => is => 'ro',   isa => __PACKAGE__.'::VCS',
+   documentation  => 'Which VCS to use: git or svn', default => 'git';
 
 # Private attributes
 
@@ -209,6 +208,31 @@ sub test : method {
 
    $target = $self->_render_template( '10test_script.t', $target );
    $self->_add_to_vcs( $target, 'test' );
+   return OK;
+}
+
+sub update_copyright_year : method {
+   my $self = shift; my ($from, $to) = $self->_get_update_args;
+
+   my $prefix = 'Copyright (c)';
+
+   for my $path (@{ $self->_get_manifest_paths }) {
+      $path->substitute( "\Q${prefix} ${from}\E", "${prefix} ${to}" );
+   }
+
+   return OK;
+}
+
+sub update_version : method {
+   my $self = shift; my ($from, $to) = $self->_get_update_args;
+
+   my $suffix_v = '.%d'; my $suffix_r = '.$Rev';
+
+   for my $path (@{ $self->_get_manifest_paths }) {
+      $path->substitute( "\Q${from}${suffix_v}\E", "${to}${suffix_v}" );
+      $path->substitute( "\Q${from}${suffix_r}\E", "${to}${suffix_r}" );
+   }
+
    return OK;
 }
 
@@ -424,6 +448,15 @@ sub _exec_perms {
    my $self = shift; return (($self->perms & oct q(0444)) >> 2) | $self->perms;
 }
 
+sub _get_manifest_paths {
+   my $self = shift;
+
+   return [ grep { $_->exists }
+            map  { $self->io( __parse_manifest_line( $_ )->[ 0 ] ) }
+            grep { not m{ \A \s* [\#] }mx }
+            $self->_appldir->catfile( 'MANIFEST' )->chomp->getlines ];
+}
+
 sub _get_main_module_name {
    my $self = shift; my $dir = $self->io( getcwd ); my $prev;
 
@@ -461,6 +494,10 @@ sub _get_target {
    $self->method ne 'test' and $self->_stash->{abstract} = $abstract;
 
    return $target;
+}
+
+sub _get_update_args {
+   return (shift @{ $_[ 0 ]->extra_argv }, shift @{ $_[ 0 ]->extra_argv });
 }
 
 sub _initialize_distribution {
@@ -597,7 +634,7 @@ sub _test_distribution {
 
    my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
 
-   $ENV{TEST_SPELLING} = TRUE;
+   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_SPELLING} = TRUE;
    $self->output ( 'Testing '.$self->_appldir );
    $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
    return;
@@ -621,6 +658,20 @@ sub __get_module_from {
        split m{ [\n] }mx, $_[ 0 ])[ 0 ];
 }
 
+sub __parse_manifest_line {
+   my $line = shift; my ($file, $comment);
+
+   # May contain spaces if enclosed in '' (in which case, \\ and \' are escapes)
+   if (($file, $comment) = $line =~ m{ \A \' (\\[\\\']|.+)+ \' \s* (.*) }mx) {
+      $file =~ s{ \\ ([\\\']) }{$1}gmx;
+   }
+   else {
+       ($file, $comment) = $line =~ m{ \A (\S+) \s* (.*) }mx;
+   }
+
+   return [ $file, $comment ];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -637,7 +688,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.4.$Rev: 51 $ of L<Module::Provision>
+This documents version v0.6.$Rev: 59 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -656,6 +707,9 @@ This documents version v0.4.$Rev: 51 $ of L<Module::Provision>
 
    # Add another test script
    mp test 11another-one.t
+
+   # Update the version numbers of the project files
+   mp update_version 0.1 0.2
 
    # Command line help
    mp -? | -H | -h [sub-command] | list_methods | dump_self
@@ -713,26 +767,26 @@ The alias:
 uses the L<App::Ack> program to implement the old SYSV R4 C<ident>
 command
 
-The template for F<Build.PL> contains the following comment which is
-interpreted by Emacs:
+The templates for F<dist.ini>, F<Build.PL>, and F<Makefile.PL>
+contain the following comments which are interpreted by Emacs:
 
    # Local Variables:
-   # eval: (load-project-state "[% appdir %]")
    # mode: perl
+   # eval: (load-project-state "[% appdir %]")
    # tab-title: [% project %]
    # tab-width: 3
    # End:
 
-Perl mode is prefered over C-Perl mode since the former has better
+Perl mode is preferred over C-Perl mode since the former has better
 syntax highlighting. Tabs are expanded to three spaces. The
 C<tab-title> variable is used by L<Yakuake::Sessions> to set the tab
 title for the terminal emulator. The C<load-project-state> Lisp looks
 like this:
 
    (defun load-project-state (state-file) "Recovers the TinyDesk state from file"
-     (let ((session-path (concat "~/.emacs.d/config/state." state-file)))
-       (if (file-exists-p session-path) (tinydesk-recover-state session-path)
-         (message (concat "Not found: " state-file)))))
+      (let ((session-path (concat "~/.emacs.d/config/state." state-file)))
+         (if (file-exists-p session-path) (tinydesk-recover-state session-path)
+            (message (concat "Not found: " state-file)))))
 
 It assumes that the TinyDesk state file containing the list of files to edit
 for the project has been saved in F<~/.emacs.d/config/state.[% appdir %]>. To
@@ -743,9 +797,15 @@ will load TinyDesk and turn tab bar mode on whenever a Perl file is edited:
 
    (add-hook 'perl-mode-hook
              '(lambda ()
-               (require 'fic-mode) (turn-on-fic-mode) (diminish 'fic-mode nil)
-               (require 'psvn) (require 'tinydesk) (tabbar-mode t)
-               (require 'tinyperl) (diminish 'tinyperl-mode nil)))
+                (require 'fic-mode) (turn-on-fic-mode) (diminish 'fic-mode nil)
+                (require 'psvn) (require 'tinydesk) (tabbar-mode t)
+                (require 'tinyperl) (diminish 'tinyperl-mode nil)))
+
+This Lisp code will do likewise when a F<dist.ini> file is edited:
+
+   (add-hook 'conf-windows-mode-hook
+             '(lambda ()
+                (require 'tinydesk) (tabbar-mode t)))
 
 =head1 Configuration and Environment
 
@@ -867,6 +927,20 @@ repeatedly calling calling L<Template> passing in the C<< $self->_stash >>
 
 Creates a new test specified by the test file name on the command line
 
+=head2 update_copyright_year
+
+   $self->update_copyright_year;
+
+Substitutes the existing copyright year for the new copyright year in all
+files in the F<MANIFEST>
+
+=head2 update_version
+
+   $self->update_version;
+
+Substitutes the existing version number for the new version number in all
+files in the F<MANIFEST>
+
 =head1 Diagnostics
 
 Add C<-D> to command line to turn on debug output
@@ -931,3 +1005,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
+

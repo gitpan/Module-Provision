@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.4.$Rev: 51 $ of Module::Provision
+    This documents version v0.6.$Rev: 59 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -21,6 +21,9 @@ Synopsis
 
        # Add another test script
        mp test 11another-one.t
+
+       # Update the version numbers of the project files
+       mp update_version 0.1 0.2
 
        # Command line help
        mp -? | -H | -h [sub-command] | list_methods | dump_self
@@ -76,25 +79,25 @@ Description
 
     uses the App::Ack program to implement the old SYSV R4 "ident" command
 
-    The template for Build.PL contains the following comment which is
-    interpreted by Emacs:
+    The templates for dist.ini, Build.PL, and Makefile.PL contain the
+    following comments which are interpreted by Emacs:
 
        # Local Variables:
-       # eval: (load-project-state "[% appdir %]")
        # mode: perl
+       # eval: (load-project-state "[% appdir %]")
        # tab-title: [% project %]
        # tab-width: 3
        # End:
 
-    Perl mode is prefered over C-Perl mode since the former has better
+    Perl mode is preferred over C-Perl mode since the former has better
     syntax highlighting. Tabs are expanded to three spaces. The "tab-title"
     variable is used by Yakuake::Sessions to set the tab title for the
     terminal emulator. The "load-project-state" Lisp looks like this:
 
        (defun load-project-state (state-file) "Recovers the TinyDesk state from file"
-         (let ((session-path (concat "~/.emacs.d/config/state." state-file)))
-           (if (file-exists-p session-path) (tinydesk-recover-state session-path)
-             (message (concat "Not found: " state-file)))))
+          (let ((session-path (concat "~/.emacs.d/config/state." state-file)))
+             (if (file-exists-p session-path) (tinydesk-recover-state session-path)
+                (message (concat "Not found: " state-file)))))
 
     It assumes that the TinyDesk state file containing the list of files to
     edit for the project has been saved in ~/.emacs.d/config/state.[% appdir
@@ -106,9 +109,15 @@ Description
 
        (add-hook 'perl-mode-hook
                  '(lambda ()
-                   (require 'fic-mode) (turn-on-fic-mode) (diminish 'fic-mode nil)
-                   (require 'psvn) (require 'tinydesk) (tabbar-mode t)
-                   (require 'tinyperl) (diminish 'tinyperl-mode nil)))
+                    (require 'fic-mode) (turn-on-fic-mode) (diminish 'fic-mode nil)
+                    (require 'psvn) (require 'tinydesk) (tabbar-mode t)
+                    (require 'tinyperl) (diminish 'tinyperl-mode nil)))
+
+    This Lisp code will do likewise when a dist.ini file is edited:
+
+       (add-hook 'conf-windows-mode-hook
+                 '(lambda ()
+                    (require 'tinydesk) (tabbar-mode t)))
 
 Configuration and Environment
     Defines the following list of attributes which can be set from the
@@ -206,6 +215,18 @@ Subroutines/Methods
        $exit_code = $self->test;
 
     Creates a new test specified by the test file name on the command line
+
+  update_copyright_year
+       $self->update_copyright_year;
+
+    Substitutes the existing copyright year for the new copyright year in
+    all files in the MANIFEST
+
+  update_version
+       $self->update_version;
+
+    Substitutes the existing version number for the new version number in
+    all files in the MANIFEST
 
 Diagnostics
     Add "-D" to command line to turn on debug output

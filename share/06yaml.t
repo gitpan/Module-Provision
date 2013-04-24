@@ -1,4 +1,4 @@
-# @(#)Ident: 06yaml.t 2013-04-12 18:57 pjf ;
+# @(#)Ident: 06yaml.t 2013-04-22 22:46 pjf ;
 
 use strict;
 use warnings;
@@ -11,9 +11,7 @@ use English qw(-no_match_vars);
 use Test::More;
 
 BEGIN {
-   not (-e catfile( $Bin, updir, 'MANIFEST.SKIP' )
-     or -e catfile( $Bin, updir, updir, updir, 'MANIFEST.SKIP'))
-      and plan skip_all => 'YAML test only for developers';
+   $ENV{AUTHOR_TESTING} or plan skip_all => 'YAML test only for developers';
 }
 
 eval { require Test::YAML::Meta; };

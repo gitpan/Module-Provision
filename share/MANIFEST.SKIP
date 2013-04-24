@@ -57,6 +57,7 @@
 # Avoid other crap
 TAGS
 Thumbs.db
+\bipc_srlock
 
 # Avoid archives of this distribution
 \b[% distname %]-v?[\d\.\_]+

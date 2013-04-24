@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-04-21 01:09 pjf ;
+# @(#)Ident: 10test_script.t 2013-04-24 03:55 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.4.%d', q$Rev: 47 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 58 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -30,6 +30,7 @@ sub test_mp {
       ( appclass  => 'Module::Provision',
         base      => 't',
         builder   => $builder,
+        config    => { tempdir => 't', },
         method    => $method,
         nodebug   => 1,
         novcs     => 1,

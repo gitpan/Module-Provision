@@ -46,3 +46,10 @@ install_as_cpan;
 auto_license;
 auto_install;
 WriteAll;
+
+# Local Variables:
+# mode: perl
+# eval: (load-project-state "[% appdir %]")
+# tab-title: [% project %]
+# tab-width: 3
+# End:
