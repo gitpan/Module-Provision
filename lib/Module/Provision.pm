@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-24 04:10 pjf ;
+# @(#)Ident: Provision.pm 2013-04-24 23:27 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 59 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 4 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -45,7 +45,10 @@ has 'force'       => is => 'ro',   isa => Bool, default => FALSE,
 has 'license'     => is => 'ro',   isa => NonEmptySimpleStr, default => 'perl',
    documentation  => 'License used for the project';
 
-has 'novcs'       => is => 'ro',   isa => Bool, default => FALSE,
+has 'no_auto_rev' => is => 'ro',   isa => Bool, default => FALSE,
+   documentation  => 'Do not turn on Revision keyword expansion';
+
+has 'no_vcs'      => is => 'ro',   isa => Bool, default => FALSE,
    documentation  => 'Do not create or use a VCS';
 
 has 'perms'       => is => 'ro',   isa => OctalNum, coerce => TRUE,
@@ -62,8 +65,8 @@ has 'repository'  => is => 'ro',   isa => NonEmptySimpleStr,
 has 'templates'   => is => 'ro',   isa => SimpleStr, default => NUL,
    documentation  => 'Non default location of the code templates';
 
-has 'vcs'         => is => 'ro',   isa => __PACKAGE__.'::VCS',
-   documentation  => 'Which VCS to use: git or svn', default => 'git';
+has 'vcs'         => is => 'lazy', isa => __PACKAGE__.'::VCS',
+   documentation  => 'Which VCS to use: git or svn';
 
 # Private attributes
 
@@ -157,6 +160,7 @@ sub post_hook {
    $self->_initialize_distribution;
    $self->vcs eq 'svn' and $self->_svn_ignore_meta_files;
    $self->_test_distribution;
+   $self->_reset_rev_file( TRUE );
    return;
 }
 
@@ -226,13 +230,18 @@ sub update_copyright_year : method {
 sub update_version : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
-   my $suffix_v = '.%d'; my $suffix_r = '.$Rev';
+   my $ignore = $self->_get_ignore_rev_regex; my $zero = 0;
 
    for my $path (@{ $self->_get_manifest_paths }) {
-      $path->substitute( "\Q${from}${suffix_v}\E", "${to}${suffix_v}" );
-      $path->substitute( "\Q${from}${suffix_r}\E", "${to}${suffix_r}" );
+      $ignore and $path =~ m{ (?: $ignore ) }mx and next;
+      $path->substitute( "\Q\'${from}.%d\',\E", "\'${to}.%d\'," );
+      $path->substitute( "\Q v${from}.\$Rev\E", " v${to}.\$Rev" );
+      $self->_get_rev_file and $path->substitute
+         ( '\$ (Rev (?:ision)?) (?:[:] \s+ (\d+) \s+)? \$',
+           '$Rev: '.$zero.' $' );
    }
 
+   $self->_reset_rev_file;
    return OK;
 }
 
@@ -272,7 +281,7 @@ sub _add_to_svn {
 sub _add_to_vcs {
    my ($self, $target, $type) = @_; $target or throw 'VCS target not specified';
 
-   $self->novcs and return;
+   $self->no_vcs and return;
    $self->vcs eq 'git' and $self->_add_to_git( $target, $type );
    $self->vcs eq 'svn' and $self->_add_to_svn( $target, $type );
    return;
@@ -440,12 +449,25 @@ sub _build__template_list {
    return $self->_merge_lists( $data );
 }
 
+sub _build_vcs {
+   return $_[ 0 ]->_appbase->catdir( $_[ 0 ]->repository )->exists
+        ? 'svn' : 'git';
+}
+
 sub _create_mask {
    my $self = shift; return oct q(0777) ^ $self->_exec_perms;
 }
 
 sub _exec_perms {
    my $self = shift; return (($self->perms & oct q(0444)) >> 2) | $self->perms;
+}
+
+sub _get_ignore_rev_regex {
+   my $self = shift;
+
+   my $ignore_rev = $self->_appldir->catfile( '.gitignore-rev' )->chomp;
+
+   return $ignore_rev->exists ? join '|', $ignore_rev->getlines : undef;
 }
 
 sub _get_manifest_paths {
@@ -471,6 +493,12 @@ sub _get_main_module_name {
 
    throw error => 'File [_1] not in path', args => [ $self->_project_file ];
    return; # Never reached
+}
+
+sub _get_rev_file {
+   my $self = shift; ($self->no_auto_rev or $self->vcs ne 'git') and return;
+
+   return $self->_appldir->parent->catfile( lc '.'.$self->_distname.'.rev' );
 }
 
 sub _get_target {
@@ -570,7 +598,7 @@ sub _initialize_svn {
 sub _initialize_vcs {
    my $self = shift;
 
-   $self->novcs and return;
+   $self->no_vcs and return;
    $self->output( 'Initializing VCS' );
    $self->vcs eq 'git' and $self->_initialize_git;
    $self->vcs eq 'svn' and $self->_initialize_svn;
@@ -581,7 +609,7 @@ sub _merge_lists {
    my ($self, $args) = @_; my $list = $args->{templates};
 
    push @{ $list }, @{ $args->{builders}->{ $self->builder } };
-   not $self->novcs and push @{ $list }, @{ $args->{vcs}->{ $self->vcs } };
+   not $self->no_vcs and push @{ $list }, @{ $args->{vcs}->{ $self->vcs } };
 
    return $list;
 }
@@ -618,6 +646,14 @@ sub _render_template {
    return $target;
 }
 
+sub _reset_rev_file {
+   my ($self, $create) = @_; my $file = $self->_get_rev_file;
+
+   $file and ($create or $file->exists)
+         and $file->println( $create ? '1' : '0' );
+   return;
+}
+
 sub _svn_ignore_meta_files {
    my $self = shift; __chdir( $self->_appldir );
 
@@ -650,6 +686,7 @@ sub __chdir {
 }
 
 sub __get_module_from {
+   # Return main module name from contents of dist.ini, Buile.PL or Makefile.PL
    return
       (map    { s{ [-] }{::}gmx; $_ }
        map    { m{ \A [q\'\"] }mx ? eval $_ : $_ }
@@ -658,7 +695,7 @@ sub __get_module_from {
        split m{ [\n] }mx, $_[ 0 ])[ 0 ];
 }
 
-sub __parse_manifest_line {
+sub __parse_manifest_line { # Robbed from ExtUtils::Manifest
    my $line = shift; my ($file, $comment);
 
    # May contain spaces if enclosed in '' (in which case, \\ and \' are escapes)
@@ -688,7 +725,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.6.$Rev: 59 $ of L<Module::Provision>
+This documents version v0.7.$Rev: 4 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -838,7 +875,11 @@ Overwrite the output files if they already exist
 
 The name of the license used on the project. Defaults to C<perl>
 
-=item C<novcs>
+=item C<no_auto_rev>
+
+Do not turn on automatic Revision keyword expansion. Defaults to C<FALSE>
+
+=item C<no_vcs>
 
 Do not create or use a VCS. Defaults to C<FALSE>. Used by the test script
 
@@ -880,19 +921,19 @@ Creates the required directories for the new distribution
 
 =head2 dist
 
-   $exit_code = $self->dist;
+   module_provision dist Foo::Bar
 
 Create a new distribution specified by the module name on the command line
 
 =head2 init_templates
 
-   $exit_code = $self->init_templates;
+   module_provision init_templates
 
 Initialise the F<.code_templates> directory and create the F<index.json> file
 
 =head2 module
 
-   $exit_code = $self->module;
+   module_provision module Foo::Bat
 
 Creates a new module specified by the class name on the command line
 
@@ -910,7 +951,7 @@ Runs before the new distribution is created
 
 =head2 program
 
-   $exit_code = $self->program;
+   module_provision program bar-cli
 
 Creates a new program specified by the program name on the command line
 
@@ -923,20 +964,20 @@ repeatedly calling calling L<Template> passing in the C<< $self->_stash >>
 
 =head2 test
 
-   $exit_code = $self->test;
+   module_provision test 11another-one.t
 
 Creates a new test specified by the test file name on the command line
 
 =head2 update_copyright_year
 
-   $self->update_copyright_year;
+   module_provision update_copyright_year 2013 2014
 
 Substitutes the existing copyright year for the new copyright year in all
 files in the F<MANIFEST>
 
 =head2 update_version
 
-   $self->update_version;
+   module_provision update_version 0.1 0.2
 
 Substitutes the existing version number for the new version number in all
 files in the F<MANIFEST>

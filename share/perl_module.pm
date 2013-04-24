@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-04-23 15:46 pjf ;
+# @(#)Ident: perl_module.pm 2013-04-24 20:24 pjf ;
 
 package [% module %];
 
@@ -22,7 +22,7 @@ __END__
 
 =head1 Name
 
-[% module %] - I<[% abstract %]>
+[% module %] - [% abstract %]
 
 =head1 Synopsis
 

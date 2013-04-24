@@ -14,19 +14,19 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 da93ef8f45d8c2c05f0532a455a23b55a7c8baad Build.PL
-SHA1 323ba1e6b4aa2118c72d078869590cceed3703da Changes
+SHA1 a11bfcca3e3bb9076cb4b248e725814c50d3a3ef Build.PL
+SHA1 371a35d67d5fd272f4e08505aaaa8b58e5d27bc4 Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
 SHA1 e57beaaaa541840b9c65630cb90740c788bbf00a MANIFEST
-SHA1 9964c6732ecdcf556b82a3d3b198219fe750bddd META.json
-SHA1 d8295e3c6ebfa008bb5b6fa897529b446f998bfe META.yml
-SHA1 e36f23d1d862f1a88bb7f775c528d29c39567f85 README
-SHA1 0caf25bcb855e8797016597873f86f285806a083 bin/module_provision
+SHA1 73e54d61a882028faceb67be1a49742d74061435 META.json
+SHA1 7f67fbafc17d642a2e16c41af51bdc3c2457b232 META.yml
+SHA1 304da19ecaab54f302763db65ae388285f6930d6 README
+SHA1 ccf879e3efed1f11b230023bb361b85a588f3f7c bin/module_provision
 SHA1 1117239c120158b15163678a5ca333d1c1309168 inc/Bob.pm
 SHA1 b2daf2d6d3f2158b33d84a79ea725c922f508718 inc/CPANTesting.pm
 SHA1 3e461b4687dcea7680dc96761ecd703556759063 inc/SubClass.pm
-SHA1 557e6ac97d1a9d728efcf022a4e0cb3ab4a42dfe lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 267380948748fe26d7c1601963209f7048215891 lib/Module/Provision.pm
+SHA1 8c13f1a92812e1e8fcabcf19cf31360c20df6ee0 lib/Dist/Zilla/Plugin/ManifestInRoot.pm
+SHA1 f17a2feda656c621cf518a7e02dbab007bb2a6d7 lib/Module/Provision.pm
 SHA1 8e65f1bcbe699485be07ea22c8465ad6e6dc371b share/01always_pass.t
 SHA1 5bd00eb03f1d739bb1e94faf081c5c03fb119973 share/02pod.t
 SHA1 3b0b8c839082ac9e966ff051af801856f400159b share/03podcoverage.t
@@ -48,25 +48,25 @@ SHA1 a006ac99f652cbb86e26bd3fb0dae3e250e8c112 share/dist.ini
 SHA1 afc8749d2c8fbd4f30afc267d3869d8a55681e33 share/gitcommit-msg
 SHA1 1fbd07d1cba40d9fce60387e35744864c3243090 share/gitignore
 SHA1 1f422acb0e6f91dec62b8768310ff483a1d89e46 share/gitpre-commit
-SHA1 fb97847a6554ce2e7615dc508063fd4c8b54330f share/perl_module.pm
-SHA1 6f0a051a98d78c1a12a1aac987629dc675b6c80b share/perl_program.pl
+SHA1 61bad69183f3487f25e5db6fa30072e97160785b share/perl_module.pm
+SHA1 971bb09b2bf9a1553cd3086dd7b2509a9467d54e share/perl_program.pl
 SHA1 8e65f1bcbe699485be07ea22c8465ad6e6dc371b t/01always_pass.t
-SHA1 d940a64e1cdab0881387c6bf75328edee6f737bc t/02pod.t
-SHA1 e843ec77d86e958fcc641effd68d7335bbd000f6 t/03podcoverage.t
-SHA1 85207f9edcaeb35945c139f18033eb3996b0f5e0 t/04critic.t
-SHA1 4aa48f462efff3f1bdf2aea25f447cfef41614f8 t/05kwalitee.t
-SHA1 42b4b3fd065e9090d7165880eb85eddd7899d5bc t/06yaml.t
-SHA1 2627fabed69705b7f9f84d4d8d7df7e7dd38d657 t/07podspelling.t
-SHA1 805582d4ad2f82e4286f48f6c1300a19555a6e18 t/10test_script.t
+SHA1 9d0322f92738cdcd8253e9ae0965473e1915296e t/02pod.t
+SHA1 07cf1747b441bd9b1a4d8d1d4d65a5b61303f875 t/03podcoverage.t
+SHA1 40a3d14822881bc2b948f13ca2b8b0f9c1bfa4a8 t/04critic.t
+SHA1 409afa9ac04cf8bc8a1fe9d031ffad344f8eb384 t/05kwalitee.t
+SHA1 c0503969e844873ab3893ee70de805f189f40812 t/06yaml.t
+SHA1 5ca1a476030a7f38dccdd1cfac8dac7286e43c4a t/07podspelling.t
+SHA1 8c73165bf5ebd5efb544cf4cba7c1c3ee53390a0 t/10test_script.t
 SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJRd1urAAoJEK492j4Im1Bp4UgH/1yhJuRivMSbxx4I2QqoJGfE
-j6Usa1da17iZ8YVl7fPpvgV4Tyk0KQFtvIgOhca//wdyamQfNQ9Ft4fGpxqf/F+W
-C7H0mNMNAXp7gLRrAUhhHOaNsF9xkfzHS9iQmODtYOXcOb7Y7tN7RagSqmGvbMLt
-0/ZkS+jalHTHiwXuap+5qY1NQn0vdPjEy6gHw2Bs7LCKtSsCg5X6QB/zqV+1TkNb
-C3ziTc8sp1FGMFniQsONW/YTUwN2sqGZYZ1TtwWzsrXXb2vwWErcpPpovP1mMvgy
-tDuj4LUPxMeGqYKUKx8amM0n5K7m4Ow2+wLc3D4APPoXHyrsgvs9d383XiCbx7M=
-=1fyB
+iQEcBAEBAgAGBQJReGtgAAoJEK492j4Im1BpsDsIAL25jqOsyZdDE+PfQtgyhw96
+VVCNMU+js6GddE4j1hz20QOiDPfWMeul4bdiE8f/bovKvpeLrdcO8oQ8z4zCSOIb
+guPfNcb/bSLWK9SGdHD/sIXB/1vUkFdufJbvdkUZ5fFz+zgIdMlHzNkp0mhmrkLr
+8Y+uISoAseVCMoK2hhLkrbpUGmVBJ4deUg8J/wG7m6F+geFcPE7/uRpOr54tfwnB
+Ih4qiFs6eom+S0dc0WI7Aa7muehdJDZ4yAWxsPrl0/8BrNP3EJ3dSMjj+ul0RGKl
+i+H7FkwGNX5KUS9byq6L01SfyLwUb3aAIXvUuP/ez9J830c4auYQb9yalZ1LY3c=
+=yYRl
 -----END PGP SIGNATURE-----

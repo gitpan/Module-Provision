@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-04-23 02:42 pjf ;
+# @(#)Ident: perl_program.pl 2013-04-24 20:24 pjf ;
 
 use strict;
 use warnings;
@@ -29,7 +29,7 @@ __END__
 
 =head1 NAME
 
-[% program_name %] - I<[% abstract %]>
+[% program_name %] - [% abstract %]
 
 =head1 SYNOPSIS
 

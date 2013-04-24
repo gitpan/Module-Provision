@@ -1,5 +1,11 @@
 Revision history for Module::Provision
 
+0.7.4     2013-04-25 00:31:00
+          - Updated POD
+          - Stopped precommit hook change update_version code
+          - Removed italics from abstract in POD
+          - Added Rev keyword reset to update_version for git VCS
+
 0.6.59    2013-04-24 05:10:52
           - Added ipc_srlock file to MANIFEST.SKIP
           - Tests use t directory as tempdir

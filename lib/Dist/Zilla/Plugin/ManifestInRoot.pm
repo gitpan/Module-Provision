@@ -1,9 +1,9 @@
-# @(#)Ident: ManifestInRoot.pm 2013-04-23 15:49 pjf ;
+# @(#)Ident: ManifestInRoot.pm 2013-04-24 20:24 pjf ;
 
 package Dist::Zilla::Plugin::ManifestInRoot;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 58 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moose;
 use Moose::Autobox;
@@ -44,7 +44,7 @@ __END__
 
 =head1 Name
 
-Dist::Zilla::Plugin::ManifestInRoot - I<Puts the MANIFEST file in the project root>
+Dist::Zilla::Plugin::ManifestInRoot - Puts the MANIFEST file in the project root
 
 =head1 Synopsis
 
@@ -53,7 +53,7 @@ Dist::Zilla::Plugin::ManifestInRoot - I<Puts the MANIFEST file in the project ro
 
 =head1 Version
 
-This documents version v0.6.$Rev: 58 $ of L<Dist::Zilla::Plugin::ManifestInRoot>
+This documents version v0.7.$Rev: 2 $ of L<Dist::Zilla::Plugin::ManifestInRoot>
 
 =head1 Description
 

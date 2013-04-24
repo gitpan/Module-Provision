@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-04-24 03:55 pjf ;
+# @(#)Ident: 10test_script.t 2013-04-24 23:14 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.6.%d', q$Rev: 58 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 4 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -92,6 +92,10 @@ SKIP: {
 }
 
 done_testing;
+
+unlink catfile( qw(t .foo-bar.rev) );
+unlink catfile( qw(t ipc_srlock.lck) );
+unlink catfile( qw(t ipc_srlock.shm) );
 
 # Local Variables:
 # mode: perl

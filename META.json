@@ -68,11 +68,11 @@
    "provides" : {
       "Dist::Zilla::Plugin::ManifestInRoot" : {
          "file" : "lib/Dist/Zilla/Plugin/ManifestInRoot.pm",
-         "version" : "v0.6.58"
+         "version" : "v0.7.2"
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.6.59"
+         "version" : "v0.7.4"
       }
    },
    "release_status" : "stable",
@@ -88,5 +88,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.6.59"
+   "version" : "v0.7.4"
 }
