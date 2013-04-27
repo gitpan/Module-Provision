@@ -1,9 +1,9 @@
-# @(#)Ident: Build.PL 2013-04-23 13:30 pjf ;
+# @(#)Ident: Build.PL 2013-04-26 19:46 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Module::Provision),
@@ -11,7 +11,7 @@ Bob->new( {
    requires  => {
       'perl'             => 5.010,
       'version'          => 0.77,
-      'Class::Usul'      => q(0.14.0),
+      'Class::Usul'      => q(0.15.0),
       'Date::Format'     => 2.24,
       'Dist::Zilla'      => 4.300033,
       'Dist::Zilla::Plugin::ReadmeAnyFromPod'  => 0.120120,

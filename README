@@ -3,21 +3,21 @@ Name
     toolchain
 
 Version
-    This documents version v0.7.$Rev: 4 $ of Module::Provision
+    This documents version v0.7.$Rev: 6 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
        alias mp='module_provision --base ~/Projects'
 
        # Create a new distribution in your Projects directory with Git VCS
-       mp dist Foo::Bar [ 'Optional one line abstract' ]
+       mp dist Foo::Bar 'Optional one line abstract'
 
        # Add another module
        cd ~/Projects/Foo-Bar
-       mp module Foo::Bat [ 'Optional one line abstract' ]
+       mp module Foo::Bat 'Optional one line abstract'
 
        # Add a program to the bin directory
-       mp program bar-cli [ 'Optional one line abstract' ]
+       mp program bar-cli 'Optional one line abstract'
 
        # Add another test script
        mp test 11another-one.t
@@ -171,12 +171,11 @@ Configuration and Environment
        The version control system to use. Defaults to "git", can be "svn"
 
 Subroutines/Methods
-    The following methods constitute the public API
+    The following methods constitute the public API;
 
   create_directories
-       $self->create_directories;
-
-    Creates the required directories for the new distribution
+    Creates the required directories for the new distribution. If subclassed
+    this method can be modified to include additional directories
 
   dist
        module_provision dist Foo::Bar
@@ -195,14 +194,14 @@ Subroutines/Methods
     Creates a new module specified by the class name on the command line
 
   post_hook
-       $self->post_hook;
-
-    Runs after the new distribution has been created
+    Runs after the new distribution has been created. If subclassed this
+    method can be modified to perform additional actions after the templates
+    have been rendered
 
   pre_hook
-       $self->pre_hook;
-
-    Runs before the new distribution is created
+    Runs before the new distribution is created. If subclassed this method
+    can be modified to perform additional actions before the project
+    directories are created
 
   program
        module_provision program bar-cli
@@ -210,10 +209,8 @@ Subroutines/Methods
     Creates a new program specified by the program name on the command line
 
   render_templates
-       $self->render_templates;
-
     Renders the list of templates in "$self->_template_list" be repeatedly
-    calling calling Template passing in the "$self->_stash"
+    calling calling Template passing in the "$self->_stash".
 
   test
        module_provision test 11another-one.t

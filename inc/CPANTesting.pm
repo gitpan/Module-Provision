@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-03-27 23:42 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-04-27 01:14 pjf ;
 # Bob-Version: 1.8
 
 package CPANTesting;
@@ -19,9 +19,10 @@ sub should_abort {
 sub test_exceptions {
    my $p = shift; is_testing() or return 0;
 
-   $p->{stop_tests} and return 'CPAN Testing stopped in Build.PL';
-
-   $osname eq q(mirbsd) and return 'Mirbsd  OS unsupported';
+   $p->{stop_tests}              and return 'CPAN Testing stopped in Build.PL';
+   $osname eq q(mirbsd)          and return 'Mirbsd  OS unsupported';
+   $host   eq q(c-9d2392d06fcb4) and return
+      "Stopped Ciornii ${host} - 07d44483-6c00-1014-9401-8524c7768a8d";
    return 0;
 }
 

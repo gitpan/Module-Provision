@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-24 23:27 pjf ;
+# @(#)Ident: Provision.pm 2013-04-27 01:15 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 4 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -123,6 +123,7 @@ has '_testdir'       => is => 'lazy', isa => Path, coerce => TRUE,
 sub create_directories {
    my $self = shift; my $perms = $self->_exec_perms;
 
+   $self->output( $self->loc( 'Creating directories' ) );
    $self->_appldir->exists or $self->_appldir->mkpath( $perms );
    $self->builder eq 'MB'
       and ($self->_incdir->exists or $self->_incdir->mkpath( $perms ));
@@ -148,6 +149,7 @@ sub init_templates : method {
 sub module : method {
    my $self = shift; my $target = $self->_get_target( '_libdir', \&classfile );
 
+   $self->output( $self->loc( 'Adding new module' ) );
    $target = $self->_render_template( 'perl_module.pm', $target );
    $self->_add_to_vcs( $target, 'module' );
    return OK;
@@ -176,6 +178,7 @@ sub pre_hook {
 sub program : method {
    my $self = shift; my $target = $self->_get_target( '_binsdir' );
 
+   $self->output( $self->loc( 'Adding new program' ) );
    $target = $self->_render_template( 'perl_program.pl', $target );
    chmod $self->_exec_perms, $target->pathname;
    $self->_add_to_vcs( $target, 'program' );
@@ -183,7 +186,7 @@ sub program : method {
 }
 
 sub render_templates {
-   my $self = shift;
+   my $self = shift; $self->output( $self->loc( 'Rendering templates' ) );
 
    for my $tuple ($self->all_templates) {
       for (my $i = 0, my $max = @{ $tuple }; $i < $max; $i++) {
@@ -210,6 +213,7 @@ sub render_templates {
 sub test : method {
    my $self = shift; my $target = $self->_get_target( '_testdir' );
 
+   $self->output( $self->loc( 'Adding new test' ) );
    $target = $self->_render_template( '10test_script.t', $target );
    $self->_add_to_vcs( $target, 'test' );
    return OK;
@@ -219,6 +223,8 @@ sub update_copyright_year : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
    my $prefix = 'Copyright (c)';
+
+   $self->output( $self->loc( 'Updating copyright year' ) );
 
    for my $path (@{ $self->_get_manifest_paths }) {
       $path->substitute( "\Q${prefix} ${from}\E", "${prefix} ${to}" );
@@ -230,7 +236,10 @@ sub update_copyright_year : method {
 sub update_version : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
+   # Zero variable prevents unwanted Rev keyword expansion
    my $ignore = $self->_get_ignore_rev_regex; my $zero = 0;
+
+   $self->output( $self->loc( 'Updating version numbers' ) );
 
    for my $path (@{ $self->_get_manifest_paths }) {
       $ignore and $path =~ m{ (?: $ignore ) }mx and next;
@@ -442,8 +451,8 @@ sub _build__template_list {
                [ 'gitpre-commit', [ '_appldir', '.gitpre-commit' ] ], ],
       svn => [], };
 
-   $data = { builders => $builders, templates => $templates, vcs => $vcs };
    $self->output( "Creating index ${index}" );
+   $data = { builders => $builders, templates => $templates, vcs => $vcs };
    $self->file->data_dump
       ( data => $data, path => $index, storage_class => 'Any' );
    return $self->_merge_lists( $data );
@@ -725,7 +734,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.7.$Rev: 4 $ of L<Module::Provision>
+This documents version v0.7.$Rev: 6 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -733,14 +742,14 @@ This documents version v0.7.$Rev: 4 $ of L<Module::Provision>
    alias mp='module_provision --base ~/Projects'
 
    # Create a new distribution in your Projects directory with Git VCS
-   mp dist Foo::Bar [ 'Optional one line abstract' ]
+   mp dist Foo::Bar 'Optional one line abstract'
 
    # Add another module
    cd ~/Projects/Foo-Bar
-   mp module Foo::Bat [ 'Optional one line abstract' ]
+   mp module Foo::Bat 'Optional one line abstract'
 
    # Add a program to the bin directory
-   mp program bar-cli [ 'Optional one line abstract' ]
+   mp program bar-cli 'Optional one line abstract'
 
    # Add another test script
    mp test 11another-one.t
@@ -911,13 +920,12 @@ The version control system to use. Defaults to C<git>, can be C<svn>
 
 =head1 Subroutines/Methods
 
-The following methods constitute the public API
+The following methods constitute the public API;
 
 =head2 create_directories
 
-   $self->create_directories;
-
-Creates the required directories for the new distribution
+Creates the required directories for the new distribution. If subclassed this
+method can be modified to include additional directories
 
 =head2 dist
 
@@ -939,15 +947,15 @@ Creates a new module specified by the class name on the command line
 
 =head2 post_hook
 
-   $self->post_hook;
-
-Runs after the new distribution has been created
+Runs after the new distribution has been created. If subclassed this method
+can be modified to perform additional actions after the templates have been
+rendered
 
 =head2 pre_hook
 
-   $self->pre_hook;
-
-Runs before the new distribution is created
+Runs before the new distribution is created. If subclassed this method
+can be modified to perform additional actions before the project directories
+are created
 
 =head2 program
 
@@ -957,10 +965,8 @@ Creates a new program specified by the program name on the command line
 
 =head2 render_templates
 
-   $self->render_templates;
-
 Renders the list of templates in C<< $self->_template_list >> be
-repeatedly calling calling L<Template> passing in the C<< $self->_stash >>
+repeatedly calling calling L<Template> passing in the C<< $self->_stash >>.
 
 =head2 test
 
@@ -1046,4 +1052,3 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
-

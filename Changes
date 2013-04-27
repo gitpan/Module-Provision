@@ -1,6 +1,8 @@
 Revision history for Module::Provision
 
-0.7.4     2013-04-25 00:31:00
+0.7.6     2013-04-27 02:15:59
+          - Stopped Ciornii CPAN Testing - 07d44483-6c00-1014-9401-8524c7768a8d
+          - Added informational ouput to subcommands
           - Updated POD
           - Stopped precommit hook change update_version code
           - Removed italics from abstract in POD
