@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.7.6     2013-04-27 02:15:59
+0.7.7     2013-04-27 12:35:36
+          - Stopped Konig   CPAN Testin  - 07224fc0-aed9-11e2-9633-3d74c1508286
           - Stopped Ciornii CPAN Testing - 07d44483-6c00-1014-9401-8524c7768a8d
           - Added informational ouput to subcommands
           - Updated POD

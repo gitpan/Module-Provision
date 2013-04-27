@@ -1,8 +1,8 @@
-# @(#)Ident: Provision.pm 2013-04-27 01:15 pjf ;
+# @(#)Ident: Provision.pm 2013-04-27 11:34 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -734,7 +734,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.7.$Rev: 6 $ of L<Module::Provision>
+This documents version v0.7.$Rev: 7 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -1052,3 +1052,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
+

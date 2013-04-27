@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-04-27 01:14 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-04-27 11:34 pjf ;
 # Bob-Version: 1.8
 
 package CPANTesting;
@@ -23,6 +23,8 @@ sub test_exceptions {
    $osname eq q(mirbsd)          and return 'Mirbsd  OS unsupported';
    $host   eq q(c-9d2392d06fcb4) and return
       "Stopped Ciornii ${host} - 07d44483-6c00-1014-9401-8524c7768a8d";
+   $host   eq q(k83)             and return
+      "Stopped Konig   ${host} - 07224fc0-aed9-11e2-9633-3d74c1508286";
    return 0;
 }
 

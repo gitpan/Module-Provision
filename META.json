@@ -72,7 +72,7 @@
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.7.6"
+         "version" : "v0.7.7"
       }
    },
    "release_status" : "stable",
@@ -88,5 +88,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.7.6"
+   "version" : "v0.7.7"
 }
