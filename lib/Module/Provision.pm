@@ -1,14 +1,14 @@
-# @(#)Ident: Provision.pm 2013-04-27 11:34 pjf ;
+# @(#)Ident: Provision.pm 2013-04-30 22:24 pjf ;
 
 package Module::Provision;
 
-use version; our $VERSION = qv( sprintf '0.7.%d', q$Rev: 7 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
-use Class::Usul::Functions       qw(class2appdir classdir classfile distname
-                                    home2appldir is_arrayref prefix2class
-                                    throw trim);
+use Class::Usul::Functions       qw(app_prefix class2appdir classdir classfile
+                                    distname home2appldir is_arrayref
+                                    prefix2class throw trim);
 use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
 use English                      qw(-no_match_vars);
@@ -142,6 +142,10 @@ sub dist : method {
    return OK;
 }
 
+sub distmeta : method {
+   my $self = shift; $self->_generate_metadata( TRUE ); return OK;
+}
+
 sub init_templates : method {
    my $self = shift; $self->_template_list; return OK;
 }
@@ -156,10 +160,12 @@ sub module : method {
 }
 
 sub post_hook {
-   my $self = shift;
+   my $self = shift; $self->_initialize_vcs;
 
-   $self->_initialize_vcs;
-   $self->_initialize_distribution;
+   my $mdf = $self->_generate_metadata; $mdf
+      and $self->_appldir->catfile( $mdf )->exists
+      and $self->_add_to_vcs( $mdf );
+
    $self->vcs eq 'svn' and $self->_svn_ignore_meta_files;
    $self->_test_distribution;
    $self->_reset_rev_file( TRUE );
@@ -410,7 +416,7 @@ sub _build__template_dir {
    my $self = shift;
    my $dir  = $self->templates
             ? $self->io( [ $self->templates ] )->absolute( $self->_initial_wd )
-            : $self->io( [ $self->_home, '.code_templates' ] );
+            : $self->io( [ $self->_home, '.'.(app_prefix __PACKAGE__) ] );
 
    $dir->exists and return $dir; $dir->mkpath( $self->_exec_perms );
 
@@ -469,6 +475,33 @@ sub _create_mask {
 
 sub _exec_perms {
    my $self = shift; return (($self->perms & oct q(0444)) >> 2) | $self->perms;
+}
+
+sub _generate_metadata {
+   my ($self, $verbose) = @_; __chdir( $self->_appldir );
+
+   my $mdf; $verbose ||= FALSE;
+
+   if ($self->builder eq 'DZ') {
+      $self->run_cmd( 'dzil build', $verbose ? { out => 'stdout' } : {} );
+      $self->run_cmd( 'dzil clean' );
+      $mdf = 'README.mkdn';
+   }
+   elsif ($self->builder eq 'MB') {
+      $self->run_cmd( 'perl '.$self->_project_file );
+      $self->run_cmd( './Build manifest', $verbose ? { out => 'stdout' } : {} );
+      $self->run_cmd( './Build distmeta', $verbose ? { out => 'stdout' } : {} );
+      $self->run_cmd( './Build distclean' );
+      $mdf = 'README.md';
+   }
+   elsif ($self->builder eq 'MI') {
+      $self->run_cmd( 'perl '.$self->_project_file );
+      $self->run_cmd( 'make manifest', $verbose ? { out => 'stdout' } : {} );
+      $self->run_cmd( 'make clean' );
+      $mdf = 'README.mkdn';
+   }
+
+   return $mdf;
 }
 
 sub _get_ignore_rev_regex {
@@ -535,33 +568,6 @@ sub _get_target {
 
 sub _get_update_args {
    return (shift @{ $_[ 0 ]->extra_argv }, shift @{ $_[ 0 ]->extra_argv });
-}
-
-sub _initialize_distribution {
-   my $self = shift; my $mdf; __chdir( $self->_appldir );
-
-   if ($self->builder eq 'DZ') {
-      $self->run_cmd( 'dzil build' );
-      $self->run_cmd( 'dzil clean' );
-      $mdf = 'README.mkdn';
-   }
-   elsif ($self->builder eq 'MB') {
-      $self->run_cmd( 'perl '.$self->_project_file );
-      $self->run_cmd( './Build manifest'  );
-      $self->run_cmd( './Build distmeta'  );
-      $self->run_cmd( './Build distclean' );
-      $mdf = 'README.md';
-   }
-   elsif ($self->builder eq 'MI') {
-      $self->run_cmd( 'perl '.$self->_project_file );
-      $self->run_cmd( 'make manifest' );
-      $self->run_cmd( 'make clean' );
-      $mdf = 'README.mkdn';
-   }
-
-   $mdf and $self->_appldir->catfile( $mdf )->exists
-        and $self->_add_to_vcs( $mdf );
-   return;
 }
 
 sub _initialize_git {
@@ -694,8 +700,7 @@ sub __chdir {
    return $_[ 0 ];
 }
 
-sub __get_module_from {
-   # Return main module name from contents of dist.ini, Buile.PL or Makefile.PL
+sub __get_module_from { # Return main module name from contents of project file
    return
       (map    { s{ [-] }{::}gmx; $_ }
        map    { m{ \A [q\'\"] }mx ? eval $_ : $_ }
@@ -734,7 +739,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.7.$Rev: 7 $ of L<Module::Provision>
+This documents version v0.8.$Rev: 3 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -757,6 +762,9 @@ This documents version v0.7.$Rev: 7 $ of L<Module::Provision>
    # Update the version numbers of the project files
    mp update_version 0.1 0.2
 
+   # Regenerate meta data files
+   mp distmeta
+
    # Command line help
    mp -? | -H | -h [sub-command] | list_methods | dump_self
 
@@ -767,7 +775,7 @@ including basic builder scripts, tests, documentation, and module
 code. It creates a VCS repository and, in the Git case, installs some
 hooks that mimic the RCS Revision keyword expansion
 
-On first use the directory F<~/.code_templates> is created and
+On first use the directory F<~/.module_provision> is created and
 populated with templates and an index file F<index.json>. The author
 name, id, and email are derived from the system (the environment
 variables C<AUTHOR> and C<EMAIL> take precedence) and stored in the
@@ -910,7 +918,7 @@ Name of the directory containing the SVN repository. Defaults to F<repository>
 =item C<templates>
 
 Location of the code templates in the users home directory. Defaults to
-F<.code_templates>
+F<.module_provision>
 
 =item C<vcs>
 
@@ -933,11 +941,17 @@ method can be modified to include additional directories
 
 Create a new distribution specified by the module name on the command line
 
+=head2 distmeta
+
+   module_provision distmeta
+
+Generates the distribution metadata files
+
 =head2 init_templates
 
    module_provision init_templates
 
-Initialise the F<.code_templates> directory and create the F<index.json> file
+Initialise the F<.module_provision> directory and create the F<index.json> file
 
 =head2 module
 
@@ -1052,4 +1066,3 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
-

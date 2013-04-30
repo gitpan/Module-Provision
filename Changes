@@ -1,6 +1,14 @@
 Revision history for Module::Provision
 
-0.7.7     2013-04-27 12:35:36
+0.8.3     2013-04-30 23:29:43
+          - Can now mp distmeta
+          - Try untaint with higher exception level on MSWin32
+          - Bumped version on C:U
+          - New templates directory ~/.module_provision
+
+0.7.8     2013-04-28 23:58:23
+          - Bumped versions on F:DC and C:U
+          - Stopped Stauner CPAN Testing - 0a7335a2-af67-11e2-99d1-ca991c44ed51
           - Stopped Konig   CPAN Testin  - 07224fc0-aed9-11e2-9633-3d74c1508286
           - Stopped Ciornii CPAN Testing - 07d44483-6c00-1014-9401-8524c7768a8d
           - Added informational ouput to subcommands

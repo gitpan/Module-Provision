@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-04-24 20:24 pjf ;
+# @(#)Ident: perl_module.pm 2013-04-30 21:00 pjf ;
 
 package [% module %];
 
@@ -36,6 +36,12 @@ This documents version v0.1.$Rev: 1 $ of L<[% module %]>
 =head1 Description
 
 =head1 Configuration and Environment
+
+Defines the following attributes;
+
+=over 3
+
+=back
 
 =head1 Subroutines/Methods
 

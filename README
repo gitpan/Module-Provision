@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.7.$Rev: 7 $ of Module::Provision
+    This documents version v0.8.$Rev: 3 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -25,6 +25,9 @@ Synopsis
        # Update the version numbers of the project files
        mp update_version 0.1 0.2
 
+       # Regenerate meta data files
+       mp distmeta
+
        # Command line help
        mp -? | -H | -h [sub-command] | list_methods | dump_self
 
@@ -34,7 +37,7 @@ Description
     It creates a VCS repository and, in the Git case, installs some hooks
     that mimic the RCS Revision keyword expansion
 
-    On first use the directory ~/.code_templates is created and populated
+    On first use the directory ~/.module_provision is created and populated
     with templates and an index file index.json. The author name, id, and
     email are derived from the system (the environment variables "AUTHOR"
     and "EMAIL" take precedence) and stored in the author, author_id, and
@@ -165,7 +168,7 @@ Configuration and Environment
 
     "templates"
        Location of the code templates in the users home directory. Defaults
-       to .code_templates
+       to .module_provision
 
     "vcs"
        The version control system to use. Defaults to "git", can be "svn"
@@ -183,10 +186,16 @@ Subroutines/Methods
     Create a new distribution specified by the module name on the command
     line
 
+  distmeta
+       module_provision distmeta
+
+    Generates the distribution metadata files
+
   init_templates
        module_provision init_templates
 
-    Initialise the .code_templates directory and create the index.json file
+    Initialise the .module_provision directory and create the index.json
+    file
 
   module
        module_provision module Foo::Bat
