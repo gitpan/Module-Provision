@@ -1,6 +1,14 @@
 Revision history for Module::Provision
 
-0.8.3     2013-04-30 23:29:43
+0.9.5     2013-05-02 19:31:36
+          - Fixed test
+          - Split out even more traits
+          - Fixed spelling
+          - Fixed version numbers
+          - Refactored into base class plus traits
+
+0.8.4     2013-05-01 19:25:21
+          - Replaced no_vcs option with vcs type none
           - Can now mp distmeta
           - Try untaint with higher exception level on MSWin32
           - Bumped version on C:U

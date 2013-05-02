@@ -46,7 +46,7 @@
             "Dist::Zilla" : "4.300033",
             "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.12012",
             "Dist::Zilla::Plugin::VersionFromModule" : "0.08",
-            "File::DataClass" : "v0.17.0",
+            "File::DataClass" : "v0.18.0",
             "File::ShareDir" : "1.02",
             "File::Slurp" : "9999.13",
             "Module::Build" : "0.38",
@@ -68,11 +68,35 @@
    "provides" : {
       "Dist::Zilla::Plugin::ManifestInRoot" : {
          "file" : "lib/Dist/Zilla/Plugin/ManifestInRoot.pm",
-         "version" : "v0.8.1"
+         "version" : "v0.9.1"
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.8.3"
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::Base" : {
+         "file" : "lib/Module/Provision/Base.pm",
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::TraitFor::AddingFiles" : {
+         "file" : "lib/Module/Provision/TraitFor/AddingFiles.pm",
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::TraitFor::CreatingDistributions" : {
+         "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::TraitFor::Rendering" : {
+         "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::TraitFor::UpdatingContent" : {
+         "file" : "lib/Module/Provision/TraitFor/UpdatingContent.pm",
+         "version" : "v0.9.5"
+      },
+      "Module::Provision::TraitFor::VCS" : {
+         "file" : "lib/Module/Provision/TraitFor/VCS.pm",
+         "version" : "v0.9.5"
       }
    },
    "release_status" : "stable",
@@ -88,5 +112,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.8.3"
+   "version" : "v0.9.5"
 }

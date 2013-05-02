@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-04-24 23:14 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-02 18:42 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.8.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 6 $ =~ /\d+/gmx );
 use File::Spec::Functions;
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -33,10 +33,10 @@ sub test_mp {
         config    => { tempdir => 't', },
         method    => $method,
         nodebug   => 1,
-        novcs     => 1,
         quiet     => 1,
         project   => 'Foo::Bar',
-        templates => catdir( 't', 'code_templates' ) );
+        templates => catdir( 't', 'code_templates' ),
+        vcs       => 'none', );
 }
 
 sub test_cleanup {
@@ -53,7 +53,7 @@ ok -f catfile( qw(t code_templates index.json) ), 'Creates template index';
 
 $prog->pre_hook;
 
-like $prog->_appbase->name, qr{ Foo-Bar \z }mx, 'Sets appbase';
+like $prog->appbase->name, qr{ Foo-Bar \z }mx, 'Sets appbase';
 
 $prog->create_directories;
 

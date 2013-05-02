@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.8.$Rev: 3 $ of Module::Provision
+    This documents version v0.9.$Rev: 5 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -26,7 +26,7 @@ Synopsis
        mp update_version 0.1 0.2
 
        # Regenerate meta data files
-       mp distmeta
+       mp generate_metadata
 
        # Command line help
        mp -? | -H | -h [sub-command] | list_methods | dump_self
@@ -123,71 +123,20 @@ Description
                     (require 'tinydesk) (tabbar-mode t)))
 
 Configuration and Environment
-    Defines the following list of attributes which can be set from the
-    command line;
+    Extends Module::Provision::Base. Applies these traits; "AddingFiles",
+    "CreatingDistributions", "Rendering", and "UpdatingContent"
 
-    "base"
-       The directory which will contain the new project. Defaults to the
-       users home directory
-
-    "branch"
-       The name of the initial branch to create. Defaults to master for Git
-       and trunk for SVN
-
-    "builder"
-       Which of the three build systems to use. Defaults to "MB", which is
-       Module::Build. Can be "DZ" for Dist::Zilla or "MI" for
-       Module::Install
-
-    "force"
-       Overwrite the output files if they already exist
-
-    "license"
-       The name of the license used on the project. Defaults to "perl"
-
-    "no_auto_rev"
-       Do not turn on automatic Revision keyword expansion. Defaults to
-       "FALSE"
-
-    "no_vcs"
-       Do not create or use a VCS. Defaults to "FALSE". Used by the test
-       script
-
-    "perms"
-       Permissions used to create files. Defaults to 644. Directories and
-       programs have the execute bit turned on if the corresponding read bit
-       is on
-
-    "project"
-       The class name of the new project. Should be the first extra argument
-       on the command line
-
-    "repository"
-       Name of the directory containing the SVN repository. Defaults to
-       repository
-
-    "templates"
-       Location of the code templates in the users home directory. Defaults
-       to .module_provision
-
-    "vcs"
-       The version control system to use. Defaults to "git", can be "svn"
+    Defines no attributes
 
 Subroutines/Methods
-    The following methods constitute the public API;
-
-  create_directories
-    Creates the required directories for the new distribution. If subclassed
-    this method can be modified to include additional directories
-
   dist
-       module_provision dist Foo::Bar
+       module_provision dist Foo::Bar 'Optional one line abstract'
 
     Create a new distribution specified by the module name on the command
     line
 
-  distmeta
-       module_provision distmeta
+  generate_metadata
+       module_provision generate_metadata
 
     Generates the distribution metadata files
 
@@ -198,28 +147,14 @@ Subroutines/Methods
     file
 
   module
-       module_provision module Foo::Bat
+       module_provision module Foo::Bat 'Optional one line abstract'
 
     Creates a new module specified by the class name on the command line
 
-  post_hook
-    Runs after the new distribution has been created. If subclassed this
-    method can be modified to perform additional actions after the templates
-    have been rendered
-
-  pre_hook
-    Runs before the new distribution is created. If subclassed this method
-    can be modified to perform additional actions before the project
-    directories are created
-
   program
-       module_provision program bar-cli
+       module_provision program bar-cli 'Optional one line abstract'
 
     Creates a new program specified by the program name on the command line
-
-  render_templates
-    Renders the list of templates in "$self->_template_list" be repeatedly
-    calling calling Template passing in the "$self->_stash".
 
   test
        module_provision test 11another-one.t
@@ -243,13 +178,10 @@ Diagnostics
 
 Dependencies
     Class::Usul
-    Date::Format
-    File::DataClass
-    File::ShareDir
-    Module::Metadata
-    Perl::Version
-    Pod::Markdown
-    Template
+    Module::Provision::Base
+    Module::Provision::TraitFor::CreatingDistributions
+    Module::Provision::TraitFor::AddingFiles
+    Module::Provision::TraitFor::UpdatingContent
 
 Incompatibilities
     There are no known incompatibilities in this module

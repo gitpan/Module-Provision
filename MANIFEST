@@ -6,6 +6,12 @@ inc/CPANTesting.pm
 inc/SubClass.pm
 lib/Dist/Zilla/Plugin/ManifestInRoot.pm
 lib/Module/Provision.pm
+lib/Module/Provision/Base.pm
+lib/Module/Provision/TraitFor/AddingFiles.pm
+lib/Module/Provision/TraitFor/CreatingDistributions.pm
+lib/Module/Provision/TraitFor/Rendering.pm
+lib/Module/Provision/TraitFor/UpdatingContent.pm
+lib/Module/Provision/TraitFor/VCS.pm
 LICENSE
 MANIFEST			This list of files
 META.json
