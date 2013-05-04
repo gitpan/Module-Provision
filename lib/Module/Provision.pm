@@ -1,15 +1,15 @@
-# @(#)Ident: Provision.pm 2013-05-02 18:14 pjf ;
+# @(#)Ident: Provision.pm 2013-05-03 23:58 pjf ;
 
 package Module::Provision;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose;
 
 extends q(Module::Provision::Base);
-with    q(Module::Provision::TraitFor::CreatingDistributions);
 with    q(Module::Provision::TraitFor::Rendering);
+with    q(Module::Provision::TraitFor::CreatingDistributions);
 with    q(Module::Provision::TraitFor::UpdatingContent);
 with    q(Module::Provision::TraitFor::VCS);
 with    q(Module::Provision::TraitFor::AddingFiles);
@@ -30,7 +30,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.9.$Rev: 5 $ of L<Module::Provision>
+This documents version v0.10.$Rev: 1 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -49,6 +49,9 @@ This documents version v0.9.$Rev: 5 $ of L<Module::Provision>
 
    # Add another test script
    mp test 11another-one.t
+
+   # Edit the project master file
+   mp -q edit_project
 
    # Update the version numbers of the project files
    mp update_version 0.1 0.2
@@ -102,7 +105,7 @@ These are expanded automatically by Emacs using this Lisp code:
          time-stamp-line-limit 10
          time-stamp-format     " %f %04y-%02m-%02d %02H:%02M %u "
          time-stamp-start      "Ident:"
-         time-stamp-time-zone  "GMT"
+         time-stamp-time-zone  "UTC"
          time-stamp-end        ";")
 
 The alias:
@@ -167,6 +170,14 @@ Defines no attributes
 
 Create a new distribution specified by the module name on the command line
 
+=head2 edit_project
+
+   module_provision -q edit_project
+
+Edit the project file (one of; F<dist.ini>, F<Build.PL>, or
+F<Makefile.PL>) in the project directory. The editor defaults to
+C<emacs> but can be set on the command line, e.g C<-o editor=vim>
+
 =head2 generate_metadata
 
    module_provision generate_metadata
@@ -190,6 +201,15 @@ Creates a new module specified by the class name on the command line
    module_provision program bar-cli 'Optional one line abstract'
 
 Creates a new program specified by the program name on the command line
+
+=head2 show_tab_title
+
+   module_provision -q show_tab_title
+
+Print the tab title for the current project. Can be used like this;
+
+   alias ep='mp -q edit_project ; \
+             yakuake_session set_tab_title_for_project $(mp -q show_tab_title)'
 
 =head2 test
 
@@ -219,15 +239,17 @@ Add C<-D> to command line to turn on debug output
 
 =over 3
 
-=item L<Class::Usul>
-
 =item L<Module::Provision::Base>
-
-=item L<Module::Provision::TraitFor::CreatingDistributions>
 
 =item L<Module::Provision::TraitFor::AddingFiles>
 
+=item L<Module::Provision::TraitFor::CreatingDistributions>
+
+=item L<Module::Provision::TraitFor::Rendering>
+
 =item L<Module::Provision::TraitFor::UpdatingContent>
+
+=item L<Module::Provision::TraitFor::VCS>
 
 =back
 

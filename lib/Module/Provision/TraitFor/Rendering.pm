@@ -1,14 +1,15 @@
-# @(#)Ident: Rendering.pm 2013-05-02 18:15 pjf ;
+# @(#)Ident: Rendering.pm 2013-05-03 23:24 pjf ;
 
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
 use Class::Usul::Functions qw(is_arrayref throw);
 use MooseX::Types::Moose   qw(ArrayRef Bool);
+use Template;
 
 requires qw(appldir builder dist_module incdir stash template_dir testdir vcs);
 
@@ -21,11 +22,6 @@ has 'force'          => is => 'ro', isa => Bool, default => FALSE,
 has '_template_list' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
    handles           => { all_templates => 'elements', }, lazy => TRUE,
    builder           => '_build__template_list', init_arg => undef;
-
-# Construction
-before 'populate_directories' => sub {
-   my $self = shift; $self->render_templates; return;
-};
 
 # Public methods
 sub init_templates : method {
@@ -158,7 +154,7 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
 =head1 Version
 
-This documents version v0.9.$Rev: 5 $ of L<Module::Provision::TraitFor::Rendering>
+This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 
@@ -215,6 +211,8 @@ None
 =item L<Moose::Role>
 
 =item L<MooseX::Types>
+
+=item L<Template>
 
 =back
 

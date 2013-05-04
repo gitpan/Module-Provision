@@ -1,42 +1,45 @@
-# @(#)Ident: Base.pm 2013-05-02 18:09 pjf ;
+# @(#)Ident: Base.pm 2013-05-04 00:09 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
 use Class::Usul::Functions       qw(app_prefix class2appdir classdir distname
-                                    throw trim);
+                                    throw);
 use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
-use English                      qw(-no_match_vars);
 use File::DataClass::Constraints qw(Directory OctalNum Path);
 use File::ShareDir                 ();
-use Template;
-use User::pwent;
 
 extends q(Class::Usul::Programs);
-
-MooseX::Getopt::OptionTypeMap->add_option_type_to_map( Path, '=s' );
 
 enum __PACKAGE__.'::Builder' => qw(DZ MB MI);
 enum __PACKAGE__.'::VCS'     => qw(git none svn);
 
+MooseX::Getopt::OptionTypeMap->add_option_type_to_map( Path, '=s' );
+
+my %builders = ( 'DZ' => 'dist.ini', 'MB' => 'Build.PL', 'MI' => 'Makefile.PL');
+
+# Override defaults in base class
+has '+config_class' => default => sub { 'Module::Provision::Config' };
+
 # Object attributes (public)
 has 'base'        => is => 'lazy', isa => Path, coerce => TRUE,
    documentation  => 'Directory containing new projects',
-   default        => sub { $_[ 0 ]->config->my_home };
+   default        => sub { $_[ 0 ]->config->base };
 
 has 'branch'      => is => 'lazy', isa => NonEmptySimpleStr,
    documentation  => 'The name of the initial branch to create',
-   default        => sub { $_[ 0 ]->vcs eq 'svn' ? 'trunk' : 'master' };
+   default        => sub { $_[ 0 ]->config->branch };
 
 has 'builder'     => is => 'lazy', isa => __PACKAGE__.'::Builder',
    documentation  => 'Which build system to use: DZ, MB, or MI';
 
-has 'license'     => is => 'ro',   isa => NonEmptySimpleStr, default => 'perl',
-   documentation  => 'License used for the project';
+has 'license'     => is => 'ro',   isa => NonEmptySimpleStr,
+   documentation  => 'License used for the project',
+   default        => sub { $_[ 0 ]->config->license };
 
 has 'perms'       => is => 'ro',   isa => OctalNum, coerce => TRUE,
    documentation  => 'Default permission for file / directory creation',
@@ -47,7 +50,7 @@ has 'project'     => is => 'lazy', isa => NonEmptySimpleStr,
 
 has 'repository'  => is => 'ro',   isa => NonEmptySimpleStr,
    documentation  => 'Directory containing the SVN repository',
-   default        => 'repository';
+   default        => sub { $_[ 0 ]->config->repository };
 
 has 'templates'   => is => 'ro',   isa => SimpleStr, default => NUL,
    documentation  => 'Non default location of the code templates';
@@ -104,17 +107,6 @@ has '_testdir'         => is => 'lazy', isa => Path, coerce => TRUE,
    reader              => 'testdir';
 
 # Object attributes (private)
-has '_author'          => is => 'lazy', isa => NonEmptySimpleStr;
-
-has '_author_email'    => is => 'lazy', isa => NonEmptySimpleStr;
-
-has '_author_id'       => is => 'lazy', isa => NonEmptySimpleStr;
-
-has '_home'            => is => 'lazy', isa => Path, coerce => TRUE,
-   default             => sub { $_[ 0 ]->config->my_home };
-
-has '_home_page'       => is => 'lazy', isa => NonEmptySimpleStr;
-
 has '_initial_wd'      => is => 'ro',   isa => Directory, coerce => TRUE,
    default             => sub { [ getcwd ] };
 
@@ -132,60 +124,19 @@ sub _build__appldir {
                                 : $_[ 0 ]->appbase;
 }
 
-sub _build__author {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author' );
-   my $from_file = $path->exists ? trim $path->getline : FALSE;
-
-   if ($from_file) { $from_file =~ s{ [\'] }{\'}gmx; return $from_file }
-
-   my $user      = getpwuid( $UID );
-   my $fullname  = (split m{ \s* , \s * }msx, $user->gecos)[ 0 ];
-   my $author    = $ENV{AUTHOR} || $fullname || $user->name;
-
-   $path->print( $author ); $author =~ s{ [\'] }{\'}gmx;
-   return $author;
-}
-
-sub _build__author_email {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author_email' );
-   my $from_file = $path->exists ? trim $path->getline : FALSE;
-
-   if ($from_file) { $from_file =~ s{ [\'] }{\'}gmx; return $from_file }
-
-   my $email = $ENV{EMAIL} || 'dave@example.com';
-
-   $path->print( $email ); $email =~ s{ [\'] }{\'}gmx;
-   return $email;
-}
-
-sub _build__author_id {
-   my $path      = $_[ 0 ]->template_dir->catfile( 'author_id' );
-   my $from_file = $path->exists ? trim $path->getline : FALSE;
-
-   $from_file and return $from_file;
-
-   my $author_id = $ENV{USER} || getpwuid( $UID )->name;
-
-   $path->print( $author_id );
-   return $author_id;
-}
-
 sub _build_builder {
-   my $self = shift;
+   my $self = shift; my $appldir = $self->appldir;
 
-   $self->appldir->catfile( 'dist.ini'    )->exists and return 'DZ';
-   $self->appldir->catfile( 'Makefile.PL' )->exists and return 'MI';
-   return 'MB';
+   for (grep { $_->[ 1 ]->exists }
+        map  { [ $_, $appldir->catfile( $builders{ $_ } ) ] } keys %builders) {
+      return $_->[ 0 ];
+   }
+
+   return undef;
 }
 
 sub _build__exec_perms {
    return (($_[ 0 ]->perms & oct q(0444)) >> 2) | $_[ 0 ]->perms;
-}
-
-sub _build__home_page {
-   my $path = $_[ 0 ]->template_dir->catfile( 'home_page' );
-
-   return $path->exists ? trim $path->getline : 'http://example.com';
 }
 
 sub _build__homedir {
@@ -207,7 +158,7 @@ sub _build__license_keys {
 }
 
 sub _build__module_abstract {
-   return $_[ 0 ]->loc( 'One-line description of the modules purpose' );
+   return $_[ 0 ]->loc( $_[ 0 ]->config->module_abstract );
 }
 
 sub _build_project {
@@ -215,10 +166,9 @@ sub _build_project {
 
    $project and return $project; my $dir = $self->io( getcwd ); my $prev;
 
-   my @builders = ( qw(dist.ini Build.PL Makefile.PL) );
-
    while (not $prev or $prev ne $dir) {
-      for my $file (grep { $_->exists } map { $dir->catfile( $_ ) } @builders) {
+      for my $file (grep { $_->exists }
+                    map  { $dir->catfile( $builders{ $_ } ) } keys %builders) {
          $project = __get_module_from( $file->all ) and return $project;
          throw 'Main module name not found';
       }
@@ -231,25 +181,26 @@ sub _build_project {
 }
 
 sub _build__project_file {
-   return $_[ 0 ]->builder eq 'DZ' ? 'dist.ini' :
-          $_[ 0 ]->builder eq 'MB' ? 'Build.PL' : 'Makefile.PL';
+   return $builders{ $_[ 0 ]->builder };
 }
 
 sub _build__stash {
-   my $self = shift; my $project = $self->project; my $author = $self->_author;
+   my $self = shift; my $config = $self->config;
+
+   my $author = $config->author; my $project = $self->project;
 
    return { abstract       => $self->module_abstract,
             appdir         => class2appdir $self->distname,
             author         => $author,
-            author_email   => $self->_author_email,
-            author_id      => $self->_author_id,
+            author_email   => $config->author_email,
+            author_id      => $config->author_id || $self->logname,
             copyright      => $ENV{ORGANIZATION} || $author,
             copyright_year => time2str( '%Y' ),
             creation_date  => time2str,
             dist_module    => $self->dist_module->abs2rel( $self->appldir ),
             distname       => $self->distname,
             first_name     => lc ((split SPC, $author)[ 0 ]),
-            home_page      => $self->_home_page,
+            home_page      => $config->home_page,
             last_name      => lc ((split SPC, $author)[ -1 ]),
             license        => $self->license,
             license_class  => $self->_license_keys->{ $self->license },
@@ -264,7 +215,7 @@ sub _build__template_dir {
    my $class = blessed $self;
    my $dir   = $self->templates
              ? $self->io( [ $self->templates ] )->absolute( $self->_initial_wd )
-             : $self->io( [ $self->_home, '.'.(app_prefix $class) ] );
+             : $self->io( [ $self->config->my_home, '.'.(app_prefix $class) ] );
 
    $dir->exists and return $dir; $dir->mkpath( $self->exec_perms );
 
@@ -276,8 +227,11 @@ sub _build__template_dir {
 }
 
 sub _build_vcs {
-   return $_[ 0 ]->appbase->catdir( $_[ 0 ]->repository )->exists ? 'svn'
-                                                                  : 'git';
+   my $self = shift; my $appbase = $self->appbase;
+
+   return $appbase->catdir( $self->repository )->exists ? 'svn'
+        : $appbase->catdir( '.git'            )->exists ? 'git'
+                                                        : 'none';
 }
 
 # Private functions
@@ -312,12 +266,11 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.9.$Rev: 5 $ of L<Module::Provision::Base>
+This documents version v0.10.$Rev: 2 $ of L<Module::Provision::Base>
 
 =head1 Description
 
-Creates an immutable data object used by the methods in the supplied
-traits
+Creates an immutable data object used by the methods in the applied traits
 
 =head1 Configuration and Environment
 
@@ -368,7 +321,7 @@ F<.module_provision>
 
 =item C<vcs>
 
-The version control system to use. Defaults to C<git>, can be C<none>
+The version control system to use. Defaults to C<none>, can be C<git>
 or C<svn>
 
 =back
@@ -391,7 +344,7 @@ None
 
 =item L<File::ShareDir>
 
-=item L<Template>
+=item L<Module::Provision::Config>
 
 =back
 

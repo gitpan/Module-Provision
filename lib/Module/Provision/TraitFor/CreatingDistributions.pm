@@ -1,17 +1,30 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-02 18:28 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-03 22:01 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.9.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(throw);
+use Class::Usul::Functions qw(say throw trim);
 use Cwd                    qw(getcwd);
 
 requires qw(appbase appldir builder exec_perms homedir
-            incdir project_file stash testdir);
+            incdir project_file render_templates stash testdir vcs);
+
+around '_build_builder' => sub {
+   my ($next, $self, @args) = @_; my $builder = $self->$next( @args );
+
+   return !$builder && $self->method eq 'dist'
+        ? $self->config->builder : $builder;
+};
+
+around '_build_vcs' => sub {
+   my ($next, $self, @args) = @_; my $vcs = $self->$next( @args );
+
+   return $vcs eq 'none' && $self->method eq 'dist' ? $self->config->vcs : $vcs;
+};
 
 # Public Methods
 sub create_directories {
@@ -31,16 +44,20 @@ sub dist : method {
 
    $self->pre_hook;
    $self->create_directories;
-   $self->populate_directories;
+   $self->render_templates;
    $self->post_hook;
+   return OK;
+}
+
+sub edit_project : method {
+   my $self = shift; my $editor = $self->options->{editor} || q(emacs);
+
+   $self->run_cmd( $editor.SPC.$self->_project_file_path, { async => TRUE } );
    return OK;
 }
 
 sub generate_metadata : method {
    shift->_generate_metadata( FALSE ); return OK;
-}
-
-sub populate_directories {
 }
 
 sub post_hook {
@@ -60,6 +77,15 @@ sub pre_hook {
    return;
 }
 
+sub show_tab_title : method {
+   my $self = shift;
+   my $file = $self->extra_argv->[ 0 ] || $self->_project_file_path;
+   my $text = (grep { m{ tab-title: }msx } $self->io( $file )->getlines)[ -1 ];
+
+   say trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
+   return OK;
+}
+
 sub test_distribution {
    my $self = shift; __chdir( $self->appldir );
 
@@ -73,7 +99,7 @@ sub test_distribution {
 
 # Private methods
 sub _create_mask {
-   my $self = shift; return oct q(0777) ^ $self->exec_perms;
+   return oct q(0777) ^ $_[ 0 ]->exec_perms;
 }
 
 sub _generate_metadata {
@@ -101,6 +127,10 @@ sub _generate_metadata {
    }
 
    return $create ? $mdf : undef;
+}
+
+sub _project_file_path {
+   my $self = shift; return $self->appldir->catfile( $self->project_file );
 }
 
 # Private functions
@@ -132,7 +162,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.9.$Rev: 5 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 
@@ -161,17 +191,18 @@ method can be modified to include additional directories
 
 Create a new distribution specified by the module name on the command line
 
+=head2 edit_project
+
+   $exit_code = $self->edit_project;
+
+Edit the project file (one of; F<dist.ini>, F<Build.PL>, or
+F<Makefile.PL>) in the current directory
+
 =head2 generate_metadata
 
    $exit_code = $self->generate_metadata;
 
 Generates the distribution metadata files
-
-=head2 populate_directories
-
-   $self->populate_directories;
-
-An empty subroutine to modify in another role
 
 =head2 post_hook
 
@@ -188,6 +219,12 @@ rendered
 Runs before the new distribution is created. If subclassed this method
 can be modified to perform additional actions before the project directories
 are created
+
+=head2 show_tab_title
+
+   $exit_code = $self->show_tab_title;
+
+Print the tab title for the current project to C<STDOUT>
 
 =head2 test_distribution
 
