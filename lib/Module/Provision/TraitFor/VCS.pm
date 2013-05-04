@@ -1,9 +1,9 @@
-# @(#)Ident: VCS.pm 2013-05-02 18:27 pjf ;
+# @(#)Ident: VCS.pm 2013-05-04 17:38 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -17,7 +17,7 @@ has 'no_auto_rev' => is => 'ro', isa => Bool, default => FALSE,
    documentation  => 'Do not turn on Revision keyword expansion';
 
 # Construction
-around 'post_hook' => sub {
+around 'dist_post_hook' => sub {
    my ($next, $self, @args) = @_;
 
    $self->_initialize_vcs;
@@ -27,7 +27,7 @@ around 'post_hook' => sub {
    return;
 };
 
-around '_substitute_version' => sub {
+around 'substitute_version' => sub {
    my ($next, $self, $path, $from, $to) = @_;
 
    $self->$next( $path, $from, $to );
@@ -35,7 +35,7 @@ around '_substitute_version' => sub {
    return;
 };
 
-after '_update_version_post_hook' => sub {
+after 'update_version_post_hook' => sub {
    my $self = shift; $self->_reset_rev_file( FALSE ); return;
 };
 
@@ -98,17 +98,16 @@ sub _initialize_git {
 }
 
 sub _initialize_svn {
-   my $self = shift; __chdir( $self->appbase );
+   my $self = shift; my $class = blessed $self; __chdir( $self->appbase );
 
    my $repository = $self->appbase->catdir( $self->repository );
 
    $self->run_cmd( "svnadmin create ${repository}" );
 
    my $branch = $self->branch;
-   my $msg    = 'Initialized by '.(blessed $self);
    my $url    = 'file://'.$repository->catdir( $branch );
 
-   $self->run_cmd( "svn import ${branch} ${url} -m '${msg}'" );
+   $self->run_cmd( "svn import ${branch} ${url} -m 'Initialized by ${class}'" );
 
    my $appldir = $self->appldir; $appldir->rmtree;
 
@@ -119,7 +118,8 @@ sub _initialize_svn {
       $self->run_cmd( "svn propset svn:keywords 'Id Revision Auth' ${target}" );
    }
 
-   $msg = "Add RCS keywords to project files";
+   my $msg = "Add RCS keywords to project files";
+
    $self->run_cmd( "svn commit ${branch} -m '${msg}'" );
    __chdir( $self->appldir );
    $self->run_cmd( 'svn update' );
@@ -191,13 +191,16 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 
 Interface to Version Control Systems
 
 =head1 Configuration and Environment
+
+Requires these attributes to be defined in the consuming class;
+C<appldir>, C<distname>, C<vcs>
 
 Defines the following attributes;
 
@@ -216,13 +219,6 @@ Do not turn on automatic Revision keyword expansion. Defaults to C<FALSE>
    $self->add_to_vcs( $target, $type );
 
 Add the target file to the VCS
-
-=head2 _reset_rev_file
-
-   $self->_reset_rev_file( $create_flag );
-
-Resets the revision keyword counter to one if C<$create_flag> is true,
-resets to zero otherwise
 
 =head1 Diagnostics
 

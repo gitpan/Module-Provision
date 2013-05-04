@@ -1,11 +1,13 @@
-# @(#)Ident: Config.pm 2013-05-04 00:12 pjf ;
+# @(#)Ident: Config.pm 2013-05-04 19:30 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Class::Null;
 use Class::Usul::Moose;
 use Class::Usul::Constants;
+use Class::Usul::Functions       qw(untaint_cmdline untaint_identifier);
 use English                      qw(-no_match_vars);
 use File::DataClass::Constraints qw(Path);
 use User::pwent;
@@ -17,8 +19,7 @@ has 'author'          => is => 'lazy', isa => NonEmptySimpleStr;
 
 has 'author_email'    => is => 'lazy', isa => NonEmptySimpleStr;
 
-has 'author_id'       => is => 'lazy', isa => SimpleStr,
-   default            => q();
+has 'author_id'       => is => 'lazy', isa => NonEmptySimpleStr;
 
 has 'base'            => is => 'lazy', isa => Path, coerce => TRUE,
    default            => sub { $_[ 0 ]->config->my_home };
@@ -28,6 +29,9 @@ has 'branch'          => is => 'lazy', isa => NonEmptySimpleStr,
 
 has 'builder'         => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'MB';
+
+has 'editor'          => is => 'lazy', isa => NonEmptySimpleStr,
+   default            => sub { untaint_identifier $ENV{EDITOR} || 'emacs' };
 
 has 'home_page'       => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'http://example.com';
@@ -41,24 +45,44 @@ has 'module_abstract' => is => 'lazy', isa => NonEmptySimpleStr,
 has 'repository'      => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'repository';
 
+has 'template_index'  => is => 'lazy', isa => NonEmptySimpleStr,
+   default            => 'index.json';
+
 has 'vcs'             => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'git';
 
 # Private methods
 sub _build_author {
-   my $self     = shift;
-   my $user     = getpwuid( $UID );
-   my $fullname = (split m{ \s* , \s * }msx, $user->gecos)[ 0 ];
-   my $author   = $ENV{AUTHOR} || $fullname || $self->logname;
+   my $author = untaint_cmdline( $ENV{AUTHOR} || __fullname() || __logname() );
 
-   $author =~ s{ [\'] }{\'}gmx;
-   return $author;
+   $author =~ s{ [\'] }{\'}gmx; return $author;
 }
 
 sub _build_author_email {
-   my $email = $ENV{EMAIL} || 'dave@example.com'; $email =~ s{ [\'] }{\'}gmx;
+   my $email = untaint_cmdline( $ENV{EMAIL} || 'dave@example.com' );
 
-   return $email;
+   $email =~ s{ [\'] }{\'}gmx; return $email;
+}
+
+sub _build_author_id {
+   return untaint_cmdline( __loginid() );
+}
+
+# Private functions
+sub __fullname {
+   return (split m{ \s* , \s * }msx, (__get_user()->gecos || q()))[ 0 ];
+}
+
+sub __get_user {
+   my $u = eval { getpwuid( $UID ) }; return $u ? $u : Class::Null->new;
+}
+
+sub __loginid {
+   return __get_user()->name || 'unknown';
+}
+
+sub __logname {
+   return $ENV{USER} || $ENV{LOGNAME} || __loginid;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -85,7 +109,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.10.$Rev: 3 $ of L<Module::Provision::Config>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 
@@ -109,6 +133,8 @@ Defines the following attributes;
 
 =item C<builder>
 
+=item C<editor>
+
 =item C<home_page>
 
 =item C<license>
@@ -116,6 +142,8 @@ Defines the following attributes;
 =item C<module_abstract>
 
 =item C<repository>
+
+=item C<template_index>
 
 =item C<vcs>
 
@@ -132,6 +160,8 @@ None
 =head1 Dependencies
 
 =over 3
+
+=item L<Class::Null>
 
 =item L<Class::Usul>
 

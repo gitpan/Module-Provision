@@ -1,9 +1,9 @@
-# @(#)Ident: Provision.pm 2013-05-03 23:58 pjf ;
+# @(#)Ident: Provision.pm 2013-05-04 20:18 pjf ;
 
 package Module::Provision;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -30,7 +30,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -57,7 +57,7 @@ This documents version v0.10.$Rev: 1 $ of L<Module::Provision>
    mp update_version 0.1 0.2
 
    # Regenerate meta data files
-   mp generate_metadata
+   mp metadata
 
    # Command line help
    mp -? | -H | -h [sub-command] | list_methods | dump_self
@@ -72,14 +72,18 @@ hooks that mimic the RCS Revision keyword expansion
 On first use the directory F<~/.module_provision> is created and
 populated with templates and an index file F<index.json>. The author
 name, id, and email are derived from the system (the environment
-variables C<AUTHOR> and C<EMAIL> take precedence) and stored in the
-F<author>, F<author_id>, and F<author_email> files
+variables C<AUTHOR> and C<EMAIL> take precedence). The can be
+overridden by the values in the configuration file
+F<~/.module_provision/module_provision.json>
 
 If the default builder (C<MB>) is used, then the project file
 F<Build.PL> loads C<inc::Bob> which instantiates an inline subclass of
 L<Module::Build>. The code for the subclass is in
 C<inc::SubClass>. The file C<inc::CPANTesting> allows for fine grained
 control over which tests are run by which CPAN Testing smokers
+
+The default builder used by the create distribution method can be
+changed from the command line or from the configuration file
 
 If the Git VCS is used C<precommit> and C<commit-msg> hooks are
 installed. The C<precommit> hook will expand the RCS Revision keyword
@@ -94,6 +98,9 @@ change log no other commit message text is required. The following
 makes for a suitable C<git log> alias:
 
    alias gl='git log -10 --pretty=format:"%h %ci %s" | cut -c1-79'
+
+The default VCS used by the create distribution methods can be
+changed from the command line or from the configuration file
 
 The templates contain comment lines like:
 
@@ -115,8 +122,9 @@ The alias:
 uses the L<App::Ack> program to implement the old SYSV R4 C<ident>
 command
 
-The templates for F<dist.ini>, F<Build.PL>, and F<Makefile.PL>
-contain the following comments which are interpreted by Emacs:
+The templates for the project files F<dist.ini>, F<Build.PL>, and
+F<Makefile.PL> contain the following comments which are interpreted by
+Emacs:
 
    # Local Variables:
    # mode: perl
@@ -157,8 +165,28 @@ This Lisp code will do likewise when a F<dist.ini> file is edited:
 
 =head1 Configuration and Environment
 
-Extends L<Module::Provision::Base>. Applies these traits; C<AddingFiles>,
-C<CreatingDistributions>, C<Rendering>, and C<UpdatingContent>
+The configuration file defaults to
+F<~/.module_provision/module_provision.json>. All of the attributes listed in
+L<Module::Provision::Config> can set from the configuration file in addition
+to the attributes listed in L<Class::Usul::Config::Programs> and
+L<Class::Usul::Config>. A typical file looks like;
+
+   {
+      "author": "<first_name> <last_name>",
+      "author_email": "<userid>@example.com",
+      "author_id": "<userid>",
+      "base": "/home/<userid>/Projects",
+      "doc_title": "Perl",
+      "editor": "emacs",
+      "home_page": "http://www.example.com"
+   }
+
+Creating F<logs> and F<tmp> directories in F<~/.module_provision> will cause
+the log and temporary files to use them instead of F</tmp>
+
+Extends L<Module::Provision::Base>. Applies these traits;
+C<AddingFiles>, C<Config>, C<CreatingDistributions>, C<Rendering>,
+C<UpdatingContent>, and C<VCS>
 
 Defines no attributes
 
@@ -178,9 +206,9 @@ Edit the project file (one of; F<dist.ini>, F<Build.PL>, or
 F<Makefile.PL>) in the project directory. The editor defaults to
 C<emacs> but can be set on the command line, e.g C<-o editor=vim>
 
-=head2 generate_metadata
+=head2 metadata
 
-   module_provision generate_metadata
+   module_provision metadata
 
 Generates the distribution metadata files
 
@@ -202,6 +230,12 @@ Creates a new module specified by the class name on the command line
 
 Creates a new program specified by the program name on the command line
 
+=head2 prove
+
+   module_provision prove
+
+Runs the projects tests
+
 =head2 show_tab_title
 
    module_provision -q show_tab_title
@@ -209,7 +243,7 @@ Creates a new program specified by the program name on the command line
 Print the tab title for the current project. Can be used like this;
 
    alias ep='mp -q edit_project ; \
-             yakuake_session set_tab_title_for_project $(mp -q show_tab_title)'
+      yakuake_session set_tab_title_for_project $(mp -q show_tab_title)'
 
 =head2 test
 

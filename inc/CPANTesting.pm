@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-04-29 21:55 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-05-04 20:05 pjf ;
 # Bob-Version: 1.12
 
 package CPANTesting;
@@ -25,8 +25,8 @@ sub test_exceptions {
 
    $p->{stop_tests}     and return 'CPAN Testing stopped in Build.PL';
    $osname eq q(mirbsd) and return 'Mirbsd  OS unsupported';
-   $host   eq q(k83)    and return
-      "Stopped Konig ${host} - 07224fc0-aed9-11e2-9633-3d74c1508286";
+#   $host   eq q(k83)    and return
+#      "Stopped Konig ${host} - 07224fc0-aed9-11e2-9633-3d74c1508286";
    return 0;
 }
 

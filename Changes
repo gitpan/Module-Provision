@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.11.1    2013-05-04 21:21:14
+          - Attribute refactoring and POD updates
+
 0.10.1    2013-05-04 01:05:42
           - Fixed author_id attribute
           - Created ::Config to allow attributes from config file

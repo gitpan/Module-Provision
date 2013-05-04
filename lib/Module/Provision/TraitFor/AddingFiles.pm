@@ -1,9 +1,9 @@
-# @(#)Ident: AddingFiles.pm 2013-05-02 16:02 pjf ;
+# @(#)Ident: AddingFiles.pm 2013-05-04 17:19 pjf ;
 
 package Module::Provision::TraitFor::AddingFiles;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -13,7 +13,7 @@ requires qw(add_to_vcs appldir binsdir exec_perms libdir module_abstract
             render_template stash testdir);
 
 # Construction
-around '_generate_metadata' => sub {
+around 'generate_metadata' => sub {
    my ($next, $self, @args) = @_; my $mdf = $self->$next( @args );
 
    $mdf and $self->appldir->catfile( $mdf )->exists
@@ -99,7 +99,7 @@ Module::Provision::TraitFor::AddingFiles - Adds additional files to the project
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::AddingFiles>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::TraitFor::AddingFiles>
 
 =head1 Description
 
@@ -108,10 +108,10 @@ Adds additional modules, programs, and tests to the project
 =head1 Configuration and Environment
 
 Requires the following attributes to be defined in the consuming
-class; C<appldir>, C<binsdir>, C<exec_perms>, C<libdir>,
-C<module_abstract>, C<stash>, and C<testdir>
+class; C<add_to_vcs>, C<appldir>, C<binsdir>, C<exec_perms>, C<libdir>,
+C<module_abstract>, C<render_template>, C<stash>, and C<testdir>
 
-Modifies the C<_generate_metadata> method. If C<_generate_metadata> returns
+Modifies the C<generate_metadata> method. If C<generate_metadata> returns
 a pathname and the file exists it is added to the VCS
 
 Defines no attributes

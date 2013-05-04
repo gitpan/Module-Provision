@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-04 00:09 pjf ;
+# @(#)Ident: Base.pm 2013-05-04 19:12 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -11,7 +11,6 @@ use Class::Usul::Functions       qw(app_prefix class2appdir classdir distname
 use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
 use File::DataClass::Constraints qw(Directory OctalNum Path);
-use File::ShareDir                 ();
 
 extends q(Class::Usul::Programs);
 
@@ -26,39 +25,37 @@ my %builders = ( 'DZ' => 'dist.ini', 'MB' => 'Build.PL', 'MI' => 'Makefile.PL');
 has '+config_class' => default => sub { 'Module::Provision::Config' };
 
 # Object attributes (public)
-has 'base'        => is => 'lazy', isa => Path, coerce => TRUE,
-   documentation  => 'Directory containing new projects',
-   default        => sub { $_[ 0 ]->config->base };
+#   Visible to the command line
+has 'base'       => is => 'lazy', isa => Path, coerce => TRUE,
+   documentation => 'Directory containing new projects',
+   default       => sub { $_[ 0 ]->config->base };
 
-has 'branch'      => is => 'lazy', isa => NonEmptySimpleStr,
-   documentation  => 'The name of the initial branch to create',
-   default        => sub { $_[ 0 ]->config->branch };
+has 'branch'     => is => 'lazy', isa => NonEmptySimpleStr,
+   documentation => 'The name of the initial branch to create',
+   default       => sub { $_[ 0 ]->config->branch };
 
-has 'builder'     => is => 'lazy', isa => __PACKAGE__.'::Builder',
-   documentation  => 'Which build system to use: DZ, MB, or MI';
+has 'builder'    => is => 'lazy', isa => __PACKAGE__.'::Builder',
+   documentation => 'Which build system to use: DZ, MB, or MI';
 
-has 'license'     => is => 'ro',   isa => NonEmptySimpleStr,
-   documentation  => 'License used for the project',
-   default        => sub { $_[ 0 ]->config->license };
+has 'license'    => is => 'ro',   isa => NonEmptySimpleStr,
+   documentation => 'License used for the project',
+   default       => sub { $_[ 0 ]->config->license };
 
-has 'perms'       => is => 'ro',   isa => OctalNum, coerce => TRUE,
-   documentation  => 'Default permission for file / directory creation',
-   default        => '640';
+has 'perms'      => is => 'ro',   isa => OctalNum, coerce => TRUE,
+   documentation => 'Default permission for file / directory creation',
+   default       => '640';
 
-has 'project'     => is => 'lazy', isa => NonEmptySimpleStr,
-   documentation  => 'Package name of the new projects main module';
+has 'project'    => is => 'lazy', isa => NonEmptySimpleStr,
+   documentation => 'Package name of the new projects main module';
 
-has 'repository'  => is => 'ro',   isa => NonEmptySimpleStr,
-   documentation  => 'Directory containing the SVN repository',
-   default        => sub { $_[ 0 ]->config->repository };
+has 'repository' => is => 'ro',   isa => NonEmptySimpleStr,
+   documentation => 'Directory containing the SVN repository',
+   default       => sub { $_[ 0 ]->config->repository };
 
-has 'templates'   => is => 'ro',   isa => SimpleStr, default => NUL,
-   documentation  => 'Non default location of the code templates';
+has 'vcs'        => is => 'lazy', isa => __PACKAGE__.'::VCS',
+   documentation => 'Which VCS to use: git, none, or svn';
 
-has 'vcs'         => is => 'lazy', isa => __PACKAGE__.'::VCS',
-   documentation  => 'Which VCS to use: git, none, or svn';
-
-
+#   Ingnored by the command line
 has '_appbase'         => is => 'lazy', isa => Path, coerce => TRUE,
    reader              => 'appbase';
 
@@ -87,6 +84,9 @@ has '_incdir'          => is => 'lazy', isa => Path, coerce => TRUE,
    default             => sub { [ $_[ 0 ]->appldir, 'inc' ] },
    reader              => 'incdir';
 
+has '_initial_wd'      => is => 'ro',   isa => Directory, coerce => TRUE,
+   default             => sub { [ getcwd ] }, reader => 'initial_wd';
+
 has '_libdir'          => is => 'lazy', isa => Path, coerce => TRUE,
    default             => sub { [ $_[ 0 ]->appldir, 'lib' ] },
    reader              => 'libdir';
@@ -99,22 +99,16 @@ has '_project_file'    => is => 'lazy', isa => NonEmptySimpleStr,
 
 has '_stash'           => is => 'lazy', isa => HashRef, reader => 'stash';
 
-has '_template_dir'    => is => 'lazy', isa => Directory, coerce => TRUE,
-   reader              => 'template_dir';
-
 has '_testdir'         => is => 'lazy', isa => Path, coerce => TRUE,
    default             => sub { [ $_[ 0 ]->appldir, 't' ] },
    reader              => 'testdir';
 
 # Object attributes (private)
-has '_initial_wd'      => is => 'ro',   isa => Directory, coerce => TRUE,
-   default             => sub { [ getcwd ] };
-
 has '_license_keys'    => is => 'lazy', isa => HashRef;
 
 # Private methods
 sub _build__appbase {
-   my $self = shift; my $base = $self->base->absolute( $self->_initial_wd );
+   my $self = shift; my $base = $self->base->absolute( $self->initial_wd );
 
    return $base->catdir( $self->distname );
 }
@@ -193,7 +187,7 @@ sub _build__stash {
             appdir         => class2appdir $self->distname,
             author         => $author,
             author_email   => $config->author_email,
-            author_id      => $config->author_id || $self->logname,
+            author_id      => $config->author_id,
             copyright      => $ENV{ORGANIZATION} || $author,
             copyright_year => time2str( '%Y' ),
             creation_date  => time2str,
@@ -208,22 +202,6 @@ sub _build__stash {
             perl           => $],
             prefix         => (split m{ :: }mx, lc $project)[ -1 ],
             project        => $project, };
-}
-
-sub _build__template_dir {
-   my $self  = shift;
-   my $class = blessed $self;
-   my $dir   = $self->templates
-             ? $self->io( [ $self->templates ] )->absolute( $self->_initial_wd )
-             : $self->io( [ $self->config->my_home, '.'.(app_prefix $class) ] );
-
-   $dir->exists and return $dir; $dir->mkpath( $self->exec_perms );
-
-   my $dist  = $self->io( File::ShareDir::dist_dir( distname $class ) );
-
-   $_->copy( $dir ) for ($dist->all_files);
-
-   return $dir;
 }
 
 sub _build_vcs {
@@ -266,7 +244,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.10.$Rev: 2 $ of L<Module::Provision::Base>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
@@ -314,11 +292,6 @@ command line
 
 Name of the directory containing the SVN repository. Defaults to F<repository>
 
-=item C<templates>
-
-Location of the code templates in the users home directory. Defaults to
-F<.module_provision>
-
 =item C<vcs>
 
 The version control system to use. Defaults to C<none>, can be C<git>
@@ -341,8 +314,6 @@ None
 =item L<Class::Usul>
 
 =item L<File::DataClass>
-
-=item L<File::ShareDir>
 
 =item L<Module::Provision::Config>
 

@@ -1,9 +1,9 @@
-# @(#)Ident: UpdatingContent.pm 2013-05-04 00:01 pjf ;
+# @(#)Ident: UpdatingContent.pm 2013-05-04 17:36 pjf ;
 
 package Module::Provision::TraitFor::UpdatingContent;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -11,6 +11,14 @@ use Class::Usul::Constants;
 requires qw(appldir);
 
 # Public methods
+sub substitute_version {
+   my ($self, $path, $from, $to) = @_;
+
+   $path->substitute( "\Q\'${from}.%d\',\E", "\'${to}.%d\'," );
+   $path->substitute( "\Q v${from}.\$Rev\E", " v${to}.\$Rev" );
+   return;
+}
+
 sub update_copyright_year : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
@@ -34,11 +42,14 @@ sub update_version : method {
 
    for my $path (@{ $self->_get_manifest_paths }) {
       $ignore and $path =~ m{ (?: $ignore ) }mx and next;
-      $self->_substitute_version( $path, $from, $to );
+      $self->substitute_version( $path, $from, $to );
    }
 
-   $self->_update_version_post_hook;
+   $self->update_version_post_hook;
    return OK;
+}
+
+sub update_version_post_hook { # Can be modified by applied traits
 }
 
 # Private methods
@@ -61,17 +72,6 @@ sub _get_manifest_paths {
 
 sub _get_update_args {
    return (shift @{ $_[ 0 ]->extra_argv }, shift @{ $_[ 0 ]->extra_argv });
-}
-
-sub _substitute_version {
-   my ($self, $path, $from, $to) = @_;
-
-   $path->substitute( "\Q\'${from}.%d\',\E", "\'${to}.%d\'," );
-   $path->substitute( "\Q v${from}.\$Rev\E", " v${to}.\$Rev" );
-   return;
-}
-
-sub _update_version_post_hook {
 }
 
 # Private functions
@@ -110,7 +110,7 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::UpdatingContent>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description
 
@@ -124,6 +124,14 @@ class; C<appldir>
 Defines no attributes
 
 =head1 Subroutines/Methods
+
+=head2 substitute_version
+
+   $self->substitute_version( $path, $from, $to );
+
+Substitutes the C<$to> string everywhere the C<$from> pattern occurs
+in the C<$path> file. The C<$path> argument should be of type
+L<File::DataClass::IO>
 
 =head2 update_copyright_year
 
@@ -139,6 +147,12 @@ files in the F<MANIFEST>
 Substitutes the existing version number for the new version number in all
 files in the F<MANIFEST>
 
+=head2 update_version_post_hook
+
+  $self->update_version_post_hook;
+
+Does nothing by default. Can be modified by applied traits
+
 =head1 Diagnostics
 
 None
@@ -146,6 +160,8 @@ None
 =head1 Dependencies
 
 =over 3
+
+=item L<Class::Usul>
 
 =item L<Moose::Role>
 

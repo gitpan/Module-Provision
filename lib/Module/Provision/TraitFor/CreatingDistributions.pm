@@ -1,18 +1,25 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-03 22:01 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-04 17:28 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(say throw trim);
-use Cwd                    qw(getcwd);
+use Class::Usul::Functions        qw(say throw trim);
+use Cwd                           qw(getcwd);
+use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
 requires qw(appbase appldir builder exec_perms homedir
             incdir project_file render_templates stash testdir vcs);
 
+# Object attributes (public)
+has 'editor'     => is => 'ro', isa => NonEmptySimpleStr, lazy => TRUE,
+   documentation => 'Which text editor to use',
+   default       => sub { $_[ 0 ]->config->editor };
+
+# Construction
 around '_build_builder' => sub {
    my ($next, $self, @args) = @_; my $builder = $self->$next( @args );
 
@@ -42,33 +49,22 @@ sub create_directories {
 sub dist : method {
    my $self = shift;
 
-   $self->pre_hook;
+   $self->dist_pre_hook;
    $self->create_directories;
    $self->render_templates;
-   $self->post_hook;
+   $self->dist_post_hook;
    return OK;
 }
 
-sub edit_project : method {
-   my $self = shift; my $editor = $self->options->{editor} || q(emacs);
-
-   $self->run_cmd( $editor.SPC.$self->_project_file_path, { async => TRUE } );
-   return OK;
-}
-
-sub generate_metadata : method {
-   shift->_generate_metadata( FALSE ); return OK;
-}
-
-sub post_hook {
+sub dist_post_hook {
    my $self = shift;
 
-   $self->_generate_metadata( TRUE );
-   $self->test_distribution;
+   $self->generate_metadata( TRUE ); $self->prove;
+
    return;
 }
 
-sub pre_hook {
+sub dist_pre_hook {
    my $self = shift; my $argv = $self->extra_argv; umask $self->_create_mask;
 
    $self->appbase->exists or $self->appbase->mkpath( $self->exec_perms );
@@ -77,32 +73,14 @@ sub pre_hook {
    return;
 }
 
-sub show_tab_title : method {
-   my $self = shift;
-   my $file = $self->extra_argv->[ 0 ] || $self->_project_file_path;
-   my $text = (grep { m{ tab-title: }msx } $self->io( $file )->getlines)[ -1 ];
+sub edit_project : method {
+   my $self = shift; my $path = $self->_project_file_path;
 
-   say trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
+   $self->run_cmd( $self->editor.SPC.$path, { async => TRUE } );
    return OK;
 }
 
-sub test_distribution {
-   my $self = shift; __chdir( $self->appldir );
-
-   my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
-
-   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_SPELLING} = TRUE;
-   $self->output ( 'Testing '.$self->appldir );
-   $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
-   return;
-}
-
-# Private methods
-sub _create_mask {
-   return oct q(0777) ^ $_[ 0 ]->exec_perms;
-}
-
-sub _generate_metadata {
+sub generate_metadata {
    my ($self, $create) = @_; __chdir( $self->appldir );
 
    my $mdf; my $verbose = $create ? FALSE : TRUE;
@@ -127,6 +105,35 @@ sub _generate_metadata {
    }
 
    return $create ? $mdf : undef;
+}
+
+sub metadata : method {
+   my $self = shift; $self->generate_metadata( FALSE ); return OK;
+}
+
+sub prove : method {
+   my $self = shift; __chdir( $self->appldir );
+
+   my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
+
+   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_SPELLING} = TRUE;
+   $self->output ( 'Testing '.$self->appldir );
+   $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
+   return OK;
+}
+
+sub show_tab_title : method {
+   my $self = shift;
+   my $file = $self->extra_argv->[ 0 ] || $self->_project_file_path;
+   my $text = (grep { m{ tab-title: }msx } $self->io( $file )->getlines)[ -1 ];
+
+   say trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
+   return OK;
+}
+
+# Private methods
+sub _create_mask {
+   return oct q(0777) ^ $_[ 0 ]->exec_perms;
 }
 
 sub _project_file_path {
@@ -162,7 +169,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 
@@ -172,9 +179,20 @@ Create distributions using either Git or SVN for the VCS
 
 Requires these attributes to be defined in the consuming class;
 C<appbase>, C<appldir>, C<builder>, C<exec_perms>, C<homedir>,
-C<incdir>, C<project_file>, C<stash>, C<testdir>, and C<vcs>
+C<incdir>, C<project_file>, C<render_templates>, C<stash>, C<testdir>,
+and C<vcs>
 
-Defines no attributes
+Defines the following attributes;
+
+=over 3
+
+=item <editor>
+
+Which text editor to use. It is a read only, lazily evaluated, simple
+string that cannot be null. It defaults to the C<editor> configuration
+variable
+
+=back
 
 =head1 Subroutines/Methods
 
@@ -191,6 +209,22 @@ method can be modified to include additional directories
 
 Create a new distribution specified by the module name on the command line
 
+=head2 dist_post_hook
+
+   $self->dist_post_hook;
+
+Runs after the new distribution has been created. If subclassed this method
+can be modified to perform additional actions after the templates have been
+rendered
+
+=head2 dist_pre_hook
+
+   $self->dist_pre_hook;
+
+Runs before the new distribution is created. If subclassed this method
+can be modified to perform additional actions before the project directories
+are created
+
 =head2 edit_project
 
    $exit_code = $self->edit_project;
@@ -200,37 +234,28 @@ F<Makefile.PL>) in the current directory
 
 =head2 generate_metadata
 
-   $exit_code = $self->generate_metadata;
+   $markdown_file = $self->generate_metadata( $create_flag );
 
-Generates the distribution metadata files
+Generates the distribution metadata files. If the create_flag is C<TRUE>
+returns the name of the F<README.md> file
 
-=head2 post_hook
+=head2 metadata
 
-   $self->post_hook;
+   $exit_code = $self->metadata;
 
-Runs after the new distribution has been created. If subclassed this method
-can be modified to perform additional actions after the templates have been
-rendered
+Calls L</generate_metadata> with the create flag set to C<FALSE>
 
-=head2 pre_hook
+=head2 prove
 
-   $self->pre_hook;
+   $exit_code = $self->prove;
 
-Runs before the new distribution is created. If subclassed this method
-can be modified to perform additional actions before the project directories
-are created
+Tests the distribution
 
 =head2 show_tab_title
 
    $exit_code = $self->show_tab_title;
 
 Print the tab title for the current project to C<STDOUT>
-
-=head2 test_distribution
-
-   $self->test_distribution;
-
-Tests the distribution
 
 =head1 Diagnostics
 
@@ -243,6 +268,8 @@ None
 =item L<Class::Usul>
 
 =item L<Moose::Role>
+
+=item L<MooseX::Types::Common::String>
 
 =back
 

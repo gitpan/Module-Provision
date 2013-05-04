@@ -1,27 +1,41 @@
-# @(#)Ident: Rendering.pm 2013-05-03 23:24 pjf ;
+# @(#)Ident: Rendering.pm 2013-05-04 19:41 pjf ;
 
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.10.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(is_arrayref throw);
-use MooseX::Types::Moose   qw(ArrayRef Bool);
+use Class::Usul::Functions        qw(app_prefix is_arrayref distname throw);
+use File::DataClass::Constraints  qw(Directory Path);
+use File::ShareDir                  ();
+use MooseX::Types::Common::String qw(SimpleStr);
+use MooseX::Types::Moose          qw(ArrayRef Bool);
+use Scalar::Util                  qw(weaken);
 use Template;
 
-requires qw(appldir builder dist_module incdir stash template_dir testdir vcs);
+requires qw(appldir builder dist_module incdir initial_wd stash testdir vcs);
 
 # Object attributes (public)
-has 'force'          => is => 'ro', isa => Bool, default => FALSE,
-   documentation     => 'Overwrite files if they already exist',
-   traits            => [ 'Getopt' ], cmd_aliases => q(f), cmd_flag => 'force';
+has 'force'           => is => 'ro', isa => Bool, default => FALSE,
+   documentation      => 'Overwrite files if they already exist',
+   traits             => [ 'Getopt' ], cmd_aliases => q(f), cmd_flag => 'force';
+
+has 'templates'       => is => 'ro', isa => SimpleStr, default => NUL,
+   documentation      => 'Non default location of the code templates';
 
 # Object attributes (private)
-has '_template_list' => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
-   handles           => { all_templates => 'elements', }, lazy => TRUE,
-   builder           => '_build__template_list', init_arg => undef;
+has '_template_dir'   => is => 'ro', isa => Directory, coerce => TRUE,
+   builder            => '_build__template_dir', init_arg => undef,
+   lazy               => TRUE;
+
+has '_template_index' => is => 'ro', isa => Path, coerce => TRUE, lazy => TRUE,
+   builder            => '_build__template_index', init_arg => undef;
+
+has '_template_list'  => is => 'ro', isa => ArrayRef, traits => [ 'Array' ],
+   handles            => { all_templates => 'elements', }, lazy => TRUE,
+   builder            => '_build__template_list', init_arg => undef;
 
 # Public methods
 sub init_templates : method {
@@ -36,7 +50,7 @@ sub render_template {
 
    $target->exists and $target->is_dir
       and $target = $target->catfile( $template );
-   $template = $self->template_dir->catfile( $template );
+   $template = $self->_template_dir->catfile( $template );
 
    $template->exists or
       return $self->log->warn( $self->loc( 'Path [_1] not found', $template ) );
@@ -48,11 +62,8 @@ sub render_template {
       and not $self->yorn( $prompt, FALSE, TRUE )
       and return $target;
 
-   my $conf  = { ABSOLUTE => TRUE, }; my $text = NUL;
-
-   $conf->{VARIABLES}->{loc} = sub { return $self->loc( @_ ) };
-
-   my $tmplt = Template->new( $conf ) or throw $Template::ERROR;
+   my $tmplt = Template->new( $self->_template_args ) or throw $Template::ERROR;
+   my $text  = NUL;
 
    $tmplt->process( $template->pathname, $self->stash, \$text )
       or throw $tmplt->error();
@@ -81,8 +92,28 @@ sub render_templates {
 }
 
 # Private methods
+sub _build__template_dir {
+   my $self  = shift;
+   my $class = blessed $self;
+   my $dir   = $self->templates
+             ? $self->io( [ $self->templates ] )->absolute( $self->initial_wd )
+             : $self->io( [ $self->config->my_home, '.'.(app_prefix $class) ] );
+
+   $dir->exists and return $dir; $dir->mkpath( $self->exec_perms );
+
+   my $dist  = $self->io( File::ShareDir::dist_dir( distname $class ) );
+
+   $_->copy( $dir ) for ($dist->all_files);
+
+   return $dir;
+}
+
+sub _build__template_index {
+   return $_[ 0 ]->_template_dir->catfile( $_[ 0 ]->config->template_index );
+}
+
 sub _build__template_list {
-   my $self = shift; my $index = $self->template_dir->catfile( 'index.json' );
+   my $self = shift; my $index = $self->_template_index;
 
    my $data; $index->exists and $data = $self->file->data_load
       ( paths => [ $index ], storage_class => 'Any' )
@@ -133,6 +164,14 @@ sub _merge_lists {
    return $list;
 }
 
+sub _template_args {
+   my $self = shift; weaken( $self ); my $args = { ABSOLUTE => TRUE, };
+
+   $args->{VARIABLES}->{loc} = sub { $self->loc( @_ ) };
+
+   return $args;
+}
+
 1;
 
 __END__
@@ -154,7 +193,7 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
 =head1 Version
 
-This documents version v0.10.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
+This documents version v0.11.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 
@@ -164,7 +203,7 @@ by default is in the F<~/.module_provision> directory
 =head1 Configuration and Environment
 
 Requires the consuming class to define the attributes; C<appldir>,
-C<builder>, C<dist_module>, C<incdir>, C<stash>, C<template_dir>,
+C<builder>, C<dist_module>, C<incdir>, C<initial_wd>, C<stash>,
 C<testdir>, and C<vcs>
 
 Defines the following attributes;
@@ -174,6 +213,11 @@ Defines the following attributes;
 =item C<force>
 
 Overwrite the output files if they already exist
+
+=item C<templates>
+
+Location of the code templates in the users home directory. Defaults to
+F<.module_provision>
 
 =back
 
@@ -208,9 +252,15 @@ None
 
 =item L<Class::Usul>
 
+=item L<File::DataClass>
+
+=item L<File::ShareDir>
+
 =item L<Moose::Role>
 
 =item L<MooseX::Types>
+
+=item <MooseX::Types::Common::String>
 
 =item L<Template>
 
