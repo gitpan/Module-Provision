@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-04 19:12 pjf ;
+# @(#)Ident: Base.pm 2013-05-06 11:09 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.11.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -31,8 +31,7 @@ has 'base'       => is => 'lazy', isa => Path, coerce => TRUE,
    default       => sub { $_[ 0 ]->config->base };
 
 has 'branch'     => is => 'lazy', isa => NonEmptySimpleStr,
-   documentation => 'The name of the initial branch to create',
-   default       => sub { $_[ 0 ]->config->branch };
+   documentation => 'The name of the initial branch to create';
 
 has 'builder'    => is => 'lazy', isa => __PACKAGE__.'::Builder',
    documentation => 'Which build system to use: DZ, MB, or MI';
@@ -114,8 +113,18 @@ sub _build__appbase {
 }
 
 sub _build__appldir {
-   return $_[ 0 ]->vcs eq 'svn' ? $_[ 0 ]->appbase->catdir( $_[ 0 ]->branch )
-                                : $_[ 0 ]->appbase;
+   my $self = shift; my $appbase = $self->appbase; my $branch = $self->branch;
+
+   return $appbase->catdir( $branch )->exists ? $appbase->catdir( $branch )
+        : $appbase->catdir( '.git' )->exists  ? $appbase
+        : $self->vcs eq 'none'                ? $appbase
+                                              : undef;
+}
+
+sub _build_branch {
+   my $self = shift;
+
+   return $ENV{BRANCH} || ($self->vcs eq 'svn' ? 'trunk' : 'master');
 }
 
 sub _build_builder {
@@ -205,10 +214,12 @@ sub _build__stash {
 }
 
 sub _build_vcs {
-   my $self = shift; my $appbase = $self->appbase;
+   my $self = shift; my $appbase = $self->appbase; my $branch = $ENV{BRANCH};
 
-   return $appbase->catdir( $self->repository )->exists ? 'svn'
-        : $appbase->catdir( '.git'            )->exists ? 'git'
+   return $appbase->catdir( '.git'            )->exists ? 'git'
+        : $appbase->catdir( $branch, '.git'   )->exists ? 'git'
+        : $appbase->catdir( qw(master .git)   )->exists ? 'git'
+        : $appbase->catdir( $self->repository )->exists ? 'svn'
                                                         : 'none';
 }
 
@@ -244,7 +255,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.11.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.12.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
