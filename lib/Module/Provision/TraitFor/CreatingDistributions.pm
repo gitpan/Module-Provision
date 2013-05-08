@@ -1,9 +1,9 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-06 10:46 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-08 06:54 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -11,7 +11,7 @@ use Class::Usul::Functions        qw(say throw trim);
 use Cwd                           qw(getcwd);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
-requires qw(appbase appldir builder exec_perms homedir
+requires qw(appbase appldir branch builder exec_perms homedir
             incdir project_file render_templates stash testdir vcs);
 
 # Object attributes (public)
@@ -20,6 +20,13 @@ has 'editor'     => is => 'ro', isa => NonEmptySimpleStr, lazy => TRUE,
    default       => sub { $_[ 0 ]->config->editor };
 
 # Construction
+around '_build__appldir' => sub {
+   my ($next, $self, @args) = @_; my $appldir = $self->$next( @args );
+
+   return !$appldir && $self->method eq 'dist'
+          ? $self->appbase->catdir( $self->branch ) : $appldir ;
+};
+
 around '_build_builder' => sub {
    my ($next, $self, @args) = @_; my $builder = $self->$next( @args );
 
@@ -169,7 +176,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.12.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.12.$Rev: 3 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

@@ -1,8 +1,8 @@
-# @(#)Ident: Config.pm 2013-05-06 00:44 pjf ;
+# @(#)Ident: Config.pm 2013-05-08 02:48 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Null;
 use Class::Usul::Moose;
@@ -13,6 +13,8 @@ use File::DataClass::Constraints qw(Path);
 use User::pwent;
 
 extends qw(Class::Usul::Config::Programs);
+
+my $osname = lc $OSNAME;
 
 # Object attributes (public)
 has 'author'          => is => 'lazy', isa => NonEmptySimpleStr;
@@ -71,7 +73,7 @@ sub __fullname {
 }
 
 sub __get_user {
-   my $u = eval { getpwuid( $UID ) }; return $u ? $u : Class::Null->new;
+   return $osname eq EVIL ? Class::Null->new : getpwuid( $UID );
 }
 
 sub __loginid {
@@ -106,7 +108,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.12.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.12.$Rev: 2 $ of L<Module::Provision::Config>
 
 =head1 Description
 

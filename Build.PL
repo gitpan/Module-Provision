@@ -1,9 +1,9 @@
-# @(#)Ident: Build.PL 2013-05-06 15:03 pjf ;
+# @(#)Ident: Build.PL 2013-05-07 23:30 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Module::Provision),
@@ -12,12 +12,12 @@ Bob->new( {
       'perl'                  => 5.010,
       'version'               => 0.77,
       'Class::Null'           => 2.101420,
-      'Class::Usul'           => q(0.17.0),
+      'Class::Usul'           => q(0.18.0),
       'Date::Format'          => 2.24,
       'Dist::Zilla'           => 4.300033,
       'Dist::Zilla::Plugin::ReadmeAnyFromPod'  => 0.120120,
       'Dist::Zilla::Plugin::VersionFromModule' => 0.08,
-      'File::DataClass'       => q(0.19.0),
+      'File::DataClass'       => q(0.20.0),
       'File::ShareDir'        => 1.02,
       'File::Slurp'           => 9999.13,
       'Module::Build'         => 0.38,
@@ -41,7 +41,7 @@ Bob->new( {
       'Module::Build'         => 0.38, },
    build_requires             => {
       'Exception::Class'      => 1.23,
-      'File::DataClass'       => q(0.19.0),
+      'File::DataClass'       => q(0.20.0),
       'Test::More'            => 0.74, },
    no_index_dir               => [ qw(bin examples inc share t) ],
 } )->create_build_script; # Goal!

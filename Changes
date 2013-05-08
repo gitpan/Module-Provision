@@ -1,6 +1,8 @@
 Revision history for Module::Provision
 
-0.12.1    2013-05-06 16:06:32
+0.12.3    2013-05-08 11:24:31
+          - Modify appldir builder if creating a dist
+          - Avoid calling getpwuid on WinShite
           - Added missing dependencies
 
 0.11.1    2013-05-04 21:21:14

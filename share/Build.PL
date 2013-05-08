@@ -1,4 +1,4 @@
-# @(#)$Ident: Build.PL 2013-04-29 15:31 pjf ;
+# @(#)$Ident: Build.PL 2013-05-07 23:38 pjf ;
 
 use strict;
 use warnings;
@@ -11,8 +11,8 @@ Bob->new( {
    requires  => {
       'perl'             => 5.010,
       'version'          => 0.77,
-      'Class::Usul'      => q(0.16.0),
-      'File::DataClass'  => q(0.17.0),
+      'Class::Usul'      => q(0.18.0),
+      'File::DataClass'  => q(0.20.0),
    },
    recommends            => {
       'App::cpanminus'   => 1.6005,

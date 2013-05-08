@@ -14,23 +14,23 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 ca8705d3fa9fc8da1ffbf4b025ec9828d808dfb9 Build.PL
-SHA1 02f02e3a3804ddd770272dfa9b6c0c7b78d9a042 Changes
+SHA1 67162d19155c4dbd0dcf9a30671f8d12a79dad5d Build.PL
+SHA1 b078aa4e5542987177966685575ef5cab7221acd Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
 SHA1 ee3753a4c751bf609764d92e299608fe5829d8f1 MANIFEST
-SHA1 825d63435e16ecd257011d5b44996b8573bb61b7 META.json
-SHA1 251f70ac89d0d16a0bdd507a31f455a4338e2c3c META.yml
-SHA1 005a8f55227c64270f579e4ab94e0a9bcfc25475 README
+SHA1 f80dd86f3733b9b8b67ebf47f79600e12305b4c6 META.json
+SHA1 6ac6b0eedd9f42823044b4ceb27b34dc8dd05724 META.yml
+SHA1 6528f9cda84264b9b8c32feaaa9cdb948e8b67df README
 SHA1 7d0f2a2a641d90b6701e45ab1af5512a54da5f4b bin/module_provision
 SHA1 2dad6b015a19acb067ac9b3d677292796ecdb1c9 inc/Bob.pm
 SHA1 b07e8082b9ed2291fe4cf6988acef2d114dcbcc5 inc/CPANTesting.pm
 SHA1 3e461b4687dcea7680dc96761ecd703556759063 inc/SubClass.pm
 SHA1 6717a24eb2a7c02f80c4ecd5e3752507c9528c59 lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 4bbcd2151211181369d57cfcaba436f832665209 lib/Module/Provision.pm
-SHA1 ccd26c978c0b03f4426cf109e901bb960ae720ff lib/Module/Provision/Base.pm
-SHA1 0b0659ed7ce97def628508da99c6d919374b1b72 lib/Module/Provision/Config.pm
+SHA1 e78067ecc4d2f6c04782195a98a6b4c151290706 lib/Module/Provision.pm
+SHA1 06acf9efb6558da31a1166fa825449f72b02bbcb lib/Module/Provision/Base.pm
+SHA1 c1058475ae78f91a78e0e2e2873e8de54999d50b lib/Module/Provision/Config.pm
 SHA1 7954588c4723575d365a965342d62b6f55e88ef5 lib/Module/Provision/TraitFor/AddingFiles.pm
-SHA1 f22d09856c165fcfafd9fc83ad541c77a81ff476 lib/Module/Provision/TraitFor/CreatingDistributions.pm
+SHA1 ad126e7e52fb04f74359e2daf44a12b22c82d80e lib/Module/Provision/TraitFor/CreatingDistributions.pm
 SHA1 3763083e71d32908ecf1f08e69372012add7f210 lib/Module/Provision/TraitFor/Rendering.pm
 SHA1 35e7ae12954eb12ecf29295251199cea16c799d9 lib/Module/Provision/TraitFor/UpdatingContent.pm
 SHA1 f34cc01c6cfa646427d5a8567ded8b7ce76c000e lib/Module/Provision/TraitFor/VCS.pm
@@ -43,15 +43,15 @@ SHA1 3e18c2b072413fd1106a6af62056cedfe16b1307 share/06yaml.t
 SHA1 8ab709ddfe223404de27311d36dd17a0863f99a1 share/07podspelling.t
 SHA1 7b2383861c05f9ec4ac0fa9e3a56d21686a58b3d share/10test_script.t
 SHA1 2dad6b015a19acb067ac9b3d677292796ecdb1c9 share/Bob.pm
-SHA1 ae2175baa62caa8d3992c9825d0ee8a9764dc624 share/Build.PL
+SHA1 7d54a09f24a2fe72eb8a3c55b59732641d53db03 share/Build.PL
 SHA1 b2daf2d6d3f2158b33d84a79ea725c922f508718 share/CPANTesting.pm
 SHA1 9f2d2b4c005e8ddcb07e96c3c6cb258a67550a16 share/Changes
 SHA1 03a016023abacb29d1dc932034b5e6a3da391207 share/EUMM_Makefile.PL
 SHA1 dbe97db0584737f11f1bd6b3d327e66a81326d9c share/MANIFEST.SKIP
-SHA1 5eefc456bf8295f72e1e3478fe9eeff69a6b60db share/MI_Makefile.PL
+SHA1 ac7ff41904c2947f47781e79b0ae596abd5b5e29 share/MI_Makefile.PL
 SHA1 3e461b4687dcea7680dc96761ecd703556759063 share/SubClass.pm
 SHA1 54de88c5acbc2dfd9ba4b1a9327f4bb2f3b2b317 share/data_dumper.pm
-SHA1 b4360a749da34d151dbc7313d0a9e5ac81a00ccb share/dist.ini
+SHA1 86cd004ed3681a02bae76083083c8a8a725bd677 share/dist.ini
 SHA1 afc8749d2c8fbd4f30afc267d3869d8a55681e33 share/gitcommit-msg
 SHA1 dfbcd69d57d3994876596824593697bb82eadeab share/gitignore
 SHA1 1f422acb0e6f91dec62b8768310ff483a1d89e46 share/gitpre-commit
@@ -69,11 +69,11 @@ SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJRh8cdAAoJEK492j4Im1Bp3pEH/2UFtzi4qjl7HBstfCRp2aQS
-7RBlMYJk3rYWor/ylRIaD67ReNqGdoaRwgFasOUGDcVHvJ4Ey00F9xohCbZbYuLe
-AQbko2cF3Zo8oNpGQolgKIMqVrTmzpRu0MhopRF4YY3hp2NjEveC2tq/gQj9WQWz
-SmeypkAZnJLHTIqdN1UbVygOVme3053R70aiL/bpttbgMXDTUQ6O1rd+ExAw1+c1
-GA3ybL2DoyeUS15X8fB3ujB1zl7ccAGYuPcMCIW7tcpnqu3Y8NSm+tzbLS7pCAKn
-Cq0S2QJVRg22FwKxrPcamUwIxieWL/3+O7ZbIou+L68fo38uXkZs60PmYRpmXfU=
-=M8lS
+iQEcBAEBAgAGBQJRinRHAAoJEK492j4Im1BpnGgIAIN749n9+2TbIfWJxFumn6X+
+suMjFG6Pa5CbFJeZheABE+/Hp7aTymPXUegyE9SLBzPqWM19vzYgMqkrlWxu/1dj
+iqqC92Szb4QOkr0K3zd2aJdCMTfXp3pMOD6f+ehc3zsIC1ch4bST3AJsy0QHiU6+
+kqOp/4tSUye/pTvZ5BgJY/LWZ861LpUhkGmv4vbUQFVKXHEUxMAlhlgWKZgEKuA/
+k2DwLf627JV+5MK4AmyUgFexQfgn2S0MtRW9lZP/8W/mMD3FNrz0A2H3ewJiCJfU
+HsGfIeGDhZP1DA4iB0KZD8B7cwwYUyJanGJpovTsbjxTexFZ1MuHUY7KduciiKc=
+=5Cc1
 -----END PGP SIGNATURE-----

@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-06 11:09 pjf ;
+# @(#)Ident: Base.pm 2013-05-08 10:22 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -114,6 +114,9 @@ sub _build__appbase {
 
 sub _build__appldir {
    my $self = shift; my $appbase = $self->appbase; my $branch = $self->branch;
+
+   $self->debug and $self->log->debug
+      ( "Appbase: ${appbase}, Branch: ${branch}" );
 
    return $appbase->catdir( $branch )->exists ? $appbase->catdir( $branch )
         : $appbase->catdir( '.git' )->exists  ? $appbase
@@ -255,7 +258,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.12.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.12.$Rev: 3 $ of L<Module::Provision::Base>
 
 =head1 Description
 
