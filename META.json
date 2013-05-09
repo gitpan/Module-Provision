@@ -76,11 +76,11 @@
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.12.3"
+         "version" : "v0.12.5"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
-         "version" : "v0.12.3"
+         "version" : "v0.12.5"
       },
       "Module::Provision::Config" : {
          "file" : "lib/Module/Provision/Config.pm",
@@ -92,7 +92,7 @@
       },
       "Module::Provision::TraitFor::CreatingDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
-         "version" : "v0.12.3"
+         "version" : "v0.12.5"
       },
       "Module::Provision::TraitFor::Rendering" : {
          "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
@@ -104,7 +104,7 @@
       },
       "Module::Provision::TraitFor::VCS" : {
          "file" : "lib/Module/Provision/TraitFor/VCS.pm",
-         "version" : "v0.12.1"
+         "version" : "v0.12.5"
       }
    },
    "release_status" : "stable",
@@ -120,5 +120,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.12.3"
+   "version" : "v0.12.5"
 }

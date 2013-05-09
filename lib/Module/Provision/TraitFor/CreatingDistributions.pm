@@ -1,9 +1,9 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-08 06:54 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-09 18:10 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -76,7 +76,7 @@ sub dist_pre_hook {
 
    $self->appbase->exists or $self->appbase->mkpath( $self->exec_perms );
    $self->stash->{abstract} = shift @{ $argv } || $self->stash->{abstract};
-   __chdir( $self->appbase );
+   $self->chdir( $self->appbase );
    return;
 }
 
@@ -88,7 +88,7 @@ sub edit_project : method {
 }
 
 sub generate_metadata {
-   my ($self, $create) = @_; __chdir( $self->appldir );
+   my ($self, $create) = @_; $self->chdir( $self->appldir );
 
    my $mdf; my $verbose = $create ? FALSE : TRUE;
 
@@ -119,7 +119,7 @@ sub metadata : method {
 }
 
 sub prove : method {
-   my $self = shift; __chdir( $self->appldir );
+   my $self = shift; $self->chdir( $self->appldir );
 
    my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
 
@@ -147,14 +147,6 @@ sub _project_file_path {
    my $self = shift; return $self->appldir->catfile( $self->project_file );
 }
 
-# Private functions
-sub __chdir {
-   $_[ 0 ] or throw 'Directory not specified in __chdir'; chdir $_[ 0 ];
-   $_[ 0 ] eq getcwd or throw error => 'Path [_1] cannot change to',
-                              args  => [ $_[ 0 ] ];
-   return $_[ 0 ];
-}
-
 1;
 
 __END__
@@ -176,7 +168,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.12.$Rev: 3 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.12.$Rev: 5 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.12.$Rev: 3 $ of Module::Provision
+    This documents version v0.12.$Rev: 5 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -67,7 +67,8 @@ Description
     message text is required. The following makes for a suitable "git log"
     alias:
 
-       alias gl='git log -10 --pretty=format:"%h %ci %s" | cut -c1-79'
+       alias gl='git log -5 --pretty=format:"%h %ci %s" | \
+          cut -d" " -f1-3,5- | cut -c1-79'
 
     The default VCS used by the create distribution methods can be changed
     from the command line or from the configuration file

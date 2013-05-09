@@ -1,9 +1,9 @@
-# @(#)Ident: VCS.pm 2013-05-04 17:38 pjf ;
+# @(#)Ident: VCS.pm 2013-05-09 18:11 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -87,7 +87,7 @@ sub _get_rev_file {
 }
 
 sub _initialize_git {
-   my $self = shift; my $class = blessed $self; __chdir( $self->appldir );
+   my $self = shift; my $class = blessed $self; $self->chdir( $self->appldir );
 
    $self->run_cmd  ( 'git init'   );
    $self->_add_hook( 'commit-msg' );
@@ -98,7 +98,7 @@ sub _initialize_git {
 }
 
 sub _initialize_svn {
-   my $self = shift; my $class = blessed $self; __chdir( $self->appbase );
+   my $self = shift; my $class = blessed $self; $self->chdir( $self->appbase );
 
    my $repository = $self->appbase->catdir( $self->repository );
 
@@ -121,7 +121,7 @@ sub _initialize_svn {
    my $msg = "Add RCS keywords to project files";
 
    $self->run_cmd( "svn commit ${branch} -m '${msg}'" );
-   __chdir( $self->appldir );
+   $self->chdir( $self->appldir );
    $self->run_cmd( 'svn update' );
    return;
 }
@@ -154,7 +154,7 @@ sub _reset_rev_keyword {
 }
 
 sub _svn_ignore_meta_files {
-   my $self = shift; __chdir( $self->appldir );
+   my $self = shift; $self->chdir( $self->appldir );
 
    my $ignores = "LICENSE\nMANIFEST\nMETA.json\nMETA.yml\nREADME";
 
@@ -162,14 +162,6 @@ sub _svn_ignore_meta_files {
    $self->run_cmd( 'svn commit -m "Ignoring meta files" .' );
    $self->run_cmd( 'svn update' );
    return;
-}
-
-# Private functions
-sub __chdir {
-   $_[ 0 ] or throw 'Directory not specified'; chdir $_[ 0 ];
-   $_[ 0 ] eq getcwd or throw error => 'Path [_1] cannot change to',
-                              args  => [ $_[ 0 ] ];
-   return $_[ 0 ];
 }
 
 1;
@@ -191,7 +183,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.12.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.12.$Rev: 5 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 
