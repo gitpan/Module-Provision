@@ -76,7 +76,7 @@
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.12.5"
+         "version" : "v0.12.6"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
@@ -120,5 +120,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.12.5"
+   "version" : "v0.12.6"
 }

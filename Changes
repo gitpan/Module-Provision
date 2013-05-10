@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.12.5    2013-05-09 19:15:43
+0.12.6    2013-05-10 20:25:54
+          - Added osname output to 01always_pass.t
           - Added chdir public method in ::Base
           - Improved SVN detection logic
           - Modify appldir builder if creating a dist
