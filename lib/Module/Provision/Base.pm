@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-09 18:13 pjf ;
+# @(#)Ident: Base.pm 2013-05-11 01:07 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -11,6 +11,8 @@ use Class::Usul::Functions       qw(app_prefix class2appdir classdir distname
 use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
 use File::DataClass::Constraints qw(Directory OctalNum Path);
+use Module::Metadata;
+use Perl::Version;
 
 extends q(Class::Usul::Programs);
 
@@ -68,6 +70,9 @@ has '_binsdir'         => is => 'lazy', isa => Path, coerce => TRUE,
 has '_dist_module'     => is => 'lazy', isa => Path, coerce => TRUE,
    default             => sub { [ $_[ 0 ]->homedir.'.pm' ] },
    reader              => 'dist_module';
+
+has '_dist_version'    => is => 'lazy', isa => Object,
+   reader              => 'dist_version';
 
 has '_distname'        => is => 'lazy', isa => NonEmptySimpleStr,
    default             => sub { distname $_[ 0 ]->project },
@@ -127,7 +132,7 @@ sub _build__appldir {
 
    my $branch = $self->branch; my $vcs = $self->vcs;
 
-   $self->debug and $self->warning
+   $self->debug and $self->info
       ( "Appbase: ${appbase}, Branch: ${branch}, VCS: ${vcs}" );
 
    return $appbase->catdir( $branch )->exists ? $appbase->catdir( $branch )
@@ -151,6 +156,14 @@ sub _build_builder {
    }
 
    return undef;
+}
+
+sub _build__dist_version {
+   my $self   = shift;
+   my $module = $self->dist_module->abs2rel( $self->appldir );
+   my $info   = Module::Metadata->new_from_file( $module );
+
+   return Perl::Version->new( $info ? $info->version : '0.1.1' );
 }
 
 sub _build__exec_perms {
@@ -216,6 +229,7 @@ sub _build__stash {
             copyright_year => time2str( '%Y' ),
             creation_date  => time2str,
             dist_module    => $self->dist_module->abs2rel( $self->appldir ),
+            dist_version   => $self->dist_version,
             distname       => $self->distname,
             first_name     => lc ((split SPC, $author)[ 0 ]),
             home_page      => $config->home_page,
@@ -273,7 +287,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.12.$Rev: 5 $ of L<Module::Provision::Base>
+This documents version v0.13.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
@@ -330,7 +344,13 @@ or C<svn>
 
 =head1 Subroutines/Methods
 
-None
+=head2 chdir
+
+   $directory = $self->chdir( $directory );
+
+Changes the current working directory to the one supplied and returns it.
+Throws if the operation was not successful. Compares C<inode> numbers to
+determine success
 
 =head1 Diagnostics
 

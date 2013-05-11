@@ -1,27 +1,25 @@
-# @(#)Ident: Config.pm 2013-05-08 02:48 pjf ;
+# @(#)Ident: Config.pm 2013-05-10 23:55 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Null;
 use Class::Usul::Moose;
 use Class::Usul::Constants;
-use Class::Usul::Functions       qw(untaint_cmdline untaint_identifier);
-use English                      qw(-no_match_vars);
+use Class::Usul::Functions       qw(fullname loginid logname untaint_cmdline
+                                    untaint_identifier);
 use File::DataClass::Constraints qw(Path);
-use User::pwent;
 
 extends qw(Class::Usul::Config::Programs);
-
-my $osname = lc $OSNAME;
 
 # Object attributes (public)
 has 'author'          => is => 'lazy', isa => NonEmptySimpleStr;
 
 has 'author_email'    => is => 'lazy', isa => NonEmptySimpleStr;
 
-has 'author_id'       => is => 'lazy', isa => NonEmptySimpleStr;
+has 'author_id'       => is => 'lazy', isa => NonEmptySimpleStr,
+   default            => sub { loginid };
 
 has 'base'            => is => 'lazy', isa => Path, coerce => TRUE,
    default            => sub { $_[ 0 ]->my_home };
@@ -44,6 +42,12 @@ has 'module_abstract' => is => 'lazy', isa => NonEmptySimpleStr,
 has 'repository'      => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'repository';
 
+has 'signing_key'     => is => 'lazy', isa => SimpleStr,
+   default            => q();
+
+has 'tag_message'     => is => 'lazy', isa => NonEmptySimpleStr,
+   default            => 'Released';
+
 has 'template_index'  => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'index.json';
 
@@ -52,7 +56,7 @@ has 'vcs'             => is => 'lazy', isa => NonEmptySimpleStr,
 
 # Private methods
 sub _build_author {
-   my $author = untaint_cmdline( $ENV{AUTHOR} || __fullname() || __logname() );
+   my $author = untaint_cmdline( $ENV{AUTHOR} || fullname || logname );
 
    $author =~ s{ [\'] }{\'}gmx; return $author;
 }
@@ -61,27 +65,6 @@ sub _build_author_email {
    my $email = untaint_cmdline( $ENV{EMAIL} || 'dave@example.com' );
 
    $email =~ s{ [\'] }{\'}gmx; return $email;
-}
-
-sub _build_author_id {
-   return untaint_cmdline( __loginid() );
-}
-
-# Private functions
-sub __fullname {
-   return (split m{ \s* , \s * }msx, (__get_user()->gecos || q()))[ 0 ];
-}
-
-sub __get_user {
-   return $osname eq EVIL ? Class::Null->new : getpwuid( $UID );
-}
-
-sub __loginid {
-   return __get_user()->name || 'unknown';
-}
-
-sub __logname {
-   return $ENV{USER} || $ENV{LOGNAME} || __loginid;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -108,7 +91,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.12.$Rev: 2 $ of L<Module::Provision::Config>
+This documents version v0.13.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 

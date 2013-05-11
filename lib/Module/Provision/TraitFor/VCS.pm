@@ -1,15 +1,16 @@
-# @(#)Ident: VCS.pm 2013-05-09 18:11 pjf ;
+# @(#)Ident: VCS.pm 2013-05-11 01:58 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.12.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
 use Class::Usul::Functions qw(throw);
 use Cwd                    qw(getcwd);
 use MooseX::Types::Moose   qw(Bool);
+use Perl::Version;
 
 requires qw(appldir distname vcs);
 
@@ -35,6 +36,16 @@ around 'substitute_version' => sub {
    return;
 };
 
+around 'update_version_pre_hook' => sub {
+   my ($next, $self, @args) = @_;
+
+   my @res = $self->_get_version_numbers( $self->$next( @args ) );
+
+   $self->vcs ne 'none' and $self->_add_tag( $res[ 0 ] );
+
+   return @res;
+};
+
 after 'update_version_post_hook' => sub {
    my $self = shift; $self->_reset_rev_file( FALSE ); return;
 };
@@ -55,6 +66,39 @@ sub _add_hook {
    my $path = $self->appldir->catfile( qw(.git hooks), $hook );
 
    link ".git${hook}", $path; chmod $self->exec_perms, ".git${hook}";
+   return;
+}
+
+sub _add_tag {
+   my ($self, $tag) = @_; $tag or throw 'VCS tag version not specified';
+
+   $self->output( $self->loc( 'Creating tagged release v[_1]', $tag ) );
+   $self->vcs eq 'git' and $self->_add_tag_to_git( $tag );
+   $self->vcs eq 'svn' and $self->_add_tag_to_svn( $tag );
+   return;
+}
+
+sub _add_tag_to_git {
+   my ($self, $tag) = @_;
+
+   my $message = $self->config->tag_message;
+   my $sign    = $self->config->signing_key; $sign and $sign = "-u ${sign}";
+
+   $self->run_cmd( "git tag -d v${tag}", { err => 'null', expected_rv => 1 } );
+   $self->run_cmd( "git tag ${sign} -m '${message}' v${tag}" );
+   return;
+}
+
+sub _add_tag_to_svn {
+   my ($self, $tag) = @_; my $params = $self->quiet ? {} : { out => 'stdout' };
+
+   my $repo    = $self->_get_svn_repository;
+   my $from    = "${repo}/trunk";
+   my $to      = "${repo}/tags/v${tag}";
+   my $message = $self->config->tag_message." v${tag}";
+   my $cmd     = "svn copy --parents -m '${message}' ${from} ${to}";
+
+   $self->run_cmd( $cmd, $params );
    return;
 }
 
@@ -84,6 +128,35 @@ sub _get_rev_file {
    my $self = shift; ($self->no_auto_rev or $self->vcs ne 'git') and return;
 
    return $self->appldir->parent->catfile( lc '.'.$self->distname.'.rev' );
+}
+
+sub _get_svn_repository {
+   my $self = shift; my $info = $self->run_cmd( 'svn info' )->stdout;
+
+   return (split m{ : \s }mx, (grep { m{ \A Repository \s Root: }mx }
+                               split  m{ \n }mx, $info)[ 0 ])[ 1 ];
+}
+
+sub _get_version_numbers {
+   my ($self, @args) = @_; $args[ 0 ] and $args[ 1 ] and return @args;
+
+   my $prompt = $self->add_leader( 'Enter major/minor 0 or 1' );
+   my $comp   = $self->get_line( $prompt, 1, TRUE, 0 );
+      $prompt = $self->add_leader( 'Enter increment/decrement' );
+   my $bump   = $self->get_line( $prompt, 1, TRUE, 0 )
+                or return @args;
+   my ($from, $ver);
+
+   if ($from = $args[ 0 ]) { $ver = Perl::Version->new( $from ) }
+   else {
+      $ver  = $self->dist_version or return @args;
+      $from = __tag_from_version( $ver );
+   }
+
+   $ver->component( $comp, $ver->component( $comp ) + $bump );
+   $comp == 0 and $ver->component( 1, 0 );
+
+   return ($from, __tag_from_version( $ver ));
 }
 
 sub _initialize_git {
@@ -164,6 +237,11 @@ sub _svn_ignore_meta_files {
    return;
 }
 
+# Private functions
+sub __tag_from_version {
+   my $ver = shift; return $ver->component( 0 ).q(.).$ver->component( 1 );
+}
+
 1;
 
 __END__
@@ -183,7 +261,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.12.$Rev: 5 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.13.$Rev: 2 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 
