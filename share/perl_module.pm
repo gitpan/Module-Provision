@@ -1,7 +1,8 @@
-# @(#)Ident: perl_module.pm 2013-04-30 21:00 pjf ;
+# @(#)Ident: perl_module.pm 2013-05-11 10:18 pjf ;
 
 package [% module %];
 
+[% use_perl %]
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;

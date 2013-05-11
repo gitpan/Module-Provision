@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-11 01:07 pjf ;
+# @(#)Ident: Base.pm 2013-05-11 10:28 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -120,6 +120,15 @@ sub chdir {
    return $path;
 }
 
+sub get_manifest_paths {
+   my $self = shift;
+
+   return [ grep { $_->exists }
+            map  { $self->io( __parse_manifest_line( $_ )->[ 0 ] ) }
+            grep { not m{ \A \s* [\#] }mx }
+            $self->appldir->catfile( 'MANIFEST' )->chomp->getlines ];
+}
+
 # Private methods
 sub _build__appbase {
    my $self = shift; my $base = $self->base->absolute( $self->initial_wd );
@@ -216,9 +225,9 @@ sub _build__project_file {
 }
 
 sub _build__stash {
-   my $self = shift; my $config = $self->config;
+   my $self = shift; my $config = $self->config; my $author = $config->author;
 
-   my $author = $config->author; my $project = $self->project;
+   my $project = $self->project; my $perl_ver = $self->config->min_perl_ver;
 
    return { abstract       => $self->module_abstract,
             appdir         => class2appdir $self->distname,
@@ -237,9 +246,11 @@ sub _build__stash {
             license        => $self->license,
             license_class  => $self->_license_keys->{ $self->license },
             module         => $project,
-            perl           => $],
+            perl           => $perl_ver,
             prefix         => (split m{ :: }mx, lc $project)[ -1 ],
-            project        => $project, };
+            project        => $project,
+            use_perl       => $self->method eq 'dist'
+                            ? "use ${perl_ver};" : q(), };
 }
 
 sub _build_vcs {
@@ -265,6 +276,20 @@ sub __get_module_from { # Return main module name from contents of project file
        split m{ [\n] }mx, $_[ 0 ])[ 0 ];
 }
 
+sub __parse_manifest_line { # Robbed from ExtUtils::Manifest
+   my $line = shift; my ($file, $comment);
+
+   # May contain spaces if enclosed in '' (in which case, \\ and \' are escapes)
+   if (($file, $comment) = $line =~ m{ \A \' (\\[\\\']|.+)+ \' \s* (.*) }mx) {
+      $file =~ s{ \\ ([\\\']) }{$1}gmx;
+   }
+   else {
+       ($file, $comment) = $line =~ m{ \A (\S+) \s* (.*) }mx;
+   }
+
+   return [ $file, $comment ];
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -287,7 +312,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.13.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.14.$Rev: 2 $ of L<Module::Provision::Base>
 
 =head1 Description
 
@@ -351,6 +376,13 @@ or C<svn>
 Changes the current working directory to the one supplied and returns it.
 Throws if the operation was not successful. Compares C<inode> numbers to
 determine success
+
+=head2 get_manifest_paths
+
+   $paths = $self->get_manifest_paths;
+
+Reads the F<MANIFEST> file, parses the pathnames an returns an array ref
+of those that exist
 
 =head1 Diagnostics
 

@@ -1,8 +1,8 @@
-# @(#)Ident: Config.pm 2013-05-10 23:55 pjf ;
+# @(#)Ident: Config.pm 2013-05-11 10:29 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Null;
 use Class::Usul::Moose;
@@ -35,6 +35,9 @@ has 'home_page'       => is => 'lazy', isa => NonEmptySimpleStr,
 
 has 'license'         => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'perl';
+
+has 'min_perl_ver'    => is => 'lazy', isa => NonEmptySimpleStr,
+   default            => '5.01';
 
 has 'module_abstract' => is => 'lazy', isa => NonEmptySimpleStr,
    default            => 'One-line description of the modules purpose';
@@ -91,7 +94,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.13.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.14.$Rev: 2 $ of L<Module::Provision::Config>
 
 =head1 Description
 

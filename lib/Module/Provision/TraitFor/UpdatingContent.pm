@@ -1,12 +1,13 @@
-# @(#)Ident: UpdatingContent.pm 2013-05-11 02:03 pjf ;
+# @(#)Ident: UpdatingContent.pm 2013-05-11 04:37 pjf ;
 
 package Module::Provision::TraitFor::UpdatingContent;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
+use Class::Usul::Functions qw(throw);
 
 requires qw(appldir);
 
@@ -26,7 +27,7 @@ sub update_copyright_year : method {
 
    $self->output( $self->loc( 'Updating copyright year' ) );
 
-   for my $path (@{ $self->_get_manifest_paths }) {
+   for my $path (@{ $self->get_manifest_paths }) {
       $path->substitute( "\Q${prefix} ${from}\E", "${prefix} ${to}" );
    }
 
@@ -42,7 +43,7 @@ sub update_version : method {
 
    ($from, $to) = $self->update_version_pre_hook( $from, $to );
 
-   for my $path (@{ $self->_get_manifest_paths }) {
+   for my $path (@{ $self->get_manifest_paths }) {
       $ignore and $path =~ m{ (?: $ignore ) }mx and next;
       $self->substitute_version( $path, $from, $to );
    }
@@ -55,7 +56,11 @@ sub update_version_post_hook { # Can be modified by applied traits
 }
 
 sub update_version_pre_hook { # Can be modified by applied traits
-   my $self = shift; return @_;
+   my ($self, @args) = @_;
+
+   ($args[ 0 ] and $args[ 1 ]) or throw 'Insufficient arguments';
+
+   return @args;
 }
 
 # Private methods
@@ -67,32 +72,8 @@ sub _get_ignore_rev_regex {
    return $ignore_rev->exists ? join '|', $ignore_rev->getlines : undef;
 }
 
-sub _get_manifest_paths {
-   my $self = shift;
-
-   return [ grep { $_->exists }
-            map  { $self->io( __parse_manifest_line( $_ )->[ 0 ] ) }
-            grep { not m{ \A \s* [\#] }mx }
-            $self->appldir->catfile( 'MANIFEST' )->chomp->getlines ];
-}
-
 sub _get_update_args {
    return (shift @{ $_[ 0 ]->extra_argv }, shift @{ $_[ 0 ]->extra_argv });
-}
-
-# Private functions
-sub __parse_manifest_line { # Robbed from ExtUtils::Manifest
-   my $line = shift; my ($file, $comment);
-
-   # May contain spaces if enclosed in '' (in which case, \\ and \' are escapes)
-   if (($file, $comment) = $line =~ m{ \A \' (\\[\\\']|.+)+ \' \s* (.*) }mx) {
-      $file =~ s{ \\ ([\\\']) }{$1}gmx;
-   }
-   else {
-       ($file, $comment) = $line =~ m{ \A (\S+) \s* (.*) }mx;
-   }
-
-   return [ $file, $comment ];
 }
 
 1;
@@ -116,7 +97,7 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
 =head1 Version
 
-This documents version v0.13.$Rev: 2 $ of L<Module::Provision::TraitFor::UpdatingContent>
+This documents version v0.14.$Rev: 1 $ of L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description
 

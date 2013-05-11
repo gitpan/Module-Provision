@@ -11,24 +11,19 @@ license  '[% license %]';
 
 perl_version [% perl %];
 
-configure_requires
-   ( 'version'          => 0.77,
-     'Module::Install'  => 0, );
-
-build_requires
-   ( 'Exception::Class' => 1.23,
-     'Test::More'       => 0.74, );
-
 requires
-   ( 'version'          => 0.77,
-     'Class::Usul'      => q(0.18.0),
-     'File::DataClass'  => q(0.20.0), );
+   ( 'Class::Usul'     => q(0.19.0), );
 
 recommends
-   ( 'App::cpanminus'   => 1.6005,
-     'Date::Format'     => 2.24,
-     'Pod::Markdown'    => 1.322,
-     'Module::Metadata' => 1.000011, );
+   ( 'App::cpanminus'  => 1.6005, );
+
+configure_requires
+   ( 'version'         => 0.88,
+     'Module::Install' => 0, );
+
+build_requires
+   ( 'version'         => 0.88,
+     'Module::Install' => 0, );
 
 resources
    ( bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=[% distname %]',

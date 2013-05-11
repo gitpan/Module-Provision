@@ -1,6 +1,12 @@
 Revision history for Module::Provision
 
-0.13.1    2013-05-11 02:53:29
+0.14.2    2013-05-11 14:57:38
+          - Added ::TraitFor::UploadingToCPAN
+          - Added ::TraitFor::PrereqDifferences
+
+0.13.4    2013-05-11 04:12:04
+          - Updated POD
+          - Added _should_add_tag to ::VCS
           - Updated POD, added mission use statement
           - Added release tagging and version number prompting
 

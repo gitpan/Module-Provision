@@ -1,9 +1,10 @@
-# @(#)Ident: Provision.pm 2013-05-10 23:23 pjf ;
+# @(#)Ident: Provision.pm 2013-05-11 13:55 pjf ;
 
 package Module::Provision;
 
+use 5.01;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -13,6 +14,8 @@ with    q(Module::Provision::TraitFor::CreatingDistributions);
 with    q(Module::Provision::TraitFor::UpdatingContent);
 with    q(Module::Provision::TraitFor::VCS);
 with    q(Module::Provision::TraitFor::AddingFiles);
+with    q(Module::Provision::TraitFor::PrereqDifferences);
+with    q(Module::Provision::TraitFor::UploadingToCPAN);
 
 __PACKAGE__->meta->make_immutable;
 
@@ -30,7 +33,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.13.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.14.$Rev: 2 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -53,11 +56,11 @@ This documents version v0.13.$Rev: 1 $ of L<Module::Provision>
    # Edit the project master file
    mp -q edit_project
 
-   # Update the version numbers of the project files
-   mp update_version 0.1 0.2
-
    # Regenerate meta data files
    mp metadata
+
+   # Update the version numbers of the project files
+   mp update_version 0.1 0.2
 
    # Command line help
    mp -? | -H | -h [sub-command] | list_methods | dump_self
@@ -66,13 +69,13 @@ This documents version v0.13.$Rev: 1 $ of L<Module::Provision>
 
 L<Module::Provision> is used to create a skeletal CPAN distribution,
 including basic builder scripts, tests, documentation, and module
-code. It creates a VCS repository and, in the Git case, installs some
-hooks that mimic the RCS Revision keyword expansion
+code. It creates a VCS repository and, with Git as the VCS, installs
+some hooks that mimic the RCS Revision keyword expansion
 
 On first use the directory F<~/.module_provision> is created and
 populated with templates and an index file F<index.json>. The author
 name, id, and email are derived from the system (the environment
-variables C<AUTHOR> and C<EMAIL> take precedence). The can be
+variables C<AUTHOR> and C<EMAIL> take precedence). They can be
 overridden by the values in the configuration file
 F<~/.module_provision/module_provision.json>
 
@@ -167,10 +170,11 @@ This Lisp code will do likewise when a F<dist.ini> file is edited:
 =head1 Configuration and Environment
 
 The configuration file defaults to
-F<~/.module_provision/module_provision.json>. All of the attributes listed in
-L<Module::Provision::Config> can set from the configuration file in addition
-to the attributes listed in L<Class::Usul::Config::Programs> and
-L<Class::Usul::Config>. A typical file looks like;
+F<~/.module_provision/module_provision.json>. All of the attributes
+listed in L<Module::Provision::Config> can be set from the
+configuration file in addition to the attributes listed in
+L<Class::Usul::Config::Programs> and L<Class::Usul::Config>. A typical
+file looks like;
 
    {
       "author": "<first_name> <last_name>",
@@ -186,12 +190,18 @@ Creating F<logs> and F<tmp> directories in F<~/.module_provision> will cause
 the log and temporary files to use them instead of F</tmp>
 
 Extends L<Module::Provision::Base>. Applies these traits;
-C<AddingFiles>, C<Config>, C<CreatingDistributions>, C<Rendering>,
+C<AddingFiles>, C<CreatingDistributions>, C<Rendering>,
 C<UpdatingContent>, and C<VCS>
 
-Defines no attributes
+This class defines no attributes
 
 =head1 Subroutines/Methods
+
+=head2 cpan_upload
+
+   module_provision cpan_upload 'optional_distribution_path'
+
+Uploads the current distribution to CPAN
 
 =head2 dist
 
@@ -231,6 +241,13 @@ Creates a new module specified by the class name on the command line
 
 Creates a new program specified by the program name on the command line
 
+=head2 prereq_diffs
+
+   module_provision prereq_diffs
+
+Displays a report showing which pre-requisite modules should be added to,
+removed from, or updated in the project file
+
 =head2 prove
 
    module_provision prove
@@ -264,7 +281,8 @@ files in the F<MANIFEST>
    module_provision update_version 0.1 0.2
 
 Substitutes the existing version number for the new version number in all
-files in the F<MANIFEST>
+files in the F<MANIFEST>. Prompts for the major/minor and bump if the
+version numbers are not provided
 
 =head1 Diagnostics
 

@@ -1,9 +1,9 @@
-# @(#)Ident: VCS.pm 2013-05-11 01:58 pjf ;
+# @(#)Ident: VCS.pm 2013-05-11 03:11 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.13.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -14,6 +14,7 @@ use Perl::Version;
 
 requires qw(appldir distname vcs);
 
+# Public attributes
 has 'no_auto_rev' => is => 'ro', isa => Bool, default => FALSE,
    documentation  => 'Do not turn on Revision keyword expansion';
 
@@ -39,11 +40,11 @@ around 'substitute_version' => sub {
 around 'update_version_pre_hook' => sub {
    my ($next, $self, @args) = @_;
 
-   my @res = $self->_get_version_numbers( $self->$next( @args ) );
+   my @vnums = $self->_get_version_numbers( @args );
 
-   $self->vcs ne 'none' and $self->_add_tag( $res[ 0 ] );
+   $self->_should_add_tag( @vnums ) and $self->_add_tag( $vnums[ 0 ] );
 
-   return @res;
+   return $self->$next( @vnums );
 };
 
 after 'update_version_post_hook' => sub {
@@ -143,8 +144,7 @@ sub _get_version_numbers {
    my $prompt = $self->add_leader( 'Enter major/minor 0 or 1' );
    my $comp   = $self->get_line( $prompt, 1, TRUE, 0 );
       $prompt = $self->add_leader( 'Enter increment/decrement' );
-   my $bump   = $self->get_line( $prompt, 1, TRUE, 0 )
-                or return @args;
+   my $bump   = $self->get_line( $prompt, 1, TRUE, 0 ) or return @args;
    my ($from, $ver);
 
    if ($from = $args[ 0 ]) { $ver = Perl::Version->new( $from ) }
@@ -226,6 +226,17 @@ sub _reset_rev_keyword {
    return;
 }
 
+sub _should_add_tag {
+   my ($self, $from, $to) = @_;
+
+   ($self->vcs ne 'none' and $from and $to) or return FALSE;
+
+   my $from_ver = Perl::Version->new( $from );
+   my $to_ver   = Perl::Version->new( $to   );
+
+   return $to_ver > $from_ver ? TRUE : FALSE;
+}
+
 sub _svn_ignore_meta_files {
    my $self = shift; $self->chdir( $self->appldir );
 
@@ -261,13 +272,30 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.13.$Rev: 2 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.14.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 
 Interface to Version Control Systems
 
 =head1 Configuration and Environment
+
+Modifies
+L<Module::Provision::TraitFor::CreatingDistributions/dist_post_hook>
+where it initializes the VCS, ignore meta files and resets the
+revision number file
+
+Modifies
+L<Module::Provision::TraitFor::UpdatingContent/substitute_version>
+where it resets the Revision keyword values
+
+Modifies
+L<Module::Provision::TraitFor::UpdatingContent/update_version_pre_hook>
+where it prompts for version numbers and creates tagged releases
+
+Modifies
+L<Module::Provision::TraitFor::UpdatingContent/update_version_post_hook>
+where it resets the revision number file
 
 Requires these attributes to be defined in the consuming class;
 C<appldir>, C<distname>, C<vcs>

@@ -3,12 +3,12 @@ abstract: 'Create Perl distributions with VCS and selectable toolchain'
 author:
   - 'Peter Flanigan, C<< <pjfl@cpan.org> >>'
 build_requires:
-  Exception::Class: 1.23
-  File::DataClass: v0.20.0
-  Test::More: 0.74
+  File::DataClass: v0.20.7
+  Module::Build: 0.4004
+  version: 0.88
 configure_requires:
-  Module::Build: 0.38
-  version: 0.77
+  Module::Build: 0.4004
+  version: 0.88
 dynamic_config: 1
 generated_by: 'Module::Build version 0.4004, CPAN::Meta::Converter version 2.120921'
 license: perl
@@ -26,31 +26,37 @@ no_index:
 provides:
   Dist::Zilla::Plugin::ManifestInRoot:
     file: lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-    version: v0.13.1
+    version: v0.14.1
   Module::Provision:
     file: lib/Module/Provision.pm
-    version: v0.13.1
+    version: v0.14.2
   Module::Provision::Base:
     file: lib/Module/Provision/Base.pm
-    version: v0.13.1
+    version: v0.14.2
   Module::Provision::Config:
     file: lib/Module/Provision/Config.pm
-    version: v0.13.1
+    version: v0.14.2
   Module::Provision::TraitFor::AddingFiles:
     file: lib/Module/Provision/TraitFor/AddingFiles.pm
-    version: v0.13.1
+    version: v0.14.1
   Module::Provision::TraitFor::CreatingDistributions:
     file: lib/Module/Provision/TraitFor/CreatingDistributions.pm
-    version: v0.13.1
+    version: v0.14.1
+  Module::Provision::TraitFor::PrereqDifferences:
+    file: lib/Module/Provision/TraitFor/PrereqDifferences.pm
+    version: v0.14.2
   Module::Provision::TraitFor::Rendering:
     file: lib/Module/Provision/TraitFor/Rendering.pm
-    version: v0.13.1
+    version: v0.14.1
   Module::Provision::TraitFor::UpdatingContent:
     file: lib/Module/Provision/TraitFor/UpdatingContent.pm
-    version: v0.13.2
+    version: v0.14.1
+  Module::Provision::TraitFor::UploadingToCPAN:
+    file: lib/Module/Provision/TraitFor/UploadingToCPAN.pm
+    version: v0.14.2
   Module::Provision::TraitFor::VCS:
     file: lib/Module/Provision/TraitFor/VCS.pm
-    version: v0.13.2
+    version: v0.14.1
 recommends:
   App::cpanminus: 1.6005
 requires:
@@ -60,28 +66,29 @@ requires:
   Dist::Zilla: 4.300033
   Dist::Zilla::Plugin::ReadmeAnyFromPod: 0.12012
   Dist::Zilla::Plugin::VersionFromModule: 0.08
-  File::DataClass: v0.20.0
+  File::DataClass: v0.20.7
   File::ShareDir: 1.02
   File::Slurp: 9999.13
-  Module::Build: 0.38
+  Module::Build: 0.4004
   Module::Install: 1.06
   Module::Install::AutoLicense: 0.08
   Module::Install::ReadmeFromPod: 0.2
   Module::Install::ReadmeMarkdownFromPod: 0.03
   Module::Metadata: 1.000011
-  Moose: 2.0801
+  Moose: 2.0802
   Moose::Autobox: 0.12
-  MooseX::Types::Common: 0.001002
-  MooseX::Types::Moose: 0.25
+  MooseX::Types: 0.35
+  MooseX::Types::Common: 0.001008
   Perl::Version: 1.011
+  Pod::Eventual: 0.09333
   Pod::Markdown: 1.322
   Template: 2.22
   Text::Format: 0.53
+  namespace::autoclean: 0.13
   perl: 5.01
-  version: 0.77
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Module-Provision
   homepage: http://www.roxsoft.co.uk
   license: http://dev.perl.org/licenses/
   repository: git://github.com/pjfl/Module-Provision.git
-version: v0.13.1
+version: v0.14.2
