@@ -1,26 +1,29 @@
-# @(#)Ident: Build.PL 2013-05-11 08:48 pjf ;
+# @(#)Ident: Build.PL 2013-05-12 16:38 pjf ;
 
 use strict;
 use warnings;
 use inc::Bob; # Module::Build subclass
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 Bob->new( {
    module    => q(Module::Provision),
    home_page => q(http://www.roxsoft.co.uk),
    requires  => {
-      'perl'                  => 5.010,
+      'perl'                  => 5.01,
       'namespace::autoclean'  => 0.13,
       'Class::Null'           => 2.101420,
-      'Class::Usul'           => q(0.18.6),
+      'Class::Usul'           => q(0.19.3),
+      'CPAN::Uploader'        => 0.103004,
       'Date::Format'          => 2.24,
       'Dist::Zilla'           => 4.300033,
       'Dist::Zilla::Plugin::ReadmeAnyFromPod'  => 0.120120,
       'Dist::Zilla::Plugin::VersionFromModule' => 0.08,
-      'File::DataClass'       => q(0.20.7),
+      'File::DataClass'       => q(0.20.8),
       'File::ShareDir'        => 1.02,
       'File::Slurp'           => 9999.13,
-      'Module::Build'         => 0.4004,
+      'HTTP::Message'         => 6.06,
+      'LWP::Protocol::https'  => 6.03,
+      'LWP::UserAgent'        => 6.04,
       'Module::Install'       => 1.06,
       'Module::Install::AutoLicense'           => 0.08,
       'Module::Install::ReadmeFromPod'         => 0.20,

@@ -1,14 +1,15 @@
-# @(#)Ident: PrereqDifferences.pm 2013-05-11 12:51 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-05-11 20:10 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(exception say throw);
+use Class::Usul::Functions qw(classfile is_member say throw);
 use English                qw(-no_match_vars);
+use Module::Metadata;
 
 # Public methods
 sub prereq_diffs : method {
@@ -20,38 +21,39 @@ sub prereq_diffs : method {
 
    my $field   = shift @{ $self->extra_argv } || q(requires);
    my $filter  = "_filter_${field}_paths";
-   my $depends = $self->_dependencies( $self->$filter( $self->_source_paths ) );
-   my $used    = $self->_filter_dependents( $depends );
+   my $sources = $self->$filter( $self->_source_paths );
+   my $depends = $self->_filter_dependents( $self->_dependencies( $sources ) );
 
-   __say_diffs( $self->_compare_prereqs_with_used( $field, $used ) );
+   __say_diffs( $self->_compare_prereqs_with_used( $field, $depends ) );
    return OK;
 }
 
 # Private methods
 sub _compare_prereqs_with_used {
-   my ($self, $field, $used) = @_; my $file = $self->project_file;
+   my ($self, $field, $depends) = @_;
 
+   my $file       = $self->project_file;
    my $prereqs    = $self->_prereq_data->{ $field };
    my $add_key    = "Would add these to the ${field} in ${file}";
    my $remove_key = "Would remove these from the ${field} in ${file}";
    my $update_key = "Would update these in the ${field} in ${file}";
    my $result     = {};
 
-   for (grep { defined $used->{ $_ } } keys %{ $used }) {
+   for (grep { defined $depends->{ $_ } } keys %{ $depends }) {
       if (exists $prereqs->{ $_ }) {
          my $oldver = version->new( $prereqs->{ $_ } );
-         my $newver = version->new( $used->{ $_ }    );
+         my $newver = version->new( $depends->{ $_ } );
 
          if ($newver != $oldver) {
             $result->{ $update_key }->{ $_ }
-               = $prereqs->{ $_ }.q( => ).$used->{ $_ };
+               = $prereqs->{ $_ }.q( => ).$depends->{ $_ };
          }
       }
-      else { $result->{ $add_key }->{ $_ } = $used->{ $_ } }
+      else { $result->{ $add_key }->{ $_ } = $depends->{ $_ } }
    }
 
    for (keys %{ $prereqs }) {
-      exists $used->{ $_ }
+      exists $depends->{ $_ }
          or $result->{ $remove_key }->{ $_ } = $prereqs->{ $_ };
    }
 
@@ -73,12 +75,16 @@ sub _consolidate {
          $try_module =~ s{ :: [^:]+ \z }{}mx;
       }
 
-      unless ($module) {
-         $result{ $used_key } = $used->{ $used_key }; next;
-      }
+      my $was = $module; $used_dist and not $curr_dist
+         and $module = __recover_module_name( $used_dist->base_id )
+         and $self->debug
+         and $self->output( "Recovered ${module} from ${was}" );
 
-      exists $dists{ $module } and next;
-      $dists{ $module } = $self->_version_from_module( $module );
+      if ($module) {
+         not exists $dists{ $module }
+            and $dists{ $module } = $self->_version_from_module( $module );
+      }
+      else { $result{ $used_key } = $used->{ $used_key } }
    }
 
    $result{ $_ } = $dists{ $_ } for (keys %dists);
@@ -165,11 +171,13 @@ sub _source_paths {
 }
 
 sub _version_from_module {
-   my ($self, $module) = @_; my $version;
+   my ($self, $module) = @_;
 
-   eval "no warnings; require ${module}; \$version = ${module}->VERSION;";
+   my $inc  = [ $self->libdir, @INC ];
+   my $info = Module::Metadata->new_from_module( $module, inc => $inc );
+   my $ver; $info and $info->version and $ver = $info->version;
 
-   return exception() || ! $version ? undef : $version;
+   return $ver ? Perl::Version->new( $ver ) : undef;
 }
 
 # Private functions
@@ -242,6 +250,12 @@ sub __read_non_pod_lines {
                      grep { $_->{type} eq q(nonpod) } @{ $p };
 }
 
+sub __recover_module_name {
+   my $id = shift;  my @parts = split m{ [\-] }mx, $id; my $ver = pop @parts;
+
+   return  join '::', @parts;
+}
+
 sub __say_diffs {
    my $diffs = shift; __draw_line();
 
@@ -279,7 +293,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $ of
+This documents version v0.15.$Rev: 2 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

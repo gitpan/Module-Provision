@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::VCS;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -272,7 +272,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.14.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.15.$Rev: 2 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 

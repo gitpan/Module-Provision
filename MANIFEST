@@ -9,11 +9,11 @@ lib/Module/Provision.pm
 lib/Module/Provision/Base.pm
 lib/Module/Provision/Config.pm
 lib/Module/Provision/TraitFor/AddingFiles.pm
+lib/Module/Provision/TraitFor/CPANDistributions.pm
 lib/Module/Provision/TraitFor/CreatingDistributions.pm
 lib/Module/Provision/TraitFor/PrereqDifferences.pm
 lib/Module/Provision/TraitFor/Rendering.pm
 lib/Module/Provision/TraitFor/UpdatingContent.pm
-lib/Module/Provision/TraitFor/UploadingToCPAN.pm
 lib/Module/Provision/TraitFor/VCS.pm
 LICENSE
 MANIFEST			This list of files

@@ -1,10 +1,10 @@
-# @(#)Ident: Provision.pm 2013-05-11 13:55 pjf ;
+# @(#)Ident: Provision.pm 2013-05-12 17:59 pjf ;
 
 package Module::Provision;
 
 use 5.01;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -15,7 +15,7 @@ with    q(Module::Provision::TraitFor::UpdatingContent);
 with    q(Module::Provision::TraitFor::VCS);
 with    q(Module::Provision::TraitFor::AddingFiles);
 with    q(Module::Provision::TraitFor::PrereqDifferences);
-with    q(Module::Provision::TraitFor::UploadingToCPAN);
+with    q(Module::Provision::TraitFor::CPANDistributions);
 
 __PACKAGE__->meta->make_immutable;
 
@@ -33,7 +33,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $ of L<Module::Provision>
+This documents version v0.15.$Rev: 3 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -199,9 +199,15 @@ This class defines no attributes
 
 =head2 cpan_upload
 
-   module_provision cpan_upload 'optional_distribution_path'
+   module_provision cpan_upload 'optional_version_number'
 
-Uploads the current distribution to CPAN
+By default uploads the projects current distribution to CPAN
+
+=head2 delete_cpan_files
+
+   module_provision delete_cpan_files v0.1.1
+
+Deletes a specified version of the projects distributions from CPAN
 
 =head2 dist
 

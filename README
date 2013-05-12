@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.14.$Rev: 2 $ of Module::Provision
+    This documents version v0.15.$Rev: 3 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -159,9 +159,14 @@ Configuration and Environment
 
 Subroutines/Methods
   cpan_upload
-       module_provision cpan_upload 'optional_distribution_path'
+       module_provision cpan_upload 'optional_version_number'
 
-    Uploads the current distribution to CPAN
+    By default uploads the projects current distribution to CPAN
+
+  delete_cpan_files
+       module_provision delete_cpan_files v0.1.1
+
+    Deletes a specified version of the projects distributions from CPAN
 
   dist
        module_provision dist Foo::Bar 'Optional one line abstract'

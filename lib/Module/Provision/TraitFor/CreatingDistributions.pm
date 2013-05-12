@@ -1,9 +1,9 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-09 18:10 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-12 16:59 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -32,6 +32,15 @@ around '_build_builder' => sub {
 
    return !$builder && $self->method eq 'dist'
         ? $self->config->builder : $builder;
+};
+
+around '_build_project' => sub {
+   my ($next, $self, @args) = @_; my $project;
+
+   $self->method eq 'dist' and $project = shift @{ $self->extra_argv }
+      and return $project;
+
+   return $self->$next( @args );
 };
 
 around '_build_vcs' => sub {
@@ -168,7 +177,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.14.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.15.$Rev: 3 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

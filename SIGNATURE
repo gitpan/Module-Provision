@@ -14,28 +14,28 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 9b392e1a65c7abe5f402289271196afdeadd1e45 Build.PL
-SHA1 75c5daa3b6ac2df9fa7ed09e20517bb74c8abf1f Changes
+SHA1 2e745d73d94d3866e0cd3fdf87c6ba94ef664546 Build.PL
+SHA1 d91060e9de20ef90b877d7af2d74277ca9ed3d0a Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
-SHA1 05021e0b4d08b4d9ff76f567c03611b06b5ab75a MANIFEST
-SHA1 02067d7fa8aecdb0e72101b6bfa513e53f9f1833 META.json
-SHA1 368a4a276f1fb17b117b7d54563bd35fce529afc META.yml
-SHA1 bb2e424896cf2115d01bae21a24b104b10ac0b74 README
-SHA1 b4d48f1bd777c38d27bf5de6c51bee2b328e2930 bin/module_provision
+SHA1 9a4988647ffbefd1c71d367b484eb87ef4bb8ddd MANIFEST
+SHA1 1d4abf0911bc7b384c566e605b95fa2e8a332d30 META.json
+SHA1 b5c65c4eb2310e92b9635d8b62921aea2a23c462 META.yml
+SHA1 5972a15f4660112f34fe3772a95dbff09055bc17 README
+SHA1 17a09471a7b0cb8a02dc27e60980a351be891e66 bin/module_provision
 SHA1 2dad6b015a19acb067ac9b3d677292796ecdb1c9 inc/Bob.pm
 SHA1 b07e8082b9ed2291fe4cf6988acef2d114dcbcc5 inc/CPANTesting.pm
 SHA1 3e461b4687dcea7680dc96761ecd703556759063 inc/SubClass.pm
-SHA1 4c3210ba3e25b6ad9e23b12cbe71c1274e2e3c21 lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 ac3790dd6a3bb7b9b99e0ab1f51def395580cf2e lib/Module/Provision.pm
-SHA1 7baf65aee7467be70638b8115da5f2cf07e622a1 lib/Module/Provision/Base.pm
-SHA1 5447b624d1a6bede2436e1f06887baa846070ee1 lib/Module/Provision/Config.pm
-SHA1 b1d79bd3e61d6adea3978cd6a52a658ec17d107d lib/Module/Provision/TraitFor/AddingFiles.pm
-SHA1 e68c4fb15a735cf3c1b72813f63f316ce6ede4c2 lib/Module/Provision/TraitFor/CreatingDistributions.pm
-SHA1 61e1a98ecb61ea685d59f84f6fe14219d1a2bfdd lib/Module/Provision/TraitFor/PrereqDifferences.pm
-SHA1 d076748bb873d003767d1f46caca279c5d2e9fa5 lib/Module/Provision/TraitFor/Rendering.pm
-SHA1 c487089db5d23a99994d4152a3bbd823ee566814 lib/Module/Provision/TraitFor/UpdatingContent.pm
-SHA1 64202c1c4c9142981291a3f11342ffbf9a834ea7 lib/Module/Provision/TraitFor/UploadingToCPAN.pm
-SHA1 eb688c0b1ac8bf0d1acbc9286fd6f1b83b9dd9b1 lib/Module/Provision/TraitFor/VCS.pm
+SHA1 b738d5d6b3b7885f3aea938e0eace5240415535a lib/Dist/Zilla/Plugin/ManifestInRoot.pm
+SHA1 c2613314633f7bbfbfd4be8ad8510458d2af8d5a lib/Module/Provision.pm
+SHA1 d0b80d56018b294410df768b01d214ae80f28c5c lib/Module/Provision/Base.pm
+SHA1 f720b612c18abb5292dd772bf46aabd6a2f60808 lib/Module/Provision/Config.pm
+SHA1 84703b4f06a3667c9f8ec87e8e3b87b09066dbd4 lib/Module/Provision/TraitFor/AddingFiles.pm
+SHA1 d5b62556243a0308c5e153a5151536a84f80759b lib/Module/Provision/TraitFor/CPANDistributions.pm
+SHA1 9e7e7ed8526c33410ea90b9a7cdcc1f05fac276f lib/Module/Provision/TraitFor/CreatingDistributions.pm
+SHA1 5760e1c4fb6e7317a6fce759187b3fb86ec84ca7 lib/Module/Provision/TraitFor/PrereqDifferences.pm
+SHA1 0a1f02a7073feb5598e91afdec0316cdbd6ff581 lib/Module/Provision/TraitFor/Rendering.pm
+SHA1 5e9fc28ede41768aaa5e539e5de73f58350d11ef lib/Module/Provision/TraitFor/UpdatingContent.pm
+SHA1 ea829ca0be3ebc3318320bd0f6c19b9070bd16cc lib/Module/Provision/TraitFor/VCS.pm
 SHA1 6bd934b0e01e1e5f0c23e768050fde8ec213cfe4 share/01always_pass.t
 SHA1 5bd00eb03f1d739bb1e94faf081c5c03fb119973 share/02pod.t
 SHA1 3b0b8c839082ac9e966ff051af801856f400159b share/03podcoverage.t
@@ -60,22 +60,22 @@ SHA1 1f422acb0e6f91dec62b8768310ff483a1d89e46 share/gitpre-commit
 SHA1 3461934a82c3c035297ee1f6273eb57c10ddcbdb share/perl_module.pm
 SHA1 971bb09b2bf9a1553cd3086dd7b2509a9467d54e share/perl_program.pl
 SHA1 6bd934b0e01e1e5f0c23e768050fde8ec213cfe4 t/01always_pass.t
-SHA1 bc1034c18b029ef288768a3da93ab256dc0070e0 t/02pod.t
-SHA1 e843c1f00305a08d0fdcc60195cb1981807eb87b t/03podcoverage.t
-SHA1 a701aea22354abb94f008460d1e3488ca4da30ac t/04critic.t
-SHA1 ac52c5d25428c431b7f708b191be467d62b5c561 t/05kwalitee.t
-SHA1 9e02bba20e192ab24a961e409c31d0068044ea52 t/06yaml.t
-SHA1 20484dfa3e0e88ccb92c23d31577afaf9e317046 t/07podspelling.t
-SHA1 b04b4172a26771ee37936f0b5cad7d3e5298715c t/10test_script.t
+SHA1 d2bb79db62d55138755d870b2f27a2fbfa4ec084 t/02pod.t
+SHA1 36ce11c45fc2e044ef9bde4def4416061b090d03 t/03podcoverage.t
+SHA1 6800eb1c58155d39b8909f72d517bb40ac793164 t/04critic.t
+SHA1 963eeb0ac31df97872bb6a2865011ecd0a5cddae t/05kwalitee.t
+SHA1 bbb76151bce94c50cf6f597cbabf44ed4ab4865d t/06yaml.t
+SHA1 a31df3689bcbaed346563f8a699494ed07477d9e t/07podspelling.t
+SHA1 1e497740a933ae4cff5004b5d64185871335f523 t/10test_script.t
 SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJRjk5lAAoJEK492j4Im1Bp2TUIALxothJ0U79MSxAi8aSVv6qo
-mBhGPjrZqelrjnengvcpvpID6wSCZqW1wRBOTvL4rSAsVHR7jbZUbs2p9PqVPXu5
-lfH7WdqVFWmN0mQTjzxG432kJBi+Z81IujRAjMyDbDpYYDegfliL3RbQ2c7BfEUy
-RdyfFp3m6tznp6qfoj6vfpaRyjbfC4RUVDkXZJ7XzZoQ3iNhtzaddrlIB40F6Zsn
-+ROu+mbOp9qnxsZmg+PL9ZLHJjKOr66jNEOsGeMtoe02FSAsZIblmyfgQKcRXn5K
-c+ILiF+AMEsv5VFy1WsByLs3LPNgvi9yGTdSrjRYx6SRu3Ws5QtURB+OSGFRWjo=
-=oi/K
+iQEcBAEBAgAGBQJRj9jQAAoJEK492j4Im1Bp0BkH/A4WF6mcUP67C6SJQ9+HfQ27
+6ytbOZ4veQo4dbFzWVLEYhXFvi3ldWPmzzq4F5c2/IT+YtoCescEmL4/xVKT9hrg
+OIJrhGvfjMZPGc9hsXfFp8XWxJaiP6/Wafvtb68t8NurgHF0ks/QtJQa/q+Wpl+l
+5hC9LEh+CzhDYN/CMg6fZ0sdJj7FKno7kTjaPOUSQzDUZvEhVI1zbirpMeJhF3lk
+utGPLI/Qbl1AfRGrbAtVKlZedZaUixzB6aVmJGl2YVvoZG2+VFddreZNlWMWDa5d
+pClJ+OOgWauUHaaLTb99lEWVkx6EFhfiykZWW581iXE/13DSdH3Udb1vAnAjmkM=
+=o54S
 -----END PGP SIGNATURE-----

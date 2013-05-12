@@ -1,6 +1,11 @@
 Revision history for Module::Provision
 
-0.14.2    2013-05-11 14:57:38
+0.15.3    2013-05-12 19:00:10
+          - Combined CPAN roles into ::CPANDistributions
+          - Added ::TraitFor::DeletingFromCPAN
+
+0.14.3    2013-05-11 22:25:05
+          - Improved guess work in PrereqDiffs
           - Added ::TraitFor::UploadingToCPAN
           - Added ::TraitFor::PrereqDifferences
 

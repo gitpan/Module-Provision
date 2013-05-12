@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-11 10:28 pjf ;
+# @(#)Ident: Base.pm 2013-05-12 16:58 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -202,9 +202,7 @@ sub _build__module_abstract {
 }
 
 sub _build_project {
-   my $self = shift; my $project = shift @{ $self->extra_argv };
-
-   $project and return $project; my $dir = $self->io( getcwd ); my $prev;
+   my $self = shift; my $dir = $self->io( getcwd ); my ($prev, $project);
 
    while (not $prev or $prev ne $dir) {
       for my $file (grep { $_->exists }
@@ -312,7 +310,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $ of L<Module::Provision::Base>
+This documents version v0.15.$Rev: 3 $ of L<Module::Provision::Base>
 
 =head1 Description
 

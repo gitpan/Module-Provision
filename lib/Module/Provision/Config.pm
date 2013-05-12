@@ -1,8 +1,8 @@
-# @(#)Ident: Config.pm 2013-05-11 10:29 pjf ;
+# @(#)Ident: Config.pm 2013-05-12 03:56 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.14.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Null;
 use Class::Usul::Moose;
@@ -14,48 +14,50 @@ use File::DataClass::Constraints qw(Path);
 extends qw(Class::Usul::Config::Programs);
 
 # Object attributes (public)
-has 'author'          => is => 'lazy', isa => NonEmptySimpleStr;
+has 'author'           => is => 'lazy', isa => NonEmptySimpleStr;
 
-has 'author_email'    => is => 'lazy', isa => NonEmptySimpleStr;
+has 'author_email'     => is => 'lazy', isa => NonEmptySimpleStr;
 
-has 'author_id'       => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => sub { loginid };
+has 'author_id'        => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => sub { loginid };
 
-has 'base'            => is => 'lazy', isa => Path, coerce => TRUE,
-   default            => sub { $_[ 0 ]->my_home };
+has 'base'             => is => 'lazy', isa => Path, coerce => TRUE,
+   default             => sub { $_[ 0 ]->my_home };
 
-has 'builder'         => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'MB';
+has 'builder'          => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'MB';
 
-has 'editor'          => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => sub { untaint_identifier $ENV{EDITOR} || 'emacs' };
+has 'delete_files_uri' => is => 'lazy', isa => NonEmptySimpleStr;
 
-has 'home_page'       => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'http://example.com';
+has 'editor'           => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => sub { untaint_identifier $ENV{EDITOR} || 'emacs' };
 
-has 'license'         => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'perl';
+has 'home_page'        => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'http://example.com';
 
-has 'min_perl_ver'    => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => '5.01';
+has 'license'          => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'perl';
 
-has 'module_abstract' => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'One-line description of the modules purpose';
+has 'min_perl_ver'     => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => '5.01';
 
-has 'repository'      => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'repository';
+has 'module_abstract'  => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'One-line description of the modules purpose';
 
-has 'signing_key'     => is => 'lazy', isa => SimpleStr,
-   default            => q();
+has 'repository'       => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'repository';
 
-has 'tag_message'     => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'Released';
+has 'signing_key'      => is => 'lazy', isa => SimpleStr,
+   default             => q();
 
-has 'template_index'  => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'index.json';
+has 'tag_message'      => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'Released';
 
-has 'vcs'             => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => 'git';
+has 'template_index'   => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'index.json';
+
+has 'vcs'              => is => 'lazy', isa => NonEmptySimpleStr,
+   default             => 'git';
 
 # Private methods
 sub _build_author {
@@ -68,6 +70,11 @@ sub _build_author_email {
    my $email = untaint_cmdline( $ENV{EMAIL} || 'dave@example.com' );
 
    $email =~ s{ [\'] }{\'}gmx; return $email;
+}
+
+sub _build_delete_files_uri {
+   return untaint_cmdline $ENV{CPAN_DELETE_FILES_URI}
+       || 'https://pause.perl.org/pause/authenquery';
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -94,7 +101,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.14.$Rev: 2 $ of L<Module::Provision::Config>
+This documents version v0.15.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 
