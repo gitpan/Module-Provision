@@ -3,7 +3,7 @@ Name
     toolchain
 
 Version
-    This documents version v0.15.$Rev: 3 $ of Module::Provision
+    This documents version v0.15.$Rev: 5 $ of Module::Provision
 
 Synopsis
        # To reduce typing define a shell alias
@@ -212,6 +212,13 @@ Subroutines/Methods
        module_provision prove
 
     Runs the projects tests
+
+  set_cpan_password
+       module_provision set_cpan_password your_PAUSE_server_password
+
+    Sets the password used to connect to the PAUSE server. Once used the
+    command line program "cpan-upload" will not work since it cannot decrypt
+    the password in the configuration file ~/.pause
 
   show_tab_title
        module_provision -q show_tab_title

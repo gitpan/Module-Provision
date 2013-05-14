@@ -1,10 +1,10 @@
-# @(#)Ident: Provision.pm 2013-05-12 17:59 pjf ;
+# @(#)Ident: Provision.pm 2013-05-14 12:44 pjf ;
 
 package Module::Provision;
 
 use 5.01;
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moose;
 
@@ -33,7 +33,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.15.$Rev: 3 $ of L<Module::Provision>
+This documents version v0.15.$Rev: 5 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -259,6 +259,14 @@ removed from, or updated in the project file
    module_provision prove
 
 Runs the projects tests
+
+=head2 set_cpan_password
+
+   module_provision set_cpan_password your_PAUSE_server_password
+
+Sets the password used to connect to the PAUSE server. Once used the
+command line program C<cpan-upload> will not work since it cannot
+decrypt the password in the configuration file F<~/.pause>
 
 =head2 show_tab_title
 

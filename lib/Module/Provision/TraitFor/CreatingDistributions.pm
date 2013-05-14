@@ -1,9 +1,9 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-12 16:59 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-13 04:19 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -132,7 +132,8 @@ sub prove : method {
 
    my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
 
-   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_SPELLING} = TRUE;
+   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_MEMORY} = TRUE;
+   $ENV{TEST_SPELLING}  = TRUE;
    $self->output ( 'Testing '.$self->appldir );
    $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
    return OK;
@@ -153,7 +154,7 @@ sub _create_mask {
 }
 
 sub _project_file_path {
-   my $self = shift; return $self->appldir->catfile( $self->project_file );
+   return $_[ 0 ]->appldir->catfile( $_[ 0 ]->project_file );
 }
 
 1;
@@ -177,7 +178,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.15.$Rev: 3 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.15.$Rev: 5 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

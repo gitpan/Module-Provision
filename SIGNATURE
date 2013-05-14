@@ -15,23 +15,23 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 2e745d73d94d3866e0cd3fdf87c6ba94ef664546 Build.PL
-SHA1 d91060e9de20ef90b877d7af2d74277ca9ed3d0a Changes
+SHA1 bbdf9f054fd304c97a0bad046122c659c4d3ec35 Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
 SHA1 9a4988647ffbefd1c71d367b484eb87ef4bb8ddd MANIFEST
-SHA1 1d4abf0911bc7b384c566e605b95fa2e8a332d30 META.json
-SHA1 b5c65c4eb2310e92b9635d8b62921aea2a23c462 META.yml
-SHA1 5972a15f4660112f34fe3772a95dbff09055bc17 README
+SHA1 5c2e69cd809ece94fdf3acb651cd5061c35b87b4 META.json
+SHA1 a67882c373e27955a8949acf2861931bcbf8b3c4 META.yml
+SHA1 d239a6cad35b8716edf50e5b2981b7c90a536136 README
 SHA1 17a09471a7b0cb8a02dc27e60980a351be891e66 bin/module_provision
 SHA1 2dad6b015a19acb067ac9b3d677292796ecdb1c9 inc/Bob.pm
 SHA1 b07e8082b9ed2291fe4cf6988acef2d114dcbcc5 inc/CPANTesting.pm
 SHA1 3e461b4687dcea7680dc96761ecd703556759063 inc/SubClass.pm
 SHA1 b738d5d6b3b7885f3aea938e0eace5240415535a lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 c2613314633f7bbfbfd4be8ad8510458d2af8d5a lib/Module/Provision.pm
+SHA1 8a2519ff2b6f021b16227d92dc3c28e77aed66b6 lib/Module/Provision.pm
 SHA1 d0b80d56018b294410df768b01d214ae80f28c5c lib/Module/Provision/Base.pm
 SHA1 f720b612c18abb5292dd772bf46aabd6a2f60808 lib/Module/Provision/Config.pm
 SHA1 84703b4f06a3667c9f8ec87e8e3b87b09066dbd4 lib/Module/Provision/TraitFor/AddingFiles.pm
-SHA1 d5b62556243a0308c5e153a5151536a84f80759b lib/Module/Provision/TraitFor/CPANDistributions.pm
-SHA1 9e7e7ed8526c33410ea90b9a7cdcc1f05fac276f lib/Module/Provision/TraitFor/CreatingDistributions.pm
+SHA1 0c9b619b1c6b6d3745e6bdb432816dff8081d665 lib/Module/Provision/TraitFor/CPANDistributions.pm
+SHA1 ca4da18a31333c023301a88b739b9ca59ef37a54 lib/Module/Provision/TraitFor/CreatingDistributions.pm
 SHA1 5760e1c4fb6e7317a6fce759187b3fb86ec84ca7 lib/Module/Provision/TraitFor/PrereqDifferences.pm
 SHA1 0a1f02a7073feb5598e91afdec0316cdbd6ff581 lib/Module/Provision/TraitFor/Rendering.pm
 SHA1 5e9fc28ede41768aaa5e539e5de73f58350d11ef lib/Module/Provision/TraitFor/UpdatingContent.pm
@@ -71,11 +71,11 @@ SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJRj9jQAAoJEK492j4Im1Bp0BkH/A4WF6mcUP67C6SJQ9+HfQ27
-6ytbOZ4veQo4dbFzWVLEYhXFvi3ldWPmzzq4F5c2/IT+YtoCescEmL4/xVKT9hrg
-OIJrhGvfjMZPGc9hsXfFp8XWxJaiP6/Wafvtb68t8NurgHF0ks/QtJQa/q+Wpl+l
-5hC9LEh+CzhDYN/CMg6fZ0sdJj7FKno7kTjaPOUSQzDUZvEhVI1zbirpMeJhF3lk
-utGPLI/Qbl1AfRGrbAtVKlZedZaUixzB6aVmJGl2YVvoZG2+VFddreZNlWMWDa5d
-pClJ+OOgWauUHaaLTb99lEWVkx6EFhfiykZWW581iXE/13DSdH3Udb1vAnAjmkM=
-=o54S
+iQEcBAEBAgAGBQJRkjJ4AAoJEK492j4Im1BpDesH/ibKS8QqaU/pKV3Uh1nJ7xoV
+msW+waJVCsbMWGXmsnj8jGHNMoKBax+0j6fp4VDE17PrqVSU+nSbFBu+c+OVuFQ1
+aczK/ij2fyht+ts26YMyKSoi/+FJFiYVf8LL/Kmv/rnDTZ1oieWSotexsttc92U+
+3ed8DdpmNl/kwrXarVoBMjnIw/6eMYHsiE/WOW0hfO4M/TZxrgQyXfnwJqa7kYBI
+9VqcJAlyc7r1Y+O1cgB/T85uiIxtj9X+TnxTpYUMES1dU6RxmnVKBqaJtfrY/YHj
+OBHRQummfIfgv5cxLaVLCVFwOpJliGhsoQDcm6oKNSOzAK6IbOo0gUkybIpqoL4=
+=yNn8
 -----END PGP SIGNATURE-----

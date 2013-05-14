@@ -1,6 +1,8 @@
 Revision history for Module::Provision
 
-0.15.3    2013-05-12 19:00:10
+0.15.5    2013-05-14 13:47:07
+          - Added requires to ::CPANDists
+          - Added password encryption to ::CPANDists
           - Combined CPAN roles into ::CPANDistributions
           - Added ::TraitFor::DeletingFromCPAN
 

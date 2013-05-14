@@ -1,17 +1,21 @@
-# @(#)Ident: CPANDistributions.pm 2013-05-12 17:55 pjf ;
+# @(#)Ident: CPANDistributions.pm 2013-05-13 16:52 pjf ;
 
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 5 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(throw);
-use English                qw(-no_match_vars);
-use HTTP::Request::Common  qw(POST);
+use Class::Usul::Crypt::Util      qw(decrypt_from_config encrypt_for_config
+                                     is_encrypted);
+use Class::Usul::Functions        qw(throw);
+use English                       qw(-no_match_vars);
+use HTTP::Request::Common         qw(POST);
 use HTTP::Status;
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
+
+requires qw(distname dist_version);
 
 # Private attributes
 has '_debug_http_method' => is => 'ro', isa => NonEmptySimpleStr,
@@ -27,33 +31,45 @@ sub cpan_upload : method {
 
    -f $file or throw error => 'File [_1] not found', args => [ $file ];
 
-   my $args = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
-
    $self->ensure_class_loaded( 'CPAN::Uploader' );
 
-   exists $args->{dry_run} or $args->{dry_run}
-      = not $self->yorn( 'Really upload to CPAN', FALSE, TRUE, 0 );
+   my $args   = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
+   my $prompt = $self->add_leader( 'Really upload to CPAN' );
+
+   exists $args->{dry_run}
+       or $args->{dry_run} = not $self->yorn( $prompt, FALSE, TRUE, 0 );
 
    CPAN::Uploader->upload_file( $file, $args );
    return OK;
 }
 
 sub delete_cpan_files : method {
-   my $self  = shift;
-   my $args  = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
-   my $files = $self->_convert_versions_to_paths( $self->extra_argv, $args );
+   my $self   = shift;
+   my $args   = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
+   my $files  = $self->_convert_versions_to_paths( $self->extra_argv, $args );
+   my $prompt = $self->add_leader( 'Really delete files from CPAN' );
 
-   exists $args->{dry_run} or $args->{dry_run}
-      = not $self->yorn( 'Really delete files from  CPAN', FALSE, TRUE, 0 );
+   exists $args->{dry_run}
+       or $args->{dry_run} = not $self->yorn( $prompt, FALSE, TRUE, 0 );
 
    if ($args->{dry_run}) {
       $self->output( 'By request, cowardly refusing to do anything at all' );
       $self->output( "The following would have been used to delete files:\n" );
-      $self->dumper( $self  );
+      $self->dumper( $args  );
       $self->dumper( $files );
    }
    else { $self->_delete_files( $files, $args ) }
 
+   return OK;
+}
+
+sub set_cpan_password : method {
+   my $self  = shift;
+   my $args  = $self->_read_pauserc;
+   my $pword = shift @{ $self->extra_argv } or throw 'No password';
+
+   $args->{password} = encrypt_for_config( $self->config, $pword );
+   $self->_write_pauserc( $args );
    return OK;
 }
 
@@ -70,9 +86,9 @@ sub _convert_versions_to_paths {
    my $subdir   = $args->{subdir} ? $args->{subdir}.'/' : q();
 
    for my $version (@{ $versions || [] }) {
-      push @{ $paths }, "${subdir}${distname}-${version}.meta";
-      push @{ $paths }, "${subdir}${distname}-${version}.readme";
-      push @{ $paths }, "${subdir}${distname}-${version}.tar.gz";
+      for my $extn (qw(meta readme tar.gz)) {
+         push @{ $paths }, "${subdir}${distname}-${version}.${extn}";
+      }
    }
 
    return $paths;
@@ -92,7 +108,7 @@ sub _delete_files {
    my $uri     = $args->{delete_files_uri} || $self->config->delete_files_uri;
    my $request = $self->_get_delete_request( $files, $args, $uri );
 
-   $self->log->info( "POSTing delete files request to ${uri}" );
+   $self->info( "POSTing delete files request to ${uri}" );
    $self->_throw_on_error( $uri, $target, $agent->request( $request ) );
    return;
 }
@@ -131,10 +147,14 @@ sub _read_pauserc {
 
    for ($self->io( [ $dir, q(.pause) ] )->chomp->getlines) {
       ($_ and $_ !~ m{ \A \s* \# }mx) or next;
-      my ($k, $v) = m{ \A \s* (\w+) \s+ (.+) \z }mx;
+      my ($k, $v) = m{ \A \s* (\w+) (?: \s+ (.+))? \z }mx;
       exists $attr->{ $k } and throw "Multiple enties for ${k}";
-      $attr->{ $k } = $v;
+      $attr->{ $k } = $v || q();
    }
+
+   my $pword; exists $attr->{password}
+      and $pword = $attr->{password} and is_encrypted( $pword )
+      and $attr->{password} = decrypt_from_config( $self->config, $pword );
 
    return $attr;
 }
@@ -146,25 +166,39 @@ sub _throw_on_error {
       or throw "Request completely failed - we got undef back: ${OS_ERROR}";
 
    if ($response->is_error) {
+      my $class = blessed $self || $self;
+
       $response->code == RC_NOT_FOUND
          and throw "PAUSE's CGI for handling messages seems to have moved!\n".
                    "(HTTP response code of 404 from the ${target}".
                    " web server)\nIt used to be: ${uri}\n".
-                   "Please inform the maintainer of ${self}.\n";
+                   "Please inform the maintainer of ${class}\n";
 
       throw "Request failed with error code ".$response->code.
             "\n  Message: ".$response->message."\n";
    }
 
    $self->_log_http_debug( 'RESPONSE', $response, 'Looks OK!' );
-   $self->log->info( "${target} request sent ok [".$response->code."]" );
+   $self->info( "${target} delete request sent ok [".$response->code."]" );
    return;
 }
 
 sub _ua_string {
-  my $class = blessed $_[ 0 ] || $_[ 0 ]; my $ver = $class->VERSION // 'dev';
+   my $class = blessed $_[ 0 ] || $_[ 0 ]; my $ver = $class->VERSION // 'dev';
 
-  return "${class}/${ver}";
+   return "${class}/${ver}";
+}
+
+sub _write_pauserc {
+   my ($self, $attr) = @_;
+
+   my $file = $self->io( [ $self->config->my_home, q(.pause) ] );
+
+   $attr or throw "No data in write to ${file}";
+
+   $file->println( "${_} ".$attr->{ $_ } ) for (sort keys %{ $attr });
+
+   return;
 }
 
 1;
@@ -177,7 +211,7 @@ __END__
 
 =head1 Name
 
-Module::Provision::TraitFor::CPANDistributions - Uploads distributions to CPAN
+Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions to/from CPAN
 
 =head1 Synopsis
 
@@ -188,16 +222,16 @@ Module::Provision::TraitFor::CPANDistributions - Uploads distributions to CPAN
 
 =head1 Version
 
-This documents version v0.15.$Rev: 2 $ of
+This documents version v0.15.$Rev: 5 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description
 
-Uploads distributions to CPAN
+Uploads/Deletes distributions to/from CPAN
 
 =head1 Configuration and Environment
 
-Reads PAUSE account data from F<~/.pauserc>
+Reads PAUSE account data from F<~/.pause>
 
 Defines no attributes
 
@@ -215,6 +249,14 @@ Uploads a distribution to CPAN
 
 Deletes distributions from CPAN
 
+=head2 set_cpan_password
+
+   $exit_code = $self->set_cpan_password;
+
+Sets the password used to connect to the PAUSE server. Once used the
+command line program C<cpan-upload> will not work since it cannot
+decrypt the password in the configuration file F<~/.pause>
+
 =head1 Diagnostics
 
 None
@@ -226,6 +268,14 @@ None
 =item L<Class::Usul>
 
 =item L<CPAN::Uploader>
+
+=item L<HTTP::Message>
+
+=item L<LWP::UserAgent>
+
+=item L<Moose::Role>
+
+=item L<MooseX::Types::Common>
 
 =back
 
