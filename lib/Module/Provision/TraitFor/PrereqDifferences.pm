@@ -1,13 +1,13 @@
-# @(#)Ident: PrereqDifferences.pm 2013-05-11 20:10 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-05-15 17:36 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 2 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(classfile is_member say throw);
+use Class::Usul::Functions qw(classfile is_member emit throw);
 use English                qw(-no_match_vars);
 use Module::Metadata;
 
@@ -24,7 +24,7 @@ sub prereq_diffs : method {
    my $sources = $self->$filter( $self->_source_paths );
    my $depends = $self->_filter_dependents( $self->_dependencies( $sources ) );
 
-   __say_diffs( $self->_compare_prereqs_with_used( $field, $depends ) );
+   __emit_diffs( $self->_compare_prereqs_with_used( $field, $depends ) );
    return OK;
 }
 
@@ -188,7 +188,23 @@ sub __dist_from_module {
 }
 
 sub __draw_line {
-    return say q(-) x ($_[ 0 ] || 60);
+    return emit q(-) x ($_[ 0 ] || 60);
+}
+
+sub __emit_diffs {
+   my $diffs = shift; __draw_line();
+
+   for my $table (sort keys %{ $diffs }) {
+      emit $table; __draw_line();
+
+      for (sort keys %{ $diffs->{ $table } }) {
+         emit "'$_' => ".$diffs->{ $table }->{ $_ }.",";
+      }
+
+      __draw_line();
+   }
+
+   return;
 }
 
 sub __extract_statements_from {
@@ -256,22 +272,6 @@ sub __recover_module_name {
    return  join '::', @parts;
 }
 
-sub __say_diffs {
-   my $diffs = shift; __draw_line();
-
-   for my $table (sort keys %{ $diffs }) {
-      say $table; __draw_line();
-
-      for (sort keys %{ $diffs->{ $table } }) {
-         say "'$_' => ".$diffs->{ $table }->{ $_ }.",";
-      }
-
-      __draw_line();
-   }
-
-   return;
-}
-
 1;
 
 __END__
@@ -293,7 +293,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.15.$Rev: 2 $ of
+This documents version v0.15.$Rev: 6 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

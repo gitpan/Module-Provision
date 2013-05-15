@@ -1,13 +1,13 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-13 04:19 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-05-15 17:35 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 6 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions        qw(say throw trim);
+use Class::Usul::Functions        qw(emit throw trim);
 use Cwd                           qw(getcwd);
 use MooseX::Types::Common::String qw(NonEmptySimpleStr);
 
@@ -144,7 +144,7 @@ sub show_tab_title : method {
    my $file = $self->extra_argv->[ 0 ] || $self->_project_file_path;
    my $text = (grep { m{ tab-title: }msx } $self->io( $file )->getlines)[ -1 ];
 
-   say trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
+   emit trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
    return OK;
 }
 
@@ -178,7 +178,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.15.$Rev: 5 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.15.$Rev: 6 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

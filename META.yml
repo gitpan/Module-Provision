@@ -29,7 +29,7 @@ provides:
     version: v0.15.1
   Module::Provision:
     file: lib/Module/Provision.pm
-    version: v0.15.5
+    version: v0.15.6
   Module::Provision::Base:
     file: lib/Module/Provision/Base.pm
     version: v0.15.3
@@ -44,10 +44,10 @@ provides:
     version: v0.15.5
   Module::Provision::TraitFor::CreatingDistributions:
     file: lib/Module/Provision/TraitFor/CreatingDistributions.pm
-    version: v0.15.5
+    version: v0.15.6
   Module::Provision::TraitFor::PrereqDifferences:
     file: lib/Module/Provision/TraitFor/PrereqDifferences.pm
-    version: v0.15.2
+    version: v0.15.6
   Module::Provision::TraitFor::Rendering:
     file: lib/Module/Provision/TraitFor/Rendering.pm
     version: v0.15.2
@@ -94,4 +94,4 @@ resources:
   homepage: http://www.roxsoft.co.uk
   license: http://dev.perl.org/licenses/
   repository: git://github.com/pjfl/Module-Provision.git
-version: v0.15.5
+version: v0.15.6
