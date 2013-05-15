@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-05-05 11:17 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-05-15 20:54 pjf ;
 # Bob-Version: 1.12
 
 package CPANTesting;
@@ -23,8 +23,10 @@ sub should_abort {
 sub test_exceptions {
    my $p = shift; is_testing() or return 0;
 
-   $p->{stop_tests}     and return 'CPAN Testing stopped in Build.PL';
-   $osname eq q(mirbsd) and return 'Mirbsd  OS unsupported';
+   $p->{stop_tests}         and return 'CPAN Testing stopped in Build.PL';
+   $osname eq q(mirbsd)     and return 'Mirbsd OS unsupported';
+   $host   eq q(training02) and return
+      "Stopped Beijen  ${host} - 5f6e9967-6e40-1014-8340-fe22e79c0688";
    return 0;
 }
 

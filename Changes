@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.15.6    2013-05-15 18:54:35
+0.15.7    2013-05-15 21:57:43
+          - Bumped Class::Usul version
           - Renamed C::U::Functions say to emit
           - Added requires to ::CPANDists
           - Added password encryption to ::CPANDists

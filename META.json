@@ -43,7 +43,7 @@
          "requires" : {
             "CPAN::Uploader" : "0.103004",
             "Class::Null" : "2.10142",
-            "Class::Usul" : "v0.19.3",
+            "Class::Usul" : "v0.21.2",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
             "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.12012",
@@ -80,7 +80,7 @@
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.15.6"
+         "version" : "v0.15.7"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
@@ -132,5 +132,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.15.6"
+   "version" : "v0.15.7"
 }
