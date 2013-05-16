@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-12 16:58 pjf ;
+# @(#)Ident: Base.pm 2013-05-16 22:57 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 3 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 8 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -10,6 +10,7 @@ use Class::Usul::Functions       qw(app_prefix class2appdir classdir distname
                                     throw);
 use Class::Usul::Time            qw(time2str);
 use Cwd                          qw(getcwd);
+use English                      qw(-no_match_vars);
 use File::DataClass::Constraints qw(Directory OctalNum Path);
 use Module::Metadata;
 use Perl::Version;
@@ -114,9 +115,8 @@ has '_license_keys'    => is => 'lazy', isa => HashRef;
 sub chdir {
    my ($self, $path) = @_; $path or throw 'Directory not specified in chdir';
 
-   chdir $path; $self->io( getcwd )->stat->{inode} = $path->stat->{inode}
-      or throw error => 'Chdir requested path [_1] actual [_2]',
-               args  => [ $path, getcwd ];
+   chdir $path or throw error => 'Path [_1] cannot chdir: [_2]',
+                        args  => [ $path, $OS_ERROR ];
    return $path;
 }
 
@@ -310,7 +310,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.15.$Rev: 3 $ of L<Module::Provision::Base>
+This documents version v0.15.$Rev: 8 $ of L<Module::Provision::Base>
 
 =head1 Description
 
