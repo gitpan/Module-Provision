@@ -1,5 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-05-15 20:54 pjf ;
-# Bob-Version: 1.12
+# @(#)Ident: CPANTesting.pm 2013-05-19 12:54 pjf ;
 
 package CPANTesting;
 
@@ -14,19 +13,18 @@ sub is_testing { !! ($ENV{AUTOMATED_TESTING} || $ENV{PERL_CR_SMOKER_CURRENT}
 
 sub should_abort {
    is_testing() or return 0;
-
    $host eq q(xphvmfred) and return
-      "Stopped Stauner ${host} - 0a7335a2-af67-11e2-99d1-ca991c44ed51";
+      "ABORT: ${host} - cc06993e-a5e9-11e2-83b7-87183f85d660";
    return 0;
 }
 
 sub test_exceptions {
    my $p = shift; is_testing() or return 0;
 
-   $p->{stop_tests}         and return 'CPAN Testing stopped in Build.PL';
-   $osname eq q(mirbsd)     and return 'Mirbsd OS unsupported';
-   $host   eq q(training02) and return
-      "Stopped Beijen  ${host} - 5f6e9967-6e40-1014-8340-fe22e79c0688";
+   $p->{stop_tests}       and return 'TESTS: CPAN Testing stopped in Build.PL';
+   $osname eq q(mirbsd)   and return 'TESTS: Mirbsd OS unsupported';
+   $host eq q(training02) and return
+      "TESTS: 5f6e9967-6e40-1014-8340-fe22e79c0688";
    return 0;
 }
 

@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.15.8    2013-05-17 00:00:53
+0.15.9    2013-05-19 13:57:37
+          - Enhanced CPAN Testing exception method
           - Simplified ::Base::chdir
           - Bumped Class::Usul version
           - Renamed C::U::Functions say to emit

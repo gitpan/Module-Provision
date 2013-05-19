@@ -1,23 +1,26 @@
-# @(#)Ident: 10test_script.t 2013-05-04 17:06 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-19 12:08 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 2 $ =~ /\d+/gmx );
-use File::Spec::Functions;
-use FindBin qw( $Bin );
-use lib catdir( $Bin, updir, q(lib) );
+use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 9 $ =~ /\d+/gmx );
+use File::Spec::Functions   qw( catdir catfile updir );
+use FindBin                 qw( $Bin );
+use lib                 catdir( $Bin, updir, q(lib) );
 
-use Cwd qw(getcwd);
-use File::DataClass::IO;
 use Module::Build;
 use Test::More;
 
-BEGIN {
-   my $current = eval { Module::Build->current };
+my $reason;
 
-   $current and $current->notes->{stop_tests}
-            and plan skip_all => $current->notes->{stop_tests};
+BEGIN {
+   my $builder = eval { Module::Build->current };
+
+   $builder and $reason = $builder->notes->{stop_tests};
+   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
 }
+
+use Cwd qw(getcwd);
+use File::DataClass::IO;
 
 use_ok 'Module::Provision';
 
@@ -69,8 +72,7 @@ ok -f 'Build.PL', 'Creates Build.PL';
 test_cleanup( $owd );
 
 SKIP: {
-   not -e catfile( $Bin, updir, q(MANIFEST.SKIP) )
-      and skip 'Only for developers', 3;
+   $ENV{AUTHOR_TESTING} or skip 'tests: Only for developers', 3;
 
    $prog = test_mp( 'DZ' );
 

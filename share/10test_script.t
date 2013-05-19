@@ -1,4 +1,4 @@
-# @(#)Ident: 10test_script.t 2013-04-21 01:44 pjf ;
+# @(#)Ident: 10test_script.t 2013-05-19 11:50 pjf ;
 
 use strict;
 use warnings;
@@ -10,14 +10,20 @@ use lib                 catdir( $Bin, updir, q(lib) );
 use Module::Build;
 use Test::More;
 
-BEGIN {
-   my $current = eval { Module::Build->current };
+my $reason;
 
-   $current and $current->notes->{stop_tests}
-            and plan skip_all => $current->notes->{stop_tests};
+BEGIN {
+   my $builder = eval { Module::Build->current };
+
+   $builder and $reason = $builder->notes->{stop_tests};
+   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
 }
 
 use_ok '[% project %]';
+
+#SKIP: {
+#   $reason and $reason =~ m{ \A tests: }mx and skip $reason, 1;
+#}
 
 done_testing;
 
