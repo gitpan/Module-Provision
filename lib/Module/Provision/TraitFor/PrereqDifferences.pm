@@ -1,9 +1,9 @@
-# @(#)Ident: PrereqDifferences.pm 2013-05-15 17:36 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-06-06 15:17 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 6 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -41,10 +41,7 @@ sub _compare_prereqs_with_used {
 
    for (grep { defined $depends->{ $_ } } keys %{ $depends }) {
       if (exists $prereqs->{ $_ }) {
-         my $oldver = version->new( $prereqs->{ $_ } );
-         my $newver = version->new( $depends->{ $_ } );
-
-         if ($newver != $oldver) {
+         if (__version_diff( $prereqs->{ $_ }, $depends->{ $_ } )) {
             $result->{ $update_key }->{ $_ }
                = $prereqs->{ $_ }.q( => ).$depends->{ $_ };
          }
@@ -66,19 +63,21 @@ sub _consolidate {
    for my $used_key (keys %{ $used }) {
       my ($curr_dist, $module, $used_dist); my $try_module = $used_key;
 
-      while ($curr_dist = __dist_from_module( $try_module )
-             and (not $used_dist
-                  or  $curr_dist->base_id eq $used_dist->base_id)) {
+      while ($curr_dist = __dist_from_module( $try_module ) and (not $used_dist
+             or $curr_dist->base_id eq $used_dist->base_id)) {
          $module = $try_module;
          $used_dist or $used_dist = $curr_dist;
          $try_module =~ m{ :: }mx or last;
          $try_module =~ s{ :: [^:]+ \z }{}mx;
       }
 
-      my $was = $module; $used_dist and not $curr_dist
-         and $module = __recover_module_name( $used_dist->base_id )
-         and $self->debug
-         and $self->output( "Recovered ${module} from ${was}" );
+      if ($used_dist
+          and (not $curr_dist or $used_dist->base_id ne $curr_dist->base_id)) {
+         my $was = $module;
+
+         $module = __recover_module_name( $used_dist->base_id );
+         $self->debug and $self->output( "Recovered ${module} from ${was}" );
+      }
 
       if ($module) {
          not exists $dists{ $module }
@@ -272,6 +271,18 @@ sub __recover_module_name {
    return  join '::', @parts;
 }
 
+sub __version_diff {
+   my ($prereq, $depend) = @_;
+
+   $prereq =~ s{ (\. [0-9]+?) 0+ \z }{$1}mx;
+   $depend =~ s{ (\. [0-9]+?) 0+ \z }{$1}mx;
+
+   my $oldver = Perl::Version->new( $prereq ); $oldver->components( 2 );
+   my $newver = Perl::Version->new( $depend ); $newver->components( 2 );
+
+   return $oldver != $newver ? TRUE : FALSE;
+}
+
 1;
 
 __END__
@@ -293,7 +304,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.15.$Rev: 6 $ of
+This documents version v0.16.$Rev: 1 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

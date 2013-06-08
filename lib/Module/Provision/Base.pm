@@ -1,8 +1,8 @@
-# @(#)Ident: Base.pm 2013-05-16 22:57 pjf ;
+# @(#)Ident: Base.pm 2013-05-23 22:00 pjf ;
 
 package Module::Provision::Base;
 
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 8 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Moose;
 use Class::Usul::Constants;
@@ -113,11 +113,11 @@ has '_license_keys'    => is => 'lazy', isa => HashRef;
 
 # Public methods
 sub chdir {
-   my ($self, $path) = @_; $path or throw 'Directory not specified in chdir';
+   my ($self, $dir) = @_; $dir or throw 'Directory not specified in chdir';
 
-   chdir $path or throw error => 'Path [_1] cannot chdir: [_2]',
-                        args  => [ $path, $OS_ERROR ];
-   return $path;
+   chdir $dir or throw error => 'Directory [_1] cannot chdir: [_2]',
+                        args  => [ $dir, $OS_ERROR ];
+   return $dir;
 }
 
 sub get_manifest_paths {
@@ -208,13 +208,13 @@ sub _build_project {
       for my $file (grep { $_->exists }
                     map  { $dir->catfile( $builders{ $_ } ) } keys %builders) {
          $project = __get_module_from( $file->all ) and return $project;
-         throw 'Main module name not found';
+         throw error => 'File [_1] contains no module name', args => [ $file ];
       }
 
       $prev = $dir; $dir = $dir->parent;
    }
 
-   throw 'No project files in path';
+   throw error => 'Path [_1] contains no project files', args => [ $dir ];
    return; # Never reached
 }
 
@@ -310,11 +310,11 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.15.$Rev: 8 $ of L<Module::Provision::Base>
+This documents version v0.16.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
-Creates an immutable data object used by the methods in the applied traits
+Creates an immutable data object required by the methods in the applied roles
 
 =head1 Configuration and Environment
 
@@ -372,8 +372,7 @@ or C<svn>
    $directory = $self->chdir( $directory );
 
 Changes the current working directory to the one supplied and returns it.
-Throws if the operation was not successful. Compares C<inode> numbers to
-determine success
+Throws if the operation was not successful
 
 =head2 get_manifest_paths
 
@@ -394,7 +393,11 @@ None
 
 =item L<File::DataClass>
 
+=item L<Module::Metadata>
+
 =item L<Module::Provision::Config>
+
+=item L<Perl::Version>
 
 =back
 

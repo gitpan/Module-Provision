@@ -3,7 +3,7 @@
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Module::Provision;
 
@@ -40,7 +40,7 @@ Lists the methods available in this program
 
 =head1 VERSION
 
-This documents version v0.15.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.16.$Rev: 1 $ of L<Module::Provision>
 
 =head1 DESCRIPTION
 

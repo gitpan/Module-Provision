@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.15.%d', q$Rev: 5 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moose::Role;
 use Class::Usul::Constants;
@@ -222,7 +222,7 @@ Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions t
 
 =head1 Version
 
-This documents version v0.15.$Rev: 5 $ of
+This documents version v0.16.$Rev: 1 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description
