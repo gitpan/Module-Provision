@@ -1,15 +1,15 @@
-# @(#)Ident: Config.pm 2013-05-12 03:56 pjf ;
+# @(#)Ident: Config.pm 2013-06-28 21:47 pjf ;
 
 package Module::Provision::Config;
 
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 7 $ =~ /\d+/gmx );
 
-use Class::Null;
-use Class::Usul::Moose;
 use Class::Usul::Constants;
-use Class::Usul::Functions       qw(fullname loginid logname untaint_cmdline
-                                    untaint_identifier);
-use File::DataClass::Constraints qw(Path);
+use Class::Usul::Functions  qw( fullname loginid logname untaint_cmdline
+                                untaint_identifier );
+use File::DataClass::Types  qw( HashRef NonEmptySimpleStr Path SimpleStr );
+use Moo;
 
 extends qw(Class::Usul::Config::Programs);
 
@@ -21,11 +21,14 @@ has 'author_email'     => is => 'lazy', isa => NonEmptySimpleStr;
 has 'author_id'        => is => 'lazy', isa => NonEmptySimpleStr,
    default             => sub { loginid };
 
-has 'base'             => is => 'lazy', isa => Path, coerce => TRUE,
+has 'base'             => is => 'lazy', isa => Path, coerce => Path->coercion,
    default             => sub { $_[ 0 ]->my_home };
 
 has 'builder'          => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'MB';
+
+has 'default_branches' => is => 'lazy', isa => HashRef,
+   default             => sub { { git => 'master', svn => 'trunk' } };
 
 has 'delete_files_uri' => is => 'lazy', isa => NonEmptySimpleStr;
 
@@ -48,7 +51,7 @@ has 'repository'       => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'repository';
 
 has 'signing_key'      => is => 'lazy', isa => SimpleStr,
-   default             => q();
+   default             => NUL;
 
 has 'tag_message'      => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'Released';
@@ -77,8 +80,6 @@ sub _build_delete_files_uri {
        || 'https://pause.perl.org/pause/authenquery';
 }
 
-__PACKAGE__->meta->make_immutable;
-
 1;
 
 __END__
@@ -101,7 +102,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.17.$Rev: 7 $ of L<Module::Provision::Config>
 
 =head1 Description
 
@@ -120,8 +121,6 @@ Defines the following attributes;
 =item C<author_id>
 
 =item C<base>
-
-=item C<branch>
 
 =item C<builder>
 
@@ -152,8 +151,6 @@ None
 =head1 Dependencies
 
 =over 3
-
-=item L<Class::Null>
 
 =item L<Class::Usul>
 

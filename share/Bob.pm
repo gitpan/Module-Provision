@@ -46,7 +46,6 @@ sub new {
 }
 
 # Private functions
-
 sub __is_src { # Is this the developer authoring a module?
    return -f q(MANIFEST.SKIP);
 }

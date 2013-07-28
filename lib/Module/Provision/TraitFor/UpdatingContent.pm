@@ -1,15 +1,15 @@
-# @(#)Ident: UpdatingContent.pm 2013-05-11 04:37 pjf ;
+# @(#)Ident: UpdatingContent.pm 2013-07-11 14:57 pjf ;
 
 package Module::Provision::TraitFor::UpdatingContent;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 16 $ =~ /\d+/gmx );
 
-use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(throw);
+use Class::Usul::Functions  qw( throw );
+use Moo::Role;
 
-requires qw(appldir);
+requires qw( appldir loc manifest_paths next_argv output );
 
 # Public methods
 sub substitute_version {
@@ -23,11 +23,11 @@ sub substitute_version {
 sub update_copyright_year : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
-   my $prefix = 'Copyright (c)';
+   my $prefix = $self->loc( 'Copyright (c)' );
 
-   $self->output( $self->loc( 'Updating copyright year' ) );
+   $self->output( 'Updating copyright year' );
 
-   for my $path (@{ $self->get_manifest_paths }) {
+   for my $path (@{ $self->manifest_paths }) {
       $path->substitute( "\Q${prefix} ${from}\E", "${prefix} ${to}" );
    }
 
@@ -39,11 +39,11 @@ sub update_version : method {
 
    my $ignore = $self->_get_ignore_rev_regex;
 
-   $self->output( $self->loc( 'Updating version numbers' ) );
+   $self->output( 'Updating version numbers' );
 
    ($from, $to) = $self->update_version_pre_hook( $from, $to );
 
-   for my $path (@{ $self->get_manifest_paths }) {
+   for my $path (@{ $self->manifest_paths }) {
       $ignore and $path =~ m{ (?: $ignore ) }mx and next;
       $self->substitute_version( $path, $from, $to );
    }
@@ -58,7 +58,7 @@ sub update_version_post_hook { # Can be modified by applied traits
 sub update_version_pre_hook { # Can be modified by applied traits
    my ($self, @args) = @_;
 
-   ($args[ 0 ] and $args[ 1 ]) or throw 'Insufficient arguments';
+   ($args[ 0 ] and $args[ 1 ]) or throw $self->loc( 'Insufficient arguments' );
 
    return @args;
 }
@@ -73,7 +73,7 @@ sub _get_ignore_rev_regex {
 }
 
 sub _get_update_args {
-   return (shift @{ $_[ 0 ]->extra_argv }, shift @{ $_[ 0 ]->extra_argv });
+   return ($_[ 0 ]->next_argv, $_[ 0 ]->next_argv);
 }
 
 1;
@@ -97,7 +97,8 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Module::Provision::TraitFor::UpdatingContent>
+This documents version v0.17.$Rev: 16 $ of
+L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description
 
@@ -120,14 +121,14 @@ Substitutes the C<$to> string everywhere the C<$from> pattern occurs
 in the C<$path> file. The C<$path> argument should be of type
 L<File::DataClass::IO>
 
-=head2 update_copyright_year
+=head2 update_copyright_year - Updates the copyright year in the POD
 
    $exit_code = $self->update_copyright_year;
 
 Substitutes the existing copyright year for the new copyright year in all
 files in the F<MANIFEST>
 
-=head2 update_version
+=head2 update_version - Updates the version numbers in all files
 
    $exit_code = $self->update_version;
 

@@ -1,18 +1,20 @@
-# @(#)Ident: VCS.pm 2013-05-11 03:11 pjf ;
+# @(#)Ident: VCS.pm 2013-07-11 14:53 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 16 $ =~ /\d+/gmx );
 
-use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(throw);
-use Cwd                    qw(getcwd);
-use MooseX::Types::Moose   qw(Bool);
+use Class::Usul::Functions  qw( is_win32 throw );
+use Moo::Role;
 use Perl::Version;
+use Scalar::Util            qw( blessed );
+use Unexpected::Types       qw( Bool );
 
-requires qw(appldir distname vcs);
+requires qw( add_leader appbase appldir branch chdir config default_branch
+             dist_version distname editor exec_perms get_line
+             loc next_argv output quiet run_cmd vcs );
 
 # Public attributes
 has 'no_auto_rev' => is => 'ro', isa => Bool, default => FALSE,
@@ -52,28 +54,69 @@ after 'update_version_post_hook' => sub {
 };
 
 # Public methods
-sub add_to_vcs {
-   my ($self, $target, $type) = @_; $target or throw 'VCS target not specified';
+sub add_hooks : method {
+   my $self = shift;
 
+   $self->vcs eq 'git' and $self->_add_git_hooks( 'commit-msg', 'pre-commit' );
+   return OK;
+}
+
+sub add_to_vcs {
+   my ($self, $target, $type) = @_;
+
+   $target or throw $self->loc( 'VCS target not specified' );
    $self->vcs eq 'git' and $self->_add_to_git( $target, $type );
    $self->vcs eq 'svn' and $self->_add_to_svn( $target, $type );
    return;
 }
 
+sub get_emacs_state_file_path {
+   my ($self, $file) = @_; my $home = $self->config->my_home;
+
+   return $home->catfile( qw(.emacs.d config), "state.${file}" );
+}
+
+sub set_branch : method {
+   my $self = shift; my $bfile = $self->branch_file;
+
+   my $old_branch = $self->branch;
+   my $new_branch = $self->next_argv || $self->default_branch;
+
+   not $new_branch and $bfile->exists and $bfile->unlink and return OK;
+       $new_branch and $bfile->println( $new_branch );
+
+   my $method = 'get_'.$self->editor.'_state_file_path';
+
+   $self->can( $method ) or return OK;
+
+   my $sfname = __get_state_file_name( $self->io( $self->project_file ) );
+   my $sfpath = $self->$method( $sfname );
+   my $sep    = is_win32 ? "\\" : '/';
+
+   $sfpath->substitute( "${sep}\Q${old_branch}\E${sep}",
+                        "${sep}${new_branch}${sep}" );
+   return OK;
+}
+
 # Private methods
-sub _add_hook {
-   my ($self, $hook) = @_; -e ".git${hook}" or return;
+sub _add_git_hooks {
+   my ($self, @hooks) = @_;
 
-   my $path = $self->appldir->catfile( qw(.git hooks), $hook );
+   for my $hook (grep { -e ".git${_}" } @hooks) {
+      my $dest = $self->appldir->catfile( qw(.git hooks), $hook );
 
-   link ".git${hook}", $path; chmod $self->exec_perms, ".git${hook}";
+      $dest->exists and $dest->unlink; link ".git${hook}", $dest;
+      chmod $self->exec_perms, ".git${hook}";
+   }
+
    return;
 }
 
 sub _add_tag {
-   my ($self, $tag) = @_; $tag or throw 'VCS tag version not specified';
+   my ($self, $tag) = @_;
 
-   $self->output( $self->loc( 'Creating tagged release v[_1]', $tag ) );
+   $tag or throw $self->loc( 'VCS tag version not specified' );
+   $self->output( 'Creating tagged release v[_1]', { args => [ $tag ] } );
    $self->vcs eq 'git' and $self->_add_tag_to_git( $tag );
    $self->vcs eq 'svn' and $self->_add_tag_to_svn( $tag );
    return;
@@ -82,7 +125,7 @@ sub _add_tag {
 sub _add_tag_to_git {
    my ($self, $tag) = @_;
 
-   my $message = $self->config->tag_message;
+   my $message = $self->loc( $self->config->tag_message );
    my $sign    = $self->config->signing_key; $sign and $sign = "-u ${sign}";
 
    $self->run_cmd( "git tag -d v${tag}", { err => 'null', expected_rv => 1 } );
@@ -96,7 +139,7 @@ sub _add_tag_to_svn {
    my $repo    = $self->_get_svn_repository;
    my $from    = "${repo}/trunk";
    my $to      = "${repo}/tags/v${tag}";
-   my $message = $self->config->tag_message." v${tag}";
+   my $message = $self->loc( $self->config->tag_message )." v${tag}";
    my $cmd     = "svn copy --parents -m '${message}' ${from} ${to}";
 
    $self->run_cmd( $cmd, $params );
@@ -141,9 +184,9 @@ sub _get_svn_repository {
 sub _get_version_numbers {
    my ($self, @args) = @_; $args[ 0 ] and $args[ 1 ] and return @args;
 
-   my $prompt = $self->add_leader( 'Enter major/minor 0 or 1' );
+   my $prompt = $self->add_leader( $self->loc( 'Enter major/minor 0 or 1'  ) );
    my $comp   = $self->get_line( $prompt, 1, TRUE, 0 );
-      $prompt = $self->add_leader( 'Enter increment/decrement' );
+      $prompt = $self->add_leader( $self->loc( 'Enter increment/decrement' ) );
    my $bump   = $self->get_line( $prompt, 1, TRUE, 0 ) or return @args;
    my ($from, $ver);
 
@@ -160,13 +203,14 @@ sub _get_version_numbers {
 }
 
 sub _initialize_git {
-   my $self = shift; my $class = blessed $self; $self->chdir( $self->appldir );
+   my $self = shift;
+   my $msg  = $self->loc( 'Initialized by [_1]', blessed $self );
 
-   $self->run_cmd  ( 'git init'   );
-   $self->_add_hook( 'commit-msg' );
-   $self->_add_hook( 'pre-commit' );
-   $self->run_cmd  ( 'git add .'  );
-   $self->run_cmd  ( "git commit -m 'Initialized by ${class}'" );
+   $self->chdir( $self->appldir );
+
+   $self->run_cmd( 'git init'   ); $self->add_hooks;
+
+   $self->run_cmd( 'git add .'  ); $self->run_cmd( "git commit -m '${msg}'" );
    return;
 }
 
@@ -179,8 +223,9 @@ sub _initialize_svn {
 
    my $branch = $self->branch;
    my $url    = 'file://'.$repository->catdir( $branch );
+   my $msg    = $self->loc( 'Initialized by [_1]', $class );
 
-   $self->run_cmd( "svn import ${branch} ${url} -m 'Initialized by ${class}'" );
+   $self->run_cmd( "svn import ${branch} ${url} -m '${msg}'" );
 
    my $appldir = $self->appldir; $appldir->rmtree;
 
@@ -191,8 +236,7 @@ sub _initialize_svn {
       $self->run_cmd( "svn propset svn:keywords 'Id Revision Auth' ${target}" );
    }
 
-   my $msg = "Add RCS keywords to project files";
-
+   $msg = $self->loc( 'Add RCS keywords to project files' );
    $self->run_cmd( "svn commit ${branch} -m '${msg}'" );
    $self->chdir( $self->appldir );
    $self->run_cmd( 'svn update' );
@@ -240,7 +284,7 @@ sub _should_add_tag {
 sub _svn_ignore_meta_files {
    my $self = shift; $self->chdir( $self->appldir );
 
-   my $ignores = "LICENSE\nMANIFEST\nMETA.json\nMETA.yml\nREADME";
+   my $ignores = "LICENSE\nMANIFEST\nMETA.json\nMETA.yml\nREADME\nREADME.md";
 
    $self->run_cmd( "svn propset svn:ignore '${ignores}' ." );
    $self->run_cmd( 'svn commit -m "Ignoring meta files" .' );
@@ -249,6 +293,12 @@ sub _svn_ignore_meta_files {
 }
 
 # Private functions
+sub __get_state_file_name {
+   return (map  { m{ load-project-state \s+ [\'\"](.+)[\'\"] }mx; }
+           grep { m{ eval: \s+ \( \s* load-project-state }mx }
+           $_[ 0 ]->getlines)[ -1 ];
+}
+
 sub __tag_from_version {
    my $ver = shift; return $ver->component( 0 ).q(.).$ver->component( 1 );
 }
@@ -272,7 +322,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.17.$Rev: 16 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 
@@ -312,11 +362,30 @@ Do not turn on automatic Revision keyword expansion. Defaults to C<FALSE>
 
 =head1 Subroutines/Methods
 
+=head2 add_hooks - Adds and re-adds any hooks used in the VCS
+
+   $exit_code = $self->add_hooks;
+
+Returns the exit code
+
 =head2 add_to_vcs
 
    $self->add_to_vcs( $target, $type );
 
 Add the target file to the VCS
+
+=head2 get_emacs_state_file_path
+
+   $io_object = $self->get_emacs_state_file_path( $file_name );
+
+Returns the L<File::DataClass::IO> object for the path to the Emacs editor's
+state file
+
+=head2 set_branch - Set the VCS branch name
+
+   $exit_code = $self->set_branch;
+
+Sets the current branch to the value supplied on the command line
 
 =head1 Diagnostics
 
@@ -330,7 +399,9 @@ None
 
 =item L<Moose::Role>
 
-=item L<MooseX::Types>
+=item L<Perl::Version>
+
+=item L<Unexpected>
 
 =back
 

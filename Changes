@@ -1,6 +1,15 @@
 Revision history for Module::Provision
 
-0.16.1    2013-06-08 18:10:12
+0.17.16   2013-07-28 19:40:23
+          - Bumped File::DataClass dependency
+          - Added dump_stash
+          - List methods displays abstracts
+          - Added branch_file attribute
+          - Prove now runs individual test scripts
+          - Added set_branch
+          - Mooified
+
+0.16.3    2013-06-25 16:26:24
           - Commit msg hook prefers message file content
 
 0.15.10   2013-05-23 23:02:32

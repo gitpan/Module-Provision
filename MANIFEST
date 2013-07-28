@@ -1,4 +1,4 @@
-bin/module_provision
+bin/module-provision
 Build.PL
 Changes
 inc/Bob.pm

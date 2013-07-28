@@ -1,26 +1,27 @@
-# @(#)Ident: CreatingDistributions.pm 2013-05-15 17:35 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-07-04 12:01 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 12 $ =~ /\d+/gmx );
 
-use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions        qw(emit throw trim);
-use Cwd                           qw(getcwd);
-use MooseX::Types::Common::String qw(NonEmptySimpleStr);
+use Class::Usul::Functions  qw( emit throw trim );
+use Moo::Role;
+use MooX::Options;
+use Unexpected::Types       qw( NonEmptySimpleStr );
 
-requires qw(appbase appldir branch builder exec_perms homedir
-            incdir project_file render_templates stash testdir vcs);
+requires qw( appbase appldir branch builder chdir config exec_perms
+             homedir incdir io method output next_argv project_file
+             quiet render_templates run_cmd stash testdir vcs );
 
 # Object attributes (public)
-has 'editor'     => is => 'ro', isa => NonEmptySimpleStr, lazy => TRUE,
+option 'editor'  => is => 'lazy', isa => NonEmptySimpleStr,
    documentation => 'Which text editor to use',
    default       => sub { $_[ 0 ]->config->editor };
 
 # Construction
-around '_build__appldir' => sub {
+around '_build_appldir' => sub {
    my ($next, $self, @args) = @_; my $appldir = $self->$next( @args );
 
    return !$appldir && $self->method eq 'dist'
@@ -37,8 +38,7 @@ around '_build_builder' => sub {
 around '_build_project' => sub {
    my ($next, $self, @args) = @_; my $project;
 
-   $self->method eq 'dist' and $project = shift @{ $self->extra_argv }
-      and return $project;
+   $self->method eq 'dist' and $project = $self->next_argv and return $project;
 
    return $self->$next( @args );
 };
@@ -53,7 +53,7 @@ around '_build_vcs' => sub {
 sub create_directories {
    my $self = shift; my $perms = $self->exec_perms;
 
-   $self->output( $self->loc( 'Creating directories' ) );
+   $self->output( 'Creating directories' );
    $self->appldir->exists or $self->appldir->mkpath( $perms );
    $self->builder eq 'MB'
       and ($self->incdir->exists or $self->incdir->mkpath( $perms ));
@@ -81,10 +81,10 @@ sub dist_post_hook {
 }
 
 sub dist_pre_hook {
-   my $self = shift; my $argv = $self->extra_argv; umask $self->_create_mask;
+   my $self = shift; umask $self->_create_mask;
 
    $self->appbase->exists or $self->appbase->mkpath( $self->exec_perms );
-   $self->stash->{abstract} = shift @{ $argv } || $self->stash->{abstract};
+   $self->stash->{abstract} = $self->next_argv || $self->stash->{abstract};
    $self->chdir( $self->appbase );
    return;
 }
@@ -130,27 +130,33 @@ sub metadata : method {
 sub prove : method {
    my $self = shift; $self->chdir( $self->appldir );
 
-   my $cmd = $self->builder eq 'DZ' ? 'dzil test' : 'prove t';
+   my $cmd = $self->_get_test_command( $self->next_argv );
 
    $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_MEMORY} = TRUE;
    $ENV{TEST_SPELLING}  = TRUE;
-   $self->output ( 'Testing '.$self->appldir );
+   $self->output ( 'Testing [_1]', { args => [ $self->appldir ] } );
    $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
    return OK;
 }
 
 sub show_tab_title : method {
    my $self = shift;
-   my $file = $self->extra_argv->[ 0 ] || $self->_project_file_path;
+   my $file = $self->next_argv || $self->_project_file_path;
    my $text = (grep { m{ tab-title: }msx } $self->io( $file )->getlines)[ -1 ];
 
-   emit trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] );
+   emit trim( (split m{ : }msx, $text || NUL, 2)[ 1 ] ).SPC.$self->appbase;
    return OK;
 }
 
 # Private methods
 sub _create_mask {
    return oct q(0777) ^ $_[ 0 ]->exec_perms;
+}
+
+sub _get_test_command {
+   return $_[ 1 ]                  ? 'prove '.$_[ 1 ]
+        : $_[ 0 ]->builder eq 'DZ' ? 'dzil test'
+                                   : 'prove t';
 }
 
 sub _project_file_path {
@@ -178,7 +184,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.17.$Rev: 12 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 
@@ -212,11 +218,11 @@ variable
 Creates the required directories for the new distribution. If subclassed this
 method can be modified to include additional directories
 
-=head2 dist
+=head2 dist - Create a new distribution
 
    $exit_code = $self->dist;
 
-Create a new distribution specified by the module name on the command line
+The distributions main module name is specified on the command line
 
 =head2 dist_post_hook
 
@@ -234,12 +240,12 @@ Runs before the new distribution is created. If subclassed this method
 can be modified to perform additional actions before the project directories
 are created
 
-=head2 edit_project
+=head2 edit_project - Edit the project file
 
    $exit_code = $self->edit_project;
 
-Edit the project file (one of; F<dist.ini>, F<Build.PL>, or
-F<Makefile.PL>) in the current directory
+The project file is one of; F<dist.ini>, F<Build.PL>, or
+F<Makefile.PL> in the current directory
 
 =head2 generate_metadata
 
@@ -248,19 +254,19 @@ F<Makefile.PL>) in the current directory
 Generates the distribution metadata files. If the create_flag is C<TRUE>
 returns the name of the F<README.md> file
 
-=head2 metadata
+=head2 metadata - Generate the distribution metadata files
 
    $exit_code = $self->metadata;
 
 Calls L</generate_metadata> with the create flag set to C<FALSE>
 
-=head2 prove
+=head2 prove - Runs the tests for the distribution
 
    $exit_code = $self->prove;
 
-Tests the distribution
+Returns the exit code
 
-=head2 show_tab_title
+=head2 show_tab_title - Display the tab title for the current distribution
 
    $exit_code = $self->show_tab_title;
 
@@ -278,7 +284,7 @@ None
 
 =item L<Moose::Role>
 
-=item L<MooseX::Types::Common::String>
+=item L<Unexpected>
 
 =back
 

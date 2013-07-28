@@ -1,25 +1,28 @@
-# @(#)Ident: PrereqDifferences.pm 2013-06-06 15:17 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-06-30 18:53 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
-use namespace::autoclean;
-use version; our $VERSION = qv( sprintf '0.16.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use namespace::sweep;
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 11 $ =~ /\d+/gmx );
 
-use Moose::Role;
 use Class::Usul::Constants;
-use Class::Usul::Functions qw(classfile is_member emit throw);
-use English                qw(-no_match_vars);
+use Class::Usul::Functions  qw( classfile is_member emit throw );
+use English                 qw( -no_match_vars );
 use Module::Metadata;
+use Moo::Role;
+
+requires qw( appldir builder chdir debug ensure_class_loaded get_meta io
+             libdir manifest_paths next_argv output project_file run_cmd );
 
 # Public methods
 sub prereq_diffs : method {
-   my $self    = shift;
+   my $self = shift;
 
    $self->ensure_class_loaded( 'CPAN' );
    $self->ensure_class_loaded( 'Module::CoreList' );
    $self->ensure_class_loaded( 'Pod::Eventual::Simple' );
 
-   my $field   = shift @{ $self->extra_argv } || q(requires);
+   my $field   = $self->next_argv || 'requires';
    my $filter  = "_filter_${field}_paths";
    my $sources = $self->$filter( $self->_source_paths );
    my $depends = $self->_filter_dependents( $self->_dependencies( $sources ) );
@@ -166,7 +169,7 @@ sub _prereq_data {
 
 sub _source_paths {
    return [ grep { $_[ 0 ]->_is_perl_source( $_ ) }
-                @{ $_[ 0 ]->get_manifest_paths } ];
+                @{ $_[ 0 ]->manifest_paths } ];
 }
 
 sub _version_from_module {
@@ -304,7 +307,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.16.$Rev: 1 $ of
+This documents version v0.17.$Rev: 11 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description
@@ -317,11 +320,12 @@ Defines no attributes
 
 =head1 Subroutines/Methods
 
-=head2 prereq_diffs
+=head2 prereq_diffs - Displays a prerequisite difference report
 
    $exit_code = $self->prereq_diffs;
 
-Displays a prerequisite difference report
+Shows which dependencies should be added to, removed from, or updated
+in the the distributions project file
 
 =head1 Diagnostics
 

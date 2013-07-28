@@ -25,7 +25,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "File::DataClass" : "v0.20.7",
+            "File::DataClass" : "v0.22.0",
             "Module::Build" : "0.4004",
             "version" : "0.88"
          }
@@ -43,32 +43,31 @@
          "requires" : {
             "CPAN::Uploader" : "0.103004",
             "Class::Null" : "2.10142",
-            "Class::Usul" : "v0.21.2",
+            "Class::Usul" : "v0.22.0",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
             "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.12012",
             "Dist::Zilla::Plugin::VersionFromModule" : "0.08",
-            "File::DataClass" : "v0.20.8",
+            "File::DataClass" : "v0.22.0",
             "File::ShareDir" : "1.02",
             "File::Slurp" : "9999.13",
             "HTTP::Message" : "6.06",
+            "LWP" : "6.04",
             "LWP::Protocol::https" : "6.03",
-            "LWP::UserAgent" : "6.04",
             "Module::Install" : "1.06",
             "Module::Install::AutoLicense" : "0.08",
             "Module::Install::ReadmeFromPod" : "0.2",
             "Module::Install::ReadmeMarkdownFromPod" : "0.03",
             "Module::Metadata" : "1.000011",
-            "Moose" : "2.0802",
-            "Moose::Autobox" : "0.12",
-            "MooseX::Types" : "0.35",
-            "MooseX::Types::Common" : "0.001008",
+            "Moo" : "1.002",
+            "MooX::Options" : "3.83",
             "Perl::Version" : "1.011",
             "Pod::Eventual" : "0.09333",
             "Pod::Markdown" : "1.322",
             "Template" : "2.22",
-            "Text::Format" : "0.53",
-            "namespace::autoclean" : "0.13",
+            "Type::Tiny" : "0.012",
+            "Unexpected" : "v0.4.0",
+            "namespace::sweep" : "0.006",
             "perl" : "5.01"
          }
       }
@@ -76,47 +75,47 @@
    "provides" : {
       "Dist::Zilla::Plugin::ManifestInRoot" : {
          "file" : "lib/Dist/Zilla/Plugin/ManifestInRoot.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.2"
       },
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.16"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.14"
       },
       "Module::Provision::Config" : {
          "file" : "lib/Module/Provision/Config.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.7"
       },
       "Module::Provision::TraitFor::AddingFiles" : {
          "file" : "lib/Module/Provision/TraitFor/AddingFiles.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.11"
       },
       "Module::Provision::TraitFor::CPANDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CPANDistributions.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.15"
       },
       "Module::Provision::TraitFor::CreatingDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.12"
       },
       "Module::Provision::TraitFor::PrereqDifferences" : {
          "file" : "lib/Module/Provision/TraitFor/PrereqDifferences.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.11"
       },
       "Module::Provision::TraitFor::Rendering" : {
          "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.12"
       },
       "Module::Provision::TraitFor::UpdatingContent" : {
          "file" : "lib/Module/Provision/TraitFor/UpdatingContent.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.16"
       },
       "Module::Provision::TraitFor::VCS" : {
          "file" : "lib/Module/Provision/TraitFor/VCS.pm",
-         "version" : "v0.16.1"
+         "version" : "v0.17.16"
       }
    },
    "release_status" : "stable",
@@ -132,5 +131,5 @@
          "url" : "git://github.com/pjfl/Module-Provision.git"
       }
    },
-   "version" : "v0.16.1"
+   "version" : "v0.17.16"
 }
