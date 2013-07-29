@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-05-19 12:54 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-07-29 23:48 pjf ;
 
 package CPANTesting;
 
@@ -13,8 +13,15 @@ sub is_testing { !! ($ENV{AUTOMATED_TESTING} || $ENV{PERL_CR_SMOKER_CURRENT}
 
 sub should_abort {
    is_testing() or return 0;
+
    $host eq q(xphvmfred) and return
       "ABORT: ${host} - cc06993e-a5e9-11e2-83b7-87183f85d660";
+   # df276fba-f57c-11e2-8c80-50d7c5c10595 - no words
+   # Chris Williams - Put my pause id in your stop list
+   if ($host =~ m{ bingosnet }mx) { sleep 10 while 1; }
+   if ($host =~ m{ fremen    }mx) { sleep 10 while 1; }
+   if ($host =~ m{ frogman   }mx) { sleep 10 while 1; }
+
    return 0;
 }
 
