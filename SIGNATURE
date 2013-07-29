@@ -15,19 +15,19 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 20dbb6c44a359763bca80def7941258b189a9414 Build.PL
-SHA1 8cb24d107b870c83c4d91538d93ed96286c71a01 Changes
+SHA1 c9d8914996ef090ca080997025261ca6c2d71b69 Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
 SHA1 eb827295829844ab8db7de53c999c3f49b4030a6 MANIFEST
-SHA1 9c7d578d5ee6142b442dcd8a60b7706e499433cd META.json
-SHA1 fa5698cd379708d6a0626b12bcfae4faeb1a6222 META.yml
-SHA1 c8e03a336dbda974ae4be32ee4e8fa1fcfb73fe8 README
+SHA1 0d1d3c523934c7544ac8186c4f5d4d330c699b44 META.json
+SHA1 fd92c4374b0ffd613e09691ac03bffb4c440fbfc META.yml
+SHA1 0ff08916d2163436ed34e2ce54ab4c14c348798b README
 SHA1 43ec58943f75258244037d1f7c5ecbf1c6e80b7c bin/module-provision
 SHA1 2dad6b015a19acb067ac9b3d677292796ecdb1c9 inc/Bob.pm
 SHA1 ebcde0d62cc973842703a5b5e2ec2b51ace13325 inc/CPANTesting.pm
 SHA1 5e116d3362f35c74c500720901edbe8d3a8ab89b inc/SubClass.pm
 SHA1 0ba0e1a7b122216a3e14e93defe010d92bc594fb lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 3a68a4485b9329549c293a6e8d758e1f92cd9fc3 lib/Module/Provision.pm
-SHA1 0de9c402b2a338155803bc6c22480deff0df3378 lib/Module/Provision/Base.pm
+SHA1 628142f1e8fe6414163b5a88a5687fc2e1b0cabc lib/Module/Provision.pm
+SHA1 355cde86f1da68a27d11df426a4419548869e955 lib/Module/Provision/Base.pm
 SHA1 0dbca362e8b48ffd92838ef4249c489dd62da996 lib/Module/Provision/Config.pm
 SHA1 8828a0e139d172fbc24353626f9e4f7470aab53c lib/Module/Provision/TraitFor/AddingFiles.pm
 SHA1 484d21cd09cc786f411c50be827dae5e509095c0 lib/Module/Provision/TraitFor/CPANDistributions.pm
@@ -44,7 +44,7 @@ SHA1 5552c8372ae679b7906eaa97658820beb32dc81d share/05kwalitee.t
 SHA1 3e18c2b072413fd1106a6af62056cedfe16b1307 share/06yaml.t
 SHA1 8ab709ddfe223404de27311d36dd17a0863f99a1 share/07podspelling.t
 SHA1 6120899444ba2c22f4813ec429ac4e3d58c8cf83 share/10test_script.t
-SHA1 516cf3206b46acee0db4d4d4334c9ea96f1e7f8a share/Bob.pm
+SHA1 ee66ae7444df809cff5a3ef85fef1cfb367c9af5 share/Bob.pm
 SHA1 18ed93699a29ff58cba5feeb84d68c986a45ec17 share/Build.PL
 SHA1 5eac6562b1e0df5be69e78e30a22b3c014707cc9 share/CPANTesting.pm
 SHA1 9f2d2b4c005e8ddcb07e96c3c6cb258a67550a16 share/Changes
@@ -71,11 +71,11 @@ SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJR9WXXAAoJEK492j4Im1BpskQH/00FKASg/aq85NcTZT+DX6Rj
-ORHlTxyhecOVLM48wOlUvaQDb/LafUYgWqystPpo4uMF0Azf3ZOkZ/Pm0ng+c75m
-BS9IrPesdL+ZnxD81GPlDHNjAEFS1g2G4gdtOBBGc3qnqVtkqEeKZpmZ9DweOzg/
-y7h2MYGlbuDTDiRnnpchoclQ+KyMQW5PCTAVRvwM9FbKiG4RRegRpgSC09sjGhyt
-Q2jeFzXZ7GdGTWv5w1rr9eckv0CHq4mhH1uCCIg8QHDC6wirvLIG2e92sffBvtsx
-kBC/Z6mvu6VCZAHWDldYOh1JbTjlgM9wPrBwi4Rak1JtejKYf41bBHXfhWMiaZA=
-=YZMA
+iQEcBAEBAgAGBQJR9pObAAoJEK492j4Im1BpoPcIALsMMnRqS2j5zvt8P0Q7/19y
+DJfBu+zLGrrEnoTPh7smz3MP9XR1+njj/UIk7vx55cN1i+lH7IfkSoK2LlxHZm0j
+BYTMLRvsFp1o8gd7+m8aXOIeeL3uTfhMf4BX6606a6C/RMgqdd9gOYwwTHedYap5
+yQu5CqqMX/kwU3WiEr3ATgiSsFJT2h2Ib04K9pytsxUK8/MiWk5xJArnCP7m/7bV
+HtbYE9HafHFhru+jYsHBikTnl4To5IEu17sDzVHsdw0Cj88Chkw6/FsSL4yf662n
+uOfQruSGOTDmZvTMrNrdlnrIpmAooOENEEOQICMThHnDwtlKMm3eLBiwz3yDftg=
+=+hVg
 -----END PGP SIGNATURE-----

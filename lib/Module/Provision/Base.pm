@@ -1,12 +1,11 @@
-# @(#)Ident: Base.pm 2013-07-06 18:31 pjf ;
+# @(#)Ident: Base.pm 2013-07-29 15:42 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 14 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 17 $ =~ /\d+/gmx );
 
-use Class::Usul::Functions  qw( app_prefix class2appdir classdir distname
-                                throw );
+use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
 use Class::Usul::Time       qw( time2str );
 use English                 qw( -no_match_vars );
 use File::DataClass::Constants;
@@ -76,7 +75,7 @@ has 'dist_module'     => is => 'lazy', isa => Path, coerce => Path->coercion,
 has 'dist_version'    => is => 'lazy', isa => Object;
 
 has 'distname'        => is => 'lazy', isa => NonEmptySimpleStr,
-   default            => sub { distname $_[ 0 ]->project };
+   default            => sub { __distname( $_[ 0 ]->project ) };
 
 has 'exec_perms'      => is => 'lazy', isa => PositiveInt;
 
@@ -269,6 +268,10 @@ sub _build_vcs {
 }
 
 # Private functions
+sub __distname {
+   (my $y = $_[ 0 ] || q()) =~ s{ :: }{-}gmx; return $y;
+}
+
 sub __get_module_from { # Return main module name from contents of project file
    return
       (map    { s{ [-] }{::}gmx; $_ }
@@ -312,7 +315,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.17.$Rev: 14 $ of L<Module::Provision::Base>
+This documents version v0.17.$Rev: 17 $ of L<Module::Provision::Base>
 
 =head1 Description
 

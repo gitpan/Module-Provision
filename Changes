@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.17.16   2013-07-28 19:40:23
+0.17.17   2013-07-29 17:08:38
+          - Fixed distname double definition bug
           - Bumped File::DataClass dependency
           - Added dump_stash
           - List methods displays abstracts
