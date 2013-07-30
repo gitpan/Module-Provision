@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.17.18   2013-07-30 00:50:18
+0.17.19   2013-07-30 14:03:34
+          - New method for CPANTesting min Perl ver
           - Added fremen and frogman to tier gruber
           - Aborting Bingoes failed see df276fba-f57c-11e2-8c80-50d7c5c10595
             No choice but to send this smoker to sleep 10 while 1.

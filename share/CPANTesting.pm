@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-05-19 12:14 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-07-30 12:50 pjf ;
 
 package CPANTesting;
 
@@ -20,8 +20,10 @@ sub should_abort {
 }
 
 sub test_exceptions {
-   my $p = shift; is_testing() or return 0;
+   my $p = shift; my $perl_ver = $p->{requires}->{perl};
 
+   is_testing()         or  return 0;
+   $] < $perl_ver       and return "TESTS: Perl minimum ${perl_ver}";
    $p->{stop_tests}     and return 'TESTS: CPAN Testing stopped in Build.PL';
    $osname eq q(mirbsd) and return 'TESTS: Mirbsd OS unsupported';
 #  $host   eq q(broken) and return "tests: <CPAN Testing uuid>";
