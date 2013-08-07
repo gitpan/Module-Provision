@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::UpdatingContent;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.17.%d', q$Rev: 16 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 0 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( throw );
@@ -97,7 +97,7 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
 =head1 Version
 
-This documents version v0.17.$Rev: 16 $ of
+This documents version v0.18.$Rev: 0 $ of
 L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description

@@ -14,29 +14,28 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 20dbb6c44a359763bca80def7941258b189a9414 Build.PL
-SHA1 8c0fb22b6eba7badaa4e2fefe9ef22968cbed222 Changes
+SHA1 39608864f2934b4d0f40581a25a8c3432cbc45bc Build.PL
+SHA1 46ba9a22d18f0f943e352a1189f897eb89d40427 Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
-SHA1 eb827295829844ab8db7de53c999c3f49b4030a6 MANIFEST
-SHA1 5ba516b248968460d749e57eec28e9f96e062873 META.json
-SHA1 4ce4434e16d9588a0b95f75cff794e93b0a7a472 META.yml
-SHA1 cd2a12c4e635073db12d722c8b999fa0c5ccb605 README
-SHA1 43ec58943f75258244037d1f7c5ecbf1c6e80b7c bin/module-provision
-SHA1 c9e4a7e587b859d11ca2346265a5ba4c950f02b8 inc/Bob.pm
-SHA1 4f428c1b3faada21c7c7ecfc58bea817e8a487d9 inc/CPANTesting.pm
+SHA1 246db6f2a13f2fb2fd3ce75da1f189dc9c77c045 MANIFEST
+SHA1 e75061ece816edcd677d09c124fd772d90a42592 META.json
+SHA1 80c4e9054932ba70277064639a1be6779424015c META.yml
+SHA1 93cb1446fd4650a91e5d6bc4999834fb146f9d45 README
+SHA1 650820ac421dc4f945fc1592dc3ceaac94f353b2 bin/module-provision
+SHA1 c9d93a6ddd04ad6ade84095f7c4941d01e191ece inc/Bob.pm
+SHA1 131242855e4780fa56d5b897e712feb742074a67 inc/CPANTesting.pm
 SHA1 5e116d3362f35c74c500720901edbe8d3a8ab89b inc/SubClass.pm
-SHA1 0ba0e1a7b122216a3e14e93defe010d92bc594fb lib/Dist/Zilla/Plugin/ManifestInRoot.pm
-SHA1 25eaef4cd16d4f18e8455b642395380f0f2858e7 lib/Module/Provision.pm
-SHA1 355cde86f1da68a27d11df426a4419548869e955 lib/Module/Provision/Base.pm
-SHA1 0dbca362e8b48ffd92838ef4249c489dd62da996 lib/Module/Provision/Config.pm
-SHA1 8828a0e139d172fbc24353626f9e4f7470aab53c lib/Module/Provision/TraitFor/AddingFiles.pm
-SHA1 484d21cd09cc786f411c50be827dae5e509095c0 lib/Module/Provision/TraitFor/CPANDistributions.pm
-SHA1 2ac151b8b7c904417a7c8b9310f24fd53ba7cbc3 lib/Module/Provision/TraitFor/CreatingDistributions.pm
-SHA1 458f0da6521668bdf420364f0c58a06e8b2bc2a8 lib/Module/Provision/TraitFor/PrereqDifferences.pm
-SHA1 962bdbd66c8ea92204005a04560d786cf192ca30 lib/Module/Provision/TraitFor/Rendering.pm
-SHA1 da705705b5b41e9be9ae1cb57c0d59bd1474e881 lib/Module/Provision/TraitFor/UpdatingContent.pm
-SHA1 ca115bc0725695ecdb2fe55f4c57003cd5ec6a6a lib/Module/Provision/TraitFor/VCS.pm
-SHA1 da341a044ddf578c782eadc66a906d6f331ab48c share/01always_pass.t
+SHA1 a3c9fdba0741bd6f6f040418d7fdbb2612e3a106 lib/Module/Provision.pm
+SHA1 f581e8f9f8f734c2ec698e994577622a1727c0e2 lib/Module/Provision/Base.pm
+SHA1 a3f249a862dadf3480b99339fa9a780f63dfe558 lib/Module/Provision/Config.pm
+SHA1 892a18b0775f2cccccb74a4536beec8e0fb43a13 lib/Module/Provision/TraitFor/AddingFiles.pm
+SHA1 5bf07ed9e5894330136cbfebfab5ec045a288170 lib/Module/Provision/TraitFor/CPANDistributions.pm
+SHA1 734637e8996b16ebd4b29082d10c4876ed147e14 lib/Module/Provision/TraitFor/CreatingDistributions.pm
+SHA1 d5392a03e11e9ed090d6bec09089bfc1657a9fa3 lib/Module/Provision/TraitFor/PrereqDifferences.pm
+SHA1 256503ba75a48ccd7739be6d3f1356917593993f lib/Module/Provision/TraitFor/Rendering.pm
+SHA1 ee7848d592e2f8b6c13405e2132c7a3b54f2efb2 lib/Module/Provision/TraitFor/UpdatingContent.pm
+SHA1 c4c564ffc1c6b1b452e8ff368ae803370099fc42 lib/Module/Provision/TraitFor/VCS.pm
+SHA1 d197e3f0b7305c846e1f998ded6b4f437e64ce97 share/01always_pass.t
 SHA1 5bd00eb03f1d739bb1e94faf081c5c03fb119973 share/02pod.t
 SHA1 3b0b8c839082ac9e966ff051af801856f400159b share/03podcoverage.t
 SHA1 1f01c1d05ea19986e962e9f81ba58aa82c16bcc6 share/04critic.t
@@ -44,9 +43,9 @@ SHA1 5552c8372ae679b7906eaa97658820beb32dc81d share/05kwalitee.t
 SHA1 3e18c2b072413fd1106a6af62056cedfe16b1307 share/06yaml.t
 SHA1 8ab709ddfe223404de27311d36dd17a0863f99a1 share/07podspelling.t
 SHA1 6120899444ba2c22f4813ec429ac4e3d58c8cf83 share/10test_script.t
-SHA1 7ee0bd39c7a512cc24fa76613c76d58d8e5f7274 share/Bob.pm
+SHA1 c9d93a6ddd04ad6ade84095f7c4941d01e191ece share/Bob.pm
 SHA1 18ed93699a29ff58cba5feeb84d68c986a45ec17 share/Build.PL
-SHA1 729eb49f937d236522a9923cedab6a10d3e4eb4e share/CPANTesting.pm
+SHA1 131242855e4780fa56d5b897e712feb742074a67 share/CPANTesting.pm
 SHA1 9f2d2b4c005e8ddcb07e96c3c6cb258a67550a16 share/Changes
 SHA1 03a016023abacb29d1dc932034b5e6a3da391207 share/EUMM_Makefile.PL
 SHA1 dbe97db0584737f11f1bd6b3d327e66a81326d9c share/MANIFEST.SKIP
@@ -57,25 +56,25 @@ SHA1 8ba549d13418ef1df3ce2b929a0989aa59a40aeb share/dist.ini
 SHA1 176b0ed1a7861257a80db8dada8cfda71b4f510a share/gitcommit-msg
 SHA1 dfbcd69d57d3994876596824593697bb82eadeab share/gitignore
 SHA1 1f422acb0e6f91dec62b8768310ff483a1d89e46 share/gitpre-commit
-SHA1 3bb0916fd25a7e3a5899d4832a2ebaaee8230f0a share/perl_module.pm
-SHA1 971bb09b2bf9a1553cd3086dd7b2509a9467d54e share/perl_program.pl
-SHA1 da341a044ddf578c782eadc66a906d6f331ab48c t/01always_pass.t
-SHA1 b0e958675d9dce81b79c35ee55975df0096932ea t/02pod.t
-SHA1 3f85e750eeb1b2d6d23dfae2501d36266ac56f36 t/03podcoverage.t
-SHA1 9408b1851bf5eaa9ca284b6923bbaf3707cb32e4 t/04critic.t
-SHA1 31d41fbce4f64b58e828f972d020d8eae7515632 t/05kwalitee.t
-SHA1 d735e394bb6e9ffd43e09156a9459938ff150e8c t/06yaml.t
-SHA1 b561b750ac2ab51ed98d07a611e34392222cbe62 t/07podspelling.t
-SHA1 198dfb459432b214b83cf1195b18374d0efb1fe2 t/10test_script.t
+SHA1 cdf45eb2816fb6271d819b8e79a4d445870083f2 share/perl_module.pm
+SHA1 46c9d5cfb1c41315480e0bd1bd75a8878b74aa35 share/perl_program.pl
+SHA1 d197e3f0b7305c846e1f998ded6b4f437e64ce97 t/01always_pass.t
+SHA1 c45c3c44302f951ea9c0ee9a02eb081ceff16875 t/02pod.t
+SHA1 20b5414aa8f6b442b82cc3989a77348fa01a1c04 t/03podcoverage.t
+SHA1 a11d8279d25dda214a5e4ea185d709ad322c43b7 t/04critic.t
+SHA1 d04e75f6b0f9cb2467ab612af7d4518ea82abb42 t/05kwalitee.t
+SHA1 ff923fd17c7216517f431a776083cce5c1c5237a t/06yaml.t
+SHA1 140498954228bda22467ab18449411e5bf2555f0 t/07podspelling.t
+SHA1 a01e61d4506e690ee85ed9a17fc6a44e1750f760 t/10test_script.t
 SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJR97n0AAoJEK492j4Im1BpE30IALl0D54ifsebjroBy5nIzFhH
-sCvBrE9IfATi6+po9lJBNa1PyRrKSTyZe16covBmiabt20nr9P3VcpzJhhWazSY0
-Vx0/xFxv6Nz3VL6zDup1wGMr1U+uvBnT5DPIDvh5CPhD3swRm9qIV8UbyyuL+960
-sGJGvFGByzzDWOUv/ZIYQQ5jb2EXocZbe69qSbPoWfBgS+nDfq8BYEwXpH4SwYq4
-ZzE99iPxej77NecgaYZVg/dWvUcI1Vtaj4f8u7knf/4RgG83qf/0Bttu15yq532z
-UDRNx2S1uhkPwxU77oBCW57ASWgJBK3OMdP3RznyhU3IDjprjf8RuqsayulKs5c=
-=JQB0
+iQEcBAEBAgAGBQJSAoodAAoJEK492j4Im1BpfMcH/jlHQ+aK2C8h1tXffrr7Qyjl
+/CKvUZvxtHC9E7RT1iwIgIcht+haUKddubyxqVtkOVun0ivLTffzZwg8toyJ9vit
+e4F3Np1kQPF4xsqy+BfdzCKBxm8fMR/LD9vYg4j2qCdHW7c8HEQqCcPPgs7I7MeU
+j0UEx2zGXdGweSR43W1w378Dm57z2Ty+nr2euxx2CUa6gsmGYX+zUnUvzcPxFrU2
+u9WSg+U0C3Xru9F+9h52/ZKVgtyHPD1VO2X6DSGdoCSCycWbcrI95tjAjKQwMeGP
+4H8Krspa3dMrnXj3SixpYFIkmWYB1WCRRlZycnRYwg09CGWPk3Tdkh1Ob7nnN7c=
+=4f+2
 -----END PGP SIGNATURE-----

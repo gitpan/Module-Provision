@@ -1,9 +1,9 @@
-# @(#)Ident: CPANDistributions.pm 2013-07-10 12:21 pjf ;
+# @(#)Ident: CPANDistributions.pm 2013-08-03 11:23 pjf ;
 
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::sweep;
-use version;  our $VERSION = qv( sprintf '0.17.%d', q$Rev: 15 $ =~ /\d+/gmx );
+use version;  our $VERSION = qv( sprintf '0.18.%d', q$Rev: 0 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Crypt::Util qw( decrypt_from_config encrypt_for_config
@@ -12,9 +12,9 @@ use Class::Usul::Functions   qw( throw );
 use English                  qw( -no_match_vars );
 use HTTP::Request::Common    qw( POST );
 use HTTP::Status;
-use Moo::Role;
 use Scalar::Util             qw( blessed );
 use Unexpected::Types        qw( NonEmptySimpleStr );
+use Moo::Role;
 
 requires qw( add_leader config debug distname dist_version dumper
              ensure_class_loaded info io loc log next_argv output yorn );
@@ -229,7 +229,7 @@ Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions t
 
 =head1 Version
 
-This documents version v0.17.$Rev: 15 $ of
+This documents version v0.18.$Rev: 0 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description

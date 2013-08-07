@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-07-06 18:31 pjf ;
+# @(#)Ident: perl_module.pm 2013-08-06 17:03 pjf ;
 
 package [% module %];
 
@@ -61,8 +61,8 @@ There are no known incompatibilities in this module
 
 =head1 Bugs and Limitations
 
-There are no known bugs in this module.
-Please report problems to the address below.
+There are no known bugs in this module. Please report problems to
+http://rt.cpan.org/NoAuth/Bugs.html?Dist=[% distname %].
 Patches are welcome
 
 =head1 Acknowledgements

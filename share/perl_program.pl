@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-04-24 20:24 pjf ;
+# @(#)Ident: perl_program.pl 2013-08-06 17:06 pjf ;
 
 use strict;
 use warnings;
@@ -101,7 +101,8 @@ None
 
 =head1 BUGS AND LIMITATIONS
 
-Send reports to address below
+Please report problems to
+http://rt.cpan.org/NoAuth/Bugs.html?Dist=[% distname %]
 
 =head1 AUTHOR
 

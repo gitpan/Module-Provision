@@ -4,7 +4,6 @@ Changes
 inc/Bob.pm
 inc/CPANTesting.pm
 inc/SubClass.pm
-lib/Dist/Zilla/Plugin/ManifestInRoot.pm
 lib/Module/Provision.pm
 lib/Module/Provision/Base.pm
 lib/Module/Provision/Config.pm
