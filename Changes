@@ -1,5 +1,6 @@
 Revision history for Module::Provision
 
+0.18.1    2013-08-07 18:56:27
           - Moved D::Z::P::ManifestInRoot to own dist
 
 0.17.22   2013-08-03 20:22:50
