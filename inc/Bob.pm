@@ -1,4 +1,4 @@
-# @(#)Ident: Bob.pm 2013-08-08 10:24 pjf ;
+# @(#)Ident: Bob.pm 2013-08-09 18:44 pjf ;
 
 package Bob;
 
@@ -10,7 +10,7 @@ sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
 
 BEGIN { my $reason; $reason = CPANTesting::should_abort and whimper $reason; }
 
-use version; our $VERSION = qv( '1.21' );
+use version; our $VERSION = qv( '1.22' );
 
 use File::Spec::Functions qw( catfile );
 use Module::Build;
@@ -46,11 +46,9 @@ sub __is_above_min {
    my $p        = shift;
    my $perl_ver = $p->{_min_perl_ver} = $p->{requires}->{perl} || 5.008;
 
-   CPANTesting::is_testing() and $] < $perl_ver and return;
-
-   $] < $perl_ver and whimper "Minimum required Perl version is ${perl_ver}";
-
-   return;
+   $] >= $perl_ver and return;
+   CPANTesting::is_testing() and $ENV{PERL5_CPANPLUS_IS_VERSION} and return;
+   whimper "Minimum required Perl version is ${perl_ver}";
 }
 
 sub __is_src { # Is this the developer authoring a module?

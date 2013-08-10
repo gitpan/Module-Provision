@@ -1,6 +1,7 @@
 Revision history for Module::Provision
 
-0.18.2    2013-08-08 14:32:04
+0.18.3    2013-08-10 09:46:31
+          - Toolchain update. Attempt to filter out residual noise
           - Misconfigured smoker 3c25f6a5-6c83-1014-9715-b1a9b77d427c
             c.f. df2446e9-6c38-1014-8bcf-004655012b15. Cannot see error
             because of RT#87575. Toolchain updated
