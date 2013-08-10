@@ -14,18 +14,18 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 04dcdec941bb8472aa25cb6a42557c67c788bc23 Build.PL
-SHA1 a55875542494cf28153b39efb85421dd72e7788c Changes
+SHA1 28a159468ee8498d4d0f1d6d5a8a45f4071b7796 Build.PL
+SHA1 143ac26fca1fcac6a0c6c98afb954fbe74b2584b Changes
 SHA1 2b3ccb88f716f614f8af721a1c69dba0bcdbbb32 LICENSE
 SHA1 246db6f2a13f2fb2fd3ce75da1f189dc9c77c045 MANIFEST
-SHA1 2d203d30ea19d6b7c2a4d69b1fbeef762dcbf369 META.json
-SHA1 ca5d9fab34efc0ddb765e3ad8fb36176b05aaeae META.yml
-SHA1 8d508d7f9a4027ab3b128172db860cb76d6267d6 README
+SHA1 a5c92f115f14d65ae23ee145f2c59c8e922c4394 META.json
+SHA1 4c50f9570a6b06b941249bb14e2f3cedd36384fb META.yml
+SHA1 5ba7a82ac62f0a1a23515666dcd0316afec82f51 README
 SHA1 149cf78e5c1b223969f751e07e4695db01cfeb65 bin/module-provision
-SHA1 3860fd8a50567c8c148c95bfeca1d70249d853ca inc/Bob.pm
-SHA1 eb258de43615f3b53afc6770fb63059d44291f9d inc/CPANTesting.pm
-SHA1 5e116d3362f35c74c500720901edbe8d3a8ab89b inc/SubClass.pm
-SHA1 c2aa6fa4a76eb8269d94f0ef6257e80958fee890 lib/Module/Provision.pm
+SHA1 4508a0e14971d2d023a8948c5c128ae7aa7eb8e4 inc/Bob.pm
+SHA1 5da7bfd26693276cf796101709fb9e198f57857d inc/CPANTesting.pm
+SHA1 a9d069f2d73f421974f5b34952d8b7bf41db8008 inc/SubClass.pm
+SHA1 04340d9dd19ac4cfa130d67bc6ed8ecf8740aac9 lib/Module/Provision.pm
 SHA1 d4f6a9860c5599c8bc58eab90391f7262ffdb522 lib/Module/Provision/Base.pm
 SHA1 af95d0e096ee3a0b7c505aefb0ca0a89bcbc9ef2 lib/Module/Provision/Config.pm
 SHA1 bbb37f5c6b84b085fdeb0d76f531496d4f8daff9 lib/Module/Provision/TraitFor/AddingFiles.pm
@@ -35,7 +35,7 @@ SHA1 39b6c77d0966d6b883a4136e8b23ddfc71e866b9 lib/Module/Provision/TraitFor/Prer
 SHA1 aa633d8668d29505c666d31a15c154923da9f38a lib/Module/Provision/TraitFor/Rendering.pm
 SHA1 4abd775148d9d3440539712ad50e66aa5932d817 lib/Module/Provision/TraitFor/UpdatingContent.pm
 SHA1 3c80401f366b5f3b9fb54acff24e9ad0ad929b31 lib/Module/Provision/TraitFor/VCS.pm
-SHA1 d197e3f0b7305c846e1f998ded6b4f437e64ce97 share/01always_pass.t
+SHA1 6134f6415a01cfe6b8055ad54b195625dbbd62d4 share/01always_pass.t
 SHA1 5bd00eb03f1d739bb1e94faf081c5c03fb119973 share/02pod.t
 SHA1 3b0b8c839082ac9e966ff051af801856f400159b share/03podcoverage.t
 SHA1 1f01c1d05ea19986e962e9f81ba58aa82c16bcc6 share/04critic.t
@@ -43,14 +43,14 @@ SHA1 5552c8372ae679b7906eaa97658820beb32dc81d share/05kwalitee.t
 SHA1 3e18c2b072413fd1106a6af62056cedfe16b1307 share/06yaml.t
 SHA1 8ab709ddfe223404de27311d36dd17a0863f99a1 share/07podspelling.t
 SHA1 6120899444ba2c22f4813ec429ac4e3d58c8cf83 share/10test_script.t
-SHA1 3860fd8a50567c8c148c95bfeca1d70249d853ca share/Bob.pm
+SHA1 d027d902fbcecb03ccab6c97fbb6029bba25a427 share/Bob.pm
 SHA1 18ed93699a29ff58cba5feeb84d68c986a45ec17 share/Build.PL
-SHA1 eb258de43615f3b53afc6770fb63059d44291f9d share/CPANTesting.pm
+SHA1 efaf938c03013f6498c14c6bc09d74991de74352 share/CPANTesting.pm
 SHA1 9f2d2b4c005e8ddcb07e96c3c6cb258a67550a16 share/Changes
 SHA1 03a016023abacb29d1dc932034b5e6a3da391207 share/EUMM_Makefile.PL
 SHA1 dbe97db0584737f11f1bd6b3d327e66a81326d9c share/MANIFEST.SKIP
 SHA1 655959247fca8b78ccc12e21dcd9d14d848be960 share/MI_Makefile.PL
-SHA1 5e116d3362f35c74c500720901edbe8d3a8ab89b share/SubClass.pm
+SHA1 0a0df9885190f948ac760c8f3b5ec610170ff89d share/SubClass.pm
 SHA1 54de88c5acbc2dfd9ba4b1a9327f4bb2f3b2b317 share/data_dumper.pm
 SHA1 8ba549d13418ef1df3ce2b929a0989aa59a40aeb share/dist.ini
 SHA1 176b0ed1a7861257a80db8dada8cfda71b4f510a share/gitcommit-msg
@@ -70,11 +70,11 @@ SHA1 00aa2e48a788f7ec7de8365693f0ba278f86c98c t/critic.rc
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQEcBAEBAgAGBQJSBf3vAAoJEK492j4Im1BpFbYH/iWwSLIX8UrungRIMUdbujs8
-UHSIMtlo/4yq8JJWm6u8deU2F1OvAzgg+zAuuJCfTURp8BGa34XNkge58mWGM3G7
-eqEJSMQqV6EKxE1Ad0u7Y5H4+IaG6mNSIUPmC9lFqoYtjSVgIhMXpuIaXL7vx9Va
-wChHmB12EdbINnvm+fhDoPy5wJonScFirCaERm4NiB4kqiw+9BJePoHGd3ZmlXuW
-k+74OwCm2TxwZB8HvP+Ze+u7xaczPTgt93hUsOCHkSnX+OY9j1Ijv9fSLisz2AKk
-+fs60w4lwAlx6ppXhzxQGBYrjkR1ZMrR6FA/rGEHkkn6bNzvCra5IerfZrh+mA8=
-=7p3M
+iQEcBAEBAgAGBQJSBq3rAAoJEK492j4Im1Bp4e4H/0yA+e2aNsFx0xPJHE1r0imS
+TY1PclLAv718JIv0pX+ludgPQ6Jw7P/VKKbutFUQjkU5dXvXQ0y+oLcbv3zmUWqP
+EC3m1YH2cArKo+7kf4vg0LGi2DPANOI/aqGN6z8m8RmVJs5UVOAy1SJQyhQLXIAF
+y8bcuDjd1hp4b+3QzN0Ojk9zi1mXr0FPe0IGDK+UU9EbOZL55TnW/3+ika9LRgk+
+XRfAkfLYNeY6sbl+rDh16d05GDMhyAXsBvhIXBcg/RlhaO/YFKDzyM7E/n7z39Mx
+Ava6oD+BzweEom3Av3I54YKVFYQCoJgHQ7SKZQwIAfVEaH/7X2S6GBmafavvnvQ=
+=SO6D
 -----END PGP SIGNATURE-----

@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-08-09 15:53 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-08-10 21:15 pjf ;
 
 package CPANTesting;
 
@@ -21,11 +21,10 @@ sub should_abort { # Only if the smoker cannot run the toolchain
 sub test_exceptions { # Reasons to skip some tests
    my $p = shift; my $perl_ver = $p->{_min_perl_ver} || $p->{requires}->{perl};
 
-   is_testing()        or  return 0;
-   $] < $perl_ver      and return "TESTS: Perl minimum ${perl_ver}";
-   $p->{stop_tests}    and return 'TESTS: CPAN Testing stopped in Build.PL';
-   $osname eq 'mirbsd' and return 'TESTS: Mirbsd OS unsupported';
-#  $host   eq 'broken' and return "tests: <CPAN Testing uuid>";
+   is_testing()         or  return 0;
+   $] < $perl_ver       and return "TESTS: Perl minimum ${perl_ver}";
+   $p->{stop_tests}     and return 'TESTS: CPAN Testing stopped in Build.PL';
+   $osname eq 'mswin32' and return 'TESTS: RT#87575';
    return 0;
 }
 

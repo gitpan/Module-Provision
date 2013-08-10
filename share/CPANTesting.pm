@@ -1,4 +1,4 @@
-# @(#)Ident: CPANTesting.pm 2013-08-09 15:53 pjf ;
+# @(#)Ident: CPANTesting.pm 2013-08-10 13:52 pjf ;
 
 package CPANTesting;
 
@@ -24,7 +24,7 @@ sub test_exceptions { # Reasons to skip some tests
    is_testing()        or  return 0;
    $] < $perl_ver      and return "TESTS: Perl minimum ${perl_ver}";
    $p->{stop_tests}    and return 'TESTS: CPAN Testing stopped in Build.PL';
-   $osname eq 'mirbsd' and return 'TESTS: Mirbsd OS unsupported';
+#  $osname eq 'mirbsd' and return 'TESTS: Mirbsd OS unsupported';
 #  $host   eq 'broken' and return "tests: <CPAN Testing uuid>";
    return 0;
 }
