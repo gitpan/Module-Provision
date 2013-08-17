@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-08-06 17:06 pjf ;
+# @(#)Ident: perl_program.pl 2013-08-12 15:12 pjf ;
 
 use strict;
 use warnings;
@@ -121,3 +121,4 @@ it under the same terms as Perl itself.
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

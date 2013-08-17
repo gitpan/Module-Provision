@@ -1,9 +1,9 @@
-# @(#)Ident: CreatingDistributions.pm 2013-08-03 11:23 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-08-17 15:04 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( emit throw trim );
@@ -184,7 +184,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.20.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

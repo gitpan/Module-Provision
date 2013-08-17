@@ -1,6 +1,13 @@
 Revision history for Module::Provision
 
+0.20.1    2013-08-17 16:43:40
+          - Bumped dependencies
+
+0.19.5    2013-08-17 16:37:36
+          - Switched to Dist::Zilla
+
 0.18.4    2013-08-10 22:17:28
+          - Updated share/dist.ini. Added share/DZ_Build.PL
           - Stopping testing on windows until RT#87575 is fixed
             febd397b-6bf5-1014-b508-69147d50f5d1
           - Toolchain update. Attempt to filter out residual noise

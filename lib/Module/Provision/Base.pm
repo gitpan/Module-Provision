@@ -1,9 +1,9 @@
-# @(#)Ident: Base.pm 2013-07-29 15:42 pjf ;
+# @(#)Ident: Base.pm 2013-08-13 09:35 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
 use Class::Usul::Time       qw( time2str );
@@ -150,7 +150,7 @@ sub _build_builder {
    my $self = shift; my $appldir = $self->appldir;
 
    for (grep { $_->[ 1 ]->exists }
-        map  { [ $_, $appldir->catfile( $BUILDERS{ $_ } ) ] } keys %BUILDERS) {
+        map  { [ $_, $appldir->catfile( $BUILDERS{ $_ } ) ] } __builders()) {
       return $_->[ 0 ];
    }
 
@@ -209,7 +209,7 @@ sub _build_project {
 
    while (not $prev or $prev ne $dir) {
       for my $file (grep { $_->exists }
-                    map  { $dir->catfile( $BUILDERS{ $_ } ) } keys %BUILDERS) {
+                    map  { $dir->catfile( $BUILDERS{ $_ } ) } __builders()) {
          $module = __get_module_from( $file->all ) and return $module;
          throw $self->loc( 'File [_1] contains no module name', $file );
       }
@@ -237,12 +237,14 @@ sub _build_stash {
             author         => $author,
             author_email   => $config->author_email,
             author_id      => $config->author_id,
+            author_ID      => uc $config->author_id,
             copyright      => $ENV{ORGANIZATION} || $author,
             copyright_year => time2str( '%Y' ),
             creation_date  => time2str,
             dist_module    => $self->dist_module->abs2rel( $self->appldir ),
             dist_version   => NUL.$self->dist_version,
             distname       => $self->distname,
+            distname_lc    => lc $self->distname,
             first_name     => lc ((split SPC, $author)[ 0 ]),
             home_page      => $config->home_page,
             initial_wd     => NUL.$self->initial_wd,
@@ -253,7 +255,8 @@ sub _build_stash {
             perl           => $perl_ver,
             prefix         => (split m{ :: }mx, lc $project)[ -1 ],
             project        => $project,
-            use_perl       => $perl_code, };
+            use_perl       => $perl_code,
+            version        => $VERSION, };
 }
 
 sub _build_vcs {
@@ -268,6 +271,10 @@ sub _build_vcs {
 }
 
 # Private functions
+sub __builders {
+   return (sort keys %BUILDERS);
+}
+
 sub __distname {
    (my $y = $_[ 0 ] || q()) =~ s{ :: }{-}gmx; return $y;
 }
@@ -315,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.20.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 

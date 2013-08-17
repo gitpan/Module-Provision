@@ -1,14 +1,14 @@
 #!/usr/bin/env perl
-# @(#)Ident: gitpre-commit 2013-04-21 13:58 pjf ;
+# @(#)Ident: gitpre-commit 2013-08-15 17:09 pjf ;
 
 use strict;
 use warnings;
-use lib qw(lib);
-use version; our $VERSION = qv( '0.1' );
+use lib qw( lib );
+use version; our $VERSION = qv( '0.2' );
 
-use Date::Format          qw(time2str);
-use English               qw(-no_match_vars);
-use File::Spec::Functions qw(catfile updir);
+use Date::Format          qw( time2str );
+use English               qw( -no_match_vars );
+use File::Spec::Functions qw( catfile updir );
 use Module::Metadata;
 use Perl::Version;
 
@@ -94,7 +94,7 @@ if (-f $changes_file) {
                    ? Module::Metadata->new_from_module( $module ) : undef;
    my $module_ver  = $meta ? $meta->version : qv( '0.1.1' );
 
-   $meta or warn "No meta object for module ${module}";
+   $meta or warn 'No meta object for module '.($module // '<undef>');
 
    if ($module_ver > $changes_ver) {
       my $stamp  = time2str( '%Y-%m-%d %H:%M:%S', time );

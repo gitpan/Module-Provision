@@ -1,10 +1,10 @@
 {
    "abstract" : "Create Perl distributions with VCS and selectable toolchain",
    "author" : [
-      "Peter Flanigan, C<< <pjfl@cpan.org> >>"
+      "Peter Flanigan <pjfl@cpan.org>"
    ],
-   "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4004, CPAN::Meta::Converter version 2.120921",
+   "dynamic_config" : "1",
+   "generated_by" : "Dist::Zilla version 4.300033, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -15,7 +15,6 @@
    "name" : "Module-Provision",
    "no_index" : {
       "directory" : [
-         "bin",
          "examples",
          "inc",
          "share",
@@ -25,7 +24,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "File::DataClass" : "v0.23.0",
+            "File::DataClass" : "v0.24.0",
             "Module::Build" : "0.4004",
             "version" : "0.88"
          }
@@ -37,19 +36,20 @@
          }
       },
       "runtime" : {
-         "recommends" : {
-            "App::cpanminus" : "1.6005"
-         },
          "requires" : {
             "CPAN::Uploader" : "0.103004",
-            "Class::Null" : "2.10142",
-            "Class::Usul" : "v0.23.0",
+            "Class::Null" : "2.101420",
+            "Class::Usul" : "v0.24.0",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
-            "Dist::Zilla::Plugin::ManifestInRoot" : "v0.1.2",
-            "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.12012",
+            "Dist::Zilla::Plugin::ManifestInRoot" : "v0.1.0",
+            "Dist::Zilla::Plugin::MarkdownInRoot" : "v0.1.0",
+            "Dist::Zilla::Plugin::Meta::Dynamic::Config" : "0.04",
+            "Dist::Zilla::Plugin::ModuleBuild::Custom" : "4.16",
+            "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.120120",
+            "Dist::Zilla::Plugin::Signature" : "1.100930",
             "Dist::Zilla::Plugin::VersionFromModule" : "0.08",
-            "File::DataClass" : "v0.23.0",
+            "File::DataClass" : "v0.24.0",
             "File::ShareDir" : "1.02",
             "File::Slurp" : "9999.13",
             "HTTP::Message" : "6.06",
@@ -57,17 +57,17 @@
             "LWP::Protocol::https" : "6.03",
             "Module::Install" : "1.06",
             "Module::Install::AutoLicense" : "0.08",
-            "Module::Install::ReadmeFromPod" : "0.2",
+            "Module::Install::ReadmeFromPod" : "0.20",
             "Module::Install::ReadmeMarkdownFromPod" : "0.03",
             "Module::Metadata" : "1.000011",
             "Moo" : "1.003",
             "MooX::Options" : "3.83",
             "Perl::Version" : "1.011",
-            "Pod::Eventual" : "0.09333",
+            "Pod::Eventual" : "0.093330",
             "Pod::Markdown" : "1.322",
             "Template" : "2.22",
             "Type::Tiny" : "0.012",
-            "Unexpected" : "v0.6.0",
+            "Unexpected" : "v0.8.0",
             "namespace::sweep" : "0.006",
             "perl" : "5.010001"
          }
@@ -76,57 +76,56 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.18.4"
+         "version" : "v0.20.1"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::Config" : {
          "file" : "lib/Module/Provision/Config.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::AddingFiles" : {
          "file" : "lib/Module/Provision/TraitFor/AddingFiles.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::CPANDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CPANDistributions.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::CreatingDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::PrereqDifferences" : {
          "file" : "lib/Module/Provision/TraitFor/PrereqDifferences.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::Rendering" : {
          "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::UpdatingContent" : {
          "file" : "lib/Module/Provision/TraitFor/UpdatingContent.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       },
       "Module::Provision::TraitFor::VCS" : {
          "file" : "lib/Module/Provision/TraitFor/VCS.pm",
-         "version" : "v0.18.1"
+         "version" : "v0.20.1"
       }
    },
    "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
+         "mailto" : "bug-Module-Provision@rt.cpan.org",
          "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=Module-Provision"
       },
-      "homepage" : "http://www.roxsoft.co.uk",
+      "homepage" : "https://metacpan.org/author/PJFL",
       "license" : [
          "http://dev.perl.org/licenses/"
-      ],
-      "repository" : {
-         "url" : "git://github.com/pjfl/Module-Provision.git"
-      }
+      ]
    },
-   "version" : "v0.18.4"
+   "version" : "0.20.1"
 }
+

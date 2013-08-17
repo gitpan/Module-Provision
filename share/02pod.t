@@ -1,4 +1,4 @@
-# @(#)Ident: 02pod.t 2013-04-22 22:42 pjf ;
+# @(#)Ident: 02pod.t 2013-08-12 15:17 pjf ;
 
 use strict;
 use warnings;
@@ -24,3 +24,4 @@ all_pod_files_ok();
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

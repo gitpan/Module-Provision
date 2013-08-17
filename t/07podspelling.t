@@ -1,8 +1,8 @@
-# @(#)Ident: 07podspelling.t 2013-05-11 13:56 pjf ;
+# @(#)Ident: 07podspelling.t 2013-08-15 23:22 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions qw(catdir catfile updir);
 use FindBin qw( $Bin );
 use lib catdir( $Bin, updir, q(lib) );
@@ -49,10 +49,12 @@ SVN
 SYSV
 TinyDesk
 distmeta
+distname
 inline
 metadata
 pathname
 pathnames
 pre
+stderr
 toolchain
 vcs

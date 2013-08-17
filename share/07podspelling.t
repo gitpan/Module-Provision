@@ -1,4 +1,4 @@
-# @(#)Ident: 07podspelling.t 2013-04-22 22:46 pjf ;
+# @(#)Ident: 07podspelling.t 2013-08-12 15:16 pjf ;
 
 use strict;
 use warnings;
@@ -37,6 +37,7 @@ done_testing();
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:
 
 __DATA__
 [% first_name %]

@@ -48,3 +48,4 @@ WriteAll;
 # tab-title: [% project %]
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

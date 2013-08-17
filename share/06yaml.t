@@ -1,4 +1,4 @@
-# @(#)Ident: 06yaml.t 2013-04-22 22:46 pjf ;
+# @(#)Ident: 06yaml.t 2013-08-12 15:16 pjf ;
 
 use strict;
 use warnings;
@@ -26,3 +26,4 @@ meta_yaml_ok();
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

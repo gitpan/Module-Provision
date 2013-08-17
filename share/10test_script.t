@@ -1,29 +1,23 @@
-# @(#)Ident: 10test_script.t 2013-05-19 11:50 pjf ;
+# @(#)Ident: 10test_script.t 2013-08-13 15:47 pjf ;
 
 use strict;
 use warnings;
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir updir );
 use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, q(lib) );
+use lib                 catdir( $Bin, updir, 'lib' );
 
 use Module::Build;
 use Test::More;
 
-my $reason;
+my $notes = {};
 
 BEGIN {
    my $builder = eval { Module::Build->current };
-
-   $builder and $reason = $builder->notes->{stop_tests};
-   $reason  and $reason =~ m{ \A TESTS: }mx and plan skip_all => $reason;
+      $builder and $notes = $builder->notes;
 }
 
 use_ok '[% project %]';
-
-#SKIP: {
-#   $reason and $reason =~ m{ \A tests: }mx and skip $reason, 1;
-#}
 
 done_testing;
 
@@ -31,3 +25,4 @@ done_testing;
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

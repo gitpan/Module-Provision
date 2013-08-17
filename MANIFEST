@@ -1,9 +1,12 @@
-bin/module-provision
 Build.PL
 Changes
-inc/Bob.pm
-inc/CPANTesting.pm
-inc/SubClass.pm
+LICENSE
+MANIFEST
+META.json
+META.yml
+README
+SIGNATURE
+bin/module-provision
 lib/Module/Provision.pm
 lib/Module/Provision/Base.pm
 lib/Module/Provision/Config.pm
@@ -14,11 +17,6 @@ lib/Module/Provision/TraitFor/PrereqDifferences.pm
 lib/Module/Provision/TraitFor/Rendering.pm
 lib/Module/Provision/TraitFor/UpdatingContent.pm
 lib/Module/Provision/TraitFor/VCS.pm
-LICENSE
-MANIFEST			This list of files
-META.json
-META.yml
-README
 share/01always_pass.t
 share/02pod.t
 share/03podcoverage.t
@@ -27,21 +25,19 @@ share/05kwalitee.t
 share/06yaml.t
 share/07podspelling.t
 share/10test_script.t
-share/Bob.pm
 share/Build.PL
 share/Changes
-share/CPANTesting.pm
+share/DZ_Build.PL
+share/EUMM_Makefile.PL
+share/MANIFEST.SKIP
+share/MI_Makefile.PL
 share/data_dumper.pm
 share/dist.ini
-share/EUMM_Makefile.PL
 share/gitcommit-msg
 share/gitignore
 share/gitpre-commit
-share/MANIFEST.SKIP
-share/MI_Makefile.PL
 share/perl_module.pm
 share/perl_program.pl
-share/SubClass.pm
 t/01always_pass.t
 t/02pod.t
 t/03podcoverage.t
@@ -51,4 +47,3 @@ t/06yaml.t
 t/07podspelling.t
 t/10test_script.t
 t/critic.rc
-SIGNATURE    Added here by Module::Build

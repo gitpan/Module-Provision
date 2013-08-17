@@ -1,4 +1,4 @@
-# @(#)Ident: 05kwalitee.t 2013-04-22 22:45 pjf ;
+# @(#)Ident: 05kwalitee.t 2013-08-12 15:17 pjf ;
 
 use strict;
 use warnings;
@@ -27,3 +27,4 @@ unlink q(Debian_CPANTS.txt);
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

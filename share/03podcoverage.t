@@ -1,4 +1,4 @@
-# @(#)Ident: 03podcoverage.t 2013-04-22 22:44 pjf ;
+# @(#)Ident: 03podcoverage.t 2013-08-12 15:17 pjf ;
 
 use strict;
 use warnings;
@@ -25,3 +25,4 @@ all_pod_coverage_ok();
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

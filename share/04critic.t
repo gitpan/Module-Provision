@@ -1,4 +1,4 @@
-# @(#)Ident: 04critic.t 2013-04-22 22:45 pjf ;
+# @(#)Ident: 04critic.t 2013-08-12 15:17 pjf ;
 
 use strict;
 use warnings;
@@ -27,3 +27,4 @@ all_critic_ok();
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

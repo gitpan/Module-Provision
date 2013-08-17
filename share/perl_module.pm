@@ -1,4 +1,4 @@
-# @(#)Ident: perl_module.pm 2013-08-06 17:03 pjf ;
+# @(#)Ident: perl_module.pm 2013-08-12 15:11 pjf ;
 
 package [% module %];
 
@@ -90,3 +90,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 # mode: perl
 # tab-width: 3
 # End:
+# vim: expandtab shiftwidth=3:

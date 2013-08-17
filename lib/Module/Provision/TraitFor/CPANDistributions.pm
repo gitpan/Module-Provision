@@ -1,9 +1,9 @@
-# @(#)Ident: CPANDistributions.pm 2013-08-03 11:23 pjf ;
+# @(#)Ident: CPANDistributions.pm 2013-08-11 11:59 pjf ;
 
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::sweep;
-use version;  our $VERSION = qv( sprintf '0.18.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version;  our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Crypt::Util qw( decrypt_from_config encrypt_for_config
@@ -28,7 +28,10 @@ sub cpan_upload : method {
    my $self = shift; my $ver = $self->next_argv; my $file;
 
    if ($ver) { $file = $self->distname."-${ver}.tar.gz" }
-   else { $file = $self->distname.'-v'.$self->dist_version.'.tar.gz' }
+   else {
+      $file = $self->distname.'-'.$self->dist_version.'.tar.gz';
+      -f $file or $file = $self->distname.'-v'.$self->dist_version.'.tar.gz';
+   }
 
    -f $file or throw $self->loc( 'File [_1] not found', $file );
 
@@ -229,7 +232,7 @@ Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions t
 
 =head1 Version
 
-This documents version v0.18.$Rev: 1 $ of
+This documents version v0.20.$Rev: 1 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description
