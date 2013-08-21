@@ -1,6 +1,11 @@
 Revision history for Module::Provision
 
-0.20.1    2013-08-17 16:43:40
+0.21.1    2013-08-21 13:25:21
+          - Renamed Github repository to p5-module-provision
+
+0.20.2    2013-08-19 14:59:28
+          - Filter Dzil project file from prereq report
+          - Fixed prereq report with Dzil
           - Bumped dependencies
 
 0.19.5    2013-08-17 16:37:36

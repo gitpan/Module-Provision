@@ -1,9 +1,9 @@
-# @(#)Ident: Base.pm 2013-08-13 09:35 pjf ;
+# @(#)Ident: Base.pm 2013-08-21 11:29 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
 use Class::Usul::Time       qw( time2str );
@@ -244,11 +244,11 @@ sub _build_stash {
             dist_module    => $self->dist_module->abs2rel( $self->appldir ),
             dist_version   => NUL.$self->dist_version,
             distname       => $self->distname,
-            distname_lc    => lc $self->distname,
             first_name     => lc ((split SPC, $author)[ 0 ]),
             home_page      => $config->home_page,
             initial_wd     => NUL.$self->initial_wd,
             last_name      => lc ((split SPC, $author)[ -1 ]),
+            lc_distname    => lc $self->distname,
             license        => $self->license,
             license_class  => $self->_license_keys->{ $self->license },
             module         => $project,
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.20.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.21.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 

@@ -1,12 +1,13 @@
-# @(#)Ident: PrereqDifferences.pm 2013-06-30 18:53 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-08-20 22:58 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.20.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile is_member emit throw );
+use Config::Tiny;
 use English                 qw( -no_match_vars );
 use Module::Metadata;
 use Moo::Role;
@@ -120,7 +121,9 @@ sub _filter_dependents {
 
    my $perl_version = $used->{perl} || 5.008_008;
    my $core_modules = $Module::CoreList::version{ $perl_version };
-   my $provides     = $self->get_meta->provides;
+   my $dir          = $self->builder eq 'DZ'
+                    ? $self->distname.'-'.$self->dist_version : undef;
+   my $provides     = $self->get_meta( $dir )->provides;
 
    return $self->_consolidate( { map   { $_ => $used->{ $_ }              }
                                  grep  { not exists $core_modules->{ $_ } }
@@ -139,10 +142,11 @@ sub _filter_configure_requires_paths {
 }
 
 sub _filter_requires_paths {
-   my $file = $_[ 0 ]->project_file;
+   my $file    = $_[ 0 ]->project_file;
+   my $pattern = $file eq 'dist.ini' ? '(?: Build.PL | Makefile.PL )' : $file;
 
-   return [ grep { not m{ \A inc }mx and not m{ \.t \z }mx and $_ ne $file }
-                @{ $_[ 1 ] } ];
+   return [ grep { not m{ \A inc }mx and not m{ \.t \z }mx
+                      and not m{ \A $pattern \z }mx } @{ $_[ 1 ] } ];
 }
 
 sub _is_perl_source {
@@ -158,7 +162,16 @@ sub _is_perl_source {
 sub _prereq_data {
    my $self = shift; $self->chdir( $self->appldir );
 
-   if ($self->builder eq 'MB') {
+   if ($self->builder eq 'DZ') {
+      my $cfg = Config::Tiny->read( 'dist.ini' );
+
+      return { build_requires     => $cfg->{ 'Prereqs / BuildRequires' },
+               configure_requires => $cfg->{ 'Prereqs / ConfigureRequires' },
+               recommends         => $cfg->{ 'Prereqs / Recommends' },
+               requires           => $cfg->{ 'Prereqs' }, };
+
+   }
+   elsif ($self->builder eq 'MB') {
       my $cmd  = "${EXECUTABLE_NAME} Build.PL; ./Build prereq_data";
 
       return eval $self->run_cmd( $cmd )->stdout;
@@ -307,7 +320,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.20.$Rev: 1 $ of
+This documents version v0.21.$Rev: 1 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

@@ -28,7 +28,6 @@ share/10test_script.t
 share/Build.PL
 share/Changes
 share/DZ_Build.PL
-share/EUMM_Makefile.PL
 share/MANIFEST.SKIP
 share/MI_Makefile.PL
 share/data_dumper.pm

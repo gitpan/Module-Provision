@@ -29,6 +29,7 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
     'CPAN::Uploader' => '0.103004',
     'Class::Null' => '2.101420',
     'Class::Usul' => 'v0.24.0',
+    'Config::Tiny' => '2.13',
     'Date::Format' => '2.24',
     'Dist::Zilla' => '4.300033',
     'Dist::Zilla::Plugin::ManifestInRoot' => 'v0.1.0',
