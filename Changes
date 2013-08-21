@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.22.1    2013-08-21 13:54:58
+          - Bumped version to fix indexing
+
 0.21.1    2013-08-21 13:25:21
           - Renamed Github repository to p5-module-provision
 

@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::sweep;
-use version;  our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version;  our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Crypt::Util qw( decrypt_from_config encrypt_for_config
@@ -232,7 +232,7 @@ Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions t
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of
+This documents version v0.22.$Rev: 1 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description

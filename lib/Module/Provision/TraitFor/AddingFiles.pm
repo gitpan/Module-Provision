@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::AddingFiles;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.21.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile throw );
@@ -100,7 +100,7 @@ Module::Provision::TraitFor::AddingFiles - Adds additional files to the project
 
 =head1 Version
 
-This documents version v0.21.$Rev: 1 $ of L<Module::Provision::TraitFor::AddingFiles>
+This documents version v0.22.$Rev: 1 $ of L<Module::Provision::TraitFor::AddingFiles>
 
 =head1 Description
 
