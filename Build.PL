@@ -1,9 +1,9 @@
-# @(#)$Ident: DZ_Build.PL 2013-08-15 13:04 pjf ;
+# @(#)$Ident: DZ_Build.PL 2013-09-03 12:35 pjf ;
 
 use strict;
 use warnings;
 
-use Module::Build;
+use Module::Build 0.4004;
 
 sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
 
@@ -17,7 +17,7 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
   'module_name' => $name,
   'notes'       => { min_perl_version => $perl_ver },
   'build_requires' => {
-    'File::DataClass' => 'v0.24.0',
+    'File::DataClass' => 'v0.25.0',
     'Module::Build' => '0.4004',
     'version' => '0.88'
   },
@@ -28,7 +28,7 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
   'requires' => {
     'CPAN::Uploader' => '0.103004',
     'Class::Null' => '2.101420',
-    'Class::Usul' => 'v0.24.0',
+    'Class::Usul' => 'v0.26.0',
     'Config::Tiny' => '2.13',
     'Date::Format' => '2.24',
     'Dist::Zilla' => '4.300033',
@@ -39,7 +39,7 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
     'Dist::Zilla::Plugin::ReadmeAnyFromPod' => '0.120120',
     'Dist::Zilla::Plugin::Signature' => '1.100930',
     'Dist::Zilla::Plugin::VersionFromModule' => '0.08',
-    'File::DataClass' => 'v0.24.0',
+    'File::DataClass' => 'v0.25.0',
     'File::ShareDir' => '1.02',
     'File::Slurp' => '9999.13',
     'HTTP::Message' => '6.06',
@@ -50,14 +50,13 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
     'Module::Install::ReadmeFromPod' => '0.20',
     'Module::Install::ReadmeMarkdownFromPod' => '0.03',
     'Module::Metadata' => '1.000011',
-    'Moo' => '1.003',
+    'Moo' => '1.003001',
     'MooX::Options' => '3.83',
     'Perl::Version' => '1.011',
     'Pod::Eventual' => '0.093330',
     'Pod::Markdown' => '1.322',
     'Template' => '2.22',
     'Type::Tiny' => '0.012',
-    'Unexpected' => 'v0.8.0',
     'namespace::sweep' => '0.006',
     'perl' => '5.010001'
   },

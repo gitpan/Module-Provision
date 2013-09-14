@@ -1,8 +1,8 @@
-# @(#)Ident: 10test_script.t 2013-08-17 15:35 pjf ;
+# @(#)Ident: 10test_script.t 2013-09-12 11:04 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.23.%d', q$Rev: 1 $ =~ /\d+/gmx );
 use File::Spec::Functions   qw( catdir catfile updir );
 use FindBin                 qw( $Bin );
 use lib                 catdir( $Bin, updir, 'lib' );
@@ -16,10 +16,10 @@ BEGIN {
    my $builder = eval { Module::Build->current };
    $builder and $notes = $builder->notes;
    $perl_ver = $notes->{min_perl_version} || 5.008;
-   lc $^O eq 'mswin32' and plan skip_all => 'TESTS: RT#87575';
 }
 
 use Test::Requires "${perl_ver}";
+use Test::Requires { Moo => 1.003001 };
 use Cwd qw( getcwd );
 use File::DataClass::IO;
 

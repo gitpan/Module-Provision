@@ -1,9 +1,9 @@
-# @(#)Ident: Base.pm 2013-08-21 11:29 pjf ;
+# @(#)Ident: Base.pm 2013-09-12 12:11 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.22.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.23.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
 use Class::Usul::Time       qw( time2str );
@@ -207,7 +207,7 @@ sub _build_module_abstract {
 sub _build_project {
    my $self = shift; my $dir = $self->initial_wd; my ($prev, $module);
 
-   while (not $prev or $prev ne $dir) {
+   while (not $prev or $prev ne $dir) { # Search for dist.ini first
       for my $file (grep { $_->exists }
                     map  { $dir->catfile( $BUILDERS{ $_ } ) } __builders()) {
          $module = __get_module_from( $file->all ) and return $module;
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.22.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.23.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 

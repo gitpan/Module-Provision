@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.23.1    2013-09-14 10:37:11
+          - Bumped Moo dependency closes RT#87575
+
 0.22.1    2013-08-21 13:54:58
           - Bumped version to fix indexing
 
