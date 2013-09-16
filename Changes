@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.24.1    2013-09-16 21:22:24
+          - Stopped re interpretaion of homedir in appldir builder
+
 0.23.1    2013-09-14 10:37:11
           - Bumped Moo dependency closes RT#87575
 

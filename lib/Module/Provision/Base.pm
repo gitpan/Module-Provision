@@ -1,9 +1,9 @@
-# @(#)Ident: Base.pm 2013-09-12 12:11 pjf ;
+# @(#)Ident: Base.pm 2013-09-16 20:17 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.23.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
 use Class::Usul::Time       qw( time2str );
@@ -126,7 +126,7 @@ sub _build_appldir {
 
    my $home = $self->config->my_home; my $vcs = $self->vcs;
 
-  (my $rel_appbase = $appbase) =~ s{ $home [\\/] }{}mx;
+  (my $rel_appbase = $appbase) =~ s{ \Q$home\E [\\/] }{}mx;
 
    $self->debug and $self->info
       ( "Appbase: ${rel_appbase}, Branch: ${branch}, VCS: ${vcs}" );
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.23.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.24.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
