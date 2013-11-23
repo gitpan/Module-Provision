@@ -39,7 +39,7 @@
          "requires" : {
             "CPAN::Uploader" : "0.103004",
             "Class::Null" : "2.101420",
-            "Class::Usul" : "v0.26.0",
+            "Class::Usul" : "v0.33.0",
             "Config::Tiny" : "2.13",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
@@ -62,7 +62,6 @@
             "Module::Install::ReadmeMarkdownFromPod" : "0.03",
             "Module::Metadata" : "1.000011",
             "Moo" : "1.003001",
-            "MooX::Options" : "3.83",
             "Perl::Version" : "1.011",
             "Pod::Eventual" : "0.093330",
             "Pod::Markdown" : "1.322",
@@ -76,43 +75,43 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::Config" : {
          "file" : "lib/Module/Provision/Config.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::AddingFiles" : {
          "file" : "lib/Module/Provision/TraitFor/AddingFiles.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::CPANDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CPANDistributions.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::CreatingDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::PrereqDifferences" : {
          "file" : "lib/Module/Provision/TraitFor/PrereqDifferences.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::Rendering" : {
          "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::UpdatingContent" : {
          "file" : "lib/Module/Provision/TraitFor/UpdatingContent.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       },
       "Module::Provision::TraitFor::VCS" : {
          "file" : "lib/Module/Provision/TraitFor/VCS.pm",
-         "version" : "v0.24.1"
+         "version" : "v0.25.1"
       }
    },
    "release_status" : "stable",
@@ -131,6 +130,6 @@
          "web" : "http://github.com/pjfl/p5-module-provision"
       }
    },
-   "version" : "0.24.1"
+   "version" : "0.25.1"
 }
 

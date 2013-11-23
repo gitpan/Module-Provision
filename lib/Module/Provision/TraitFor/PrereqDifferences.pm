@@ -1,27 +1,29 @@
-# @(#)Ident: PrereqDifferences.pm 2013-08-20 22:58 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2013-11-23 13:27 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
-use Class::Usul::Functions  qw( classfile is_member emit throw );
+use Class::Usul::Functions  qw( classfile ensure_class_loaded
+                                is_member emit throw );
 use Config::Tiny;
 use English                 qw( -no_match_vars );
 use Module::Metadata;
+use Perl::Version;
 use Moo::Role;
 
-requires qw( appldir builder chdir debug ensure_class_loaded get_meta io
-             libdir manifest_paths next_argv output project_file run_cmd );
+requires qw( appldir builder chdir debug get_meta io libdir
+             manifest_paths next_argv output project_file run_cmd );
 
 # Public methods
 sub prereq_diffs : method {
    my $self = shift;
 
-   $self->ensure_class_loaded( 'CPAN' );
-   $self->ensure_class_loaded( 'Module::CoreList' );
-   $self->ensure_class_loaded( 'Pod::Eventual::Simple' );
+   ensure_class_loaded( 'CPAN' );
+   ensure_class_loaded( 'Module::CoreList' );
+   ensure_class_loaded( 'Pod::Eventual::Simple' );
 
    my $field   = $self->next_argv || 'requires';
    my $filter  = "_filter_${field}_paths";
@@ -252,7 +254,7 @@ sub __parse_depends_line {
       elsif ($stmt =~ m{ \A (?: with | extends ) \s+ (.+) }mx) {
          push @{ $modules }, __parse_list( $1 );
       }
-      elsif ($stmt =~ m{ [>] ensure_class_loaded \( \s* (.+?) \s* \) }mx) {
+      elsif ($stmt =~ m{ ensure_class_loaded \( \s* (.+?) \s* \) }mx) {
          my $module = $1;
             $module = $module =~ m{ \A [q\'\"] }mx ? eval $module : $module;
 
@@ -320,7 +322,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of
+This documents version v0.25.$Rev: 1 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

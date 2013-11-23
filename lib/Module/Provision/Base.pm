@@ -1,19 +1,19 @@
-# @(#)Ident: Base.pm 2013-09-16 20:17 pjf ;
+# @(#)Ident: Base.pm 2013-11-22 18:54 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
+use Class::Usul::Options;
 use Class::Usul::Time       qw( time2str );
 use English                 qw( -no_match_vars );
 use File::DataClass::Constants;
 use File::DataClass::Types  qw( ArrayRef Directory HashRef NonEmptySimpleStr
                                 Object OctalNum Path PositiveInt SimpleStr );
 use Module::Metadata;
-use Moo;
-use MooX::Options;
 use Perl::Version;
 use Type::Utils             qw( enum );
 
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 

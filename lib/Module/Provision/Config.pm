@@ -1,15 +1,15 @@
-# @(#)Ident: Config.pm 2013-06-28 21:47 pjf ;
+# @(#)Ident: Config.pm 2013-11-22 22:51 pjf ;
 
 package Module::Provision::Config;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( fullname loginid logname untaint_cmdline
                                 untaint_identifier );
 use File::DataClass::Types  qw( HashRef NonEmptySimpleStr Path SimpleStr );
-use Moo;
 
 extends qw(Class::Usul::Config::Programs);
 
@@ -102,7 +102,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 

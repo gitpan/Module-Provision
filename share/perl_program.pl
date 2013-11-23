@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-08-12 15:12 pjf ;
+# @(#)Ident: perl_program.pl 2013-10-24 21:07 pjf ;
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use warnings;
 use English               qw( -no_match_vars );
 use File::Spec::Functions qw( catdir catfile updir );
 use FindBin               qw( $Bin );
-use lib               catdir( $Bin, updir, q(lib) );
+use lib               catdir( $Bin, updir, 'lib' );
 
 BEGIN {
    my $path = catfile( $Bin, '[% prefix %]-localenv' );
@@ -19,7 +19,7 @@ use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use [% module %];
 
-exit [% module %]->new_with_options( nodebug => 1 )->run;
+exit [% module %]->new_with_options( noask => 1 )->run;
 
 __END__
 

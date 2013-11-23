@@ -1,9 +1,9 @@
-# @(#)Ident: VCS.pm 2013-09-03 12:34 pjf ;
+# @(#)Ident: VCS.pm 2013-10-03 14:43 pjf ;
 
 package Module::Provision::TraitFor::VCS;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( is_win32 throw );
@@ -22,21 +22,20 @@ has 'no_auto_rev' => is => 'ro', isa => Bool, default => FALSE,
 
 # Construction
 around 'dist_post_hook' => sub {
-   my ($next, $self, @args) = @_;
+   my ($next, $self, @args) = @_; $self->_initialize_vcs;
 
-   $self->_initialize_vcs;
-   $self->$next( @args );
+   my $r = $self->$next( @args );
+
+   $self->vcs eq 'git' and $self->_reset_rev_file( TRUE );
    $self->vcs eq 'svn' and $self->_svn_ignore_meta_files;
-   $self->_reset_rev_file( TRUE );
-   return;
+   return $r;
 };
 
 around 'substitute_version' => sub {
-   my ($next, $self, $path, $from, $to) = @_;
+   my ($next, $self, $path, @args) = @_; my $r = $self->$next( $path, @args );
 
-   $self->$next( $path, $from, $to );
-   $self->_reset_rev_keyword( $path );
-   return;
+   $self->vcs eq 'git' and $self->_reset_rev_keyword( $path );
+   return $r;
 };
 
 around 'update_version_pre_hook' => sub {
@@ -44,13 +43,13 @@ around 'update_version_pre_hook' => sub {
 
    my @vnums = $self->_get_version_numbers( @args );
 
-   $self->_should_add_tag( @vnums ) and $self->_add_tag( $vnums[ 0 ] );
-
+# TODO: Add tag after commit of the x.x.1 version
+#   $self->_should_add_tag( @vnums ) and $self->_add_tag( $vnums[ 0 ] );
    return $self->$next( @vnums );
 };
 
 after 'update_version_post_hook' => sub {
-   my $self = shift; $self->_reset_rev_file( FALSE ); return;
+   $_[ 0 ]->vcs eq 'git' and $_[ 0 ]->_reset_rev_file( FALSE ); return;
 };
 
 # Public methods
@@ -73,7 +72,7 @@ sub add_to_vcs {
 sub get_emacs_state_file_path {
    my ($self, $file) = @_; my $home = $self->config->my_home;
 
-   return $home->catfile( qw(.emacs.d config), "state.${file}" );
+   return $home->catfile( qw( .emacs.d config ), "state.${file}" );
 }
 
 sub set_branch : method {
@@ -300,7 +299,7 @@ sub __get_state_file_name {
 }
 
 sub __tag_from_version {
-   my $ver = shift; return $ver->component( 0 ).q(.).$ver->component( 1 );
+   my $ver = shift; return $ver->component( 0 ).'.'.$ver->component( 1 );
 }
 
 1;
@@ -322,7 +321,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 

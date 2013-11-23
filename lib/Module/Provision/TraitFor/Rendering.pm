@@ -1,9 +1,9 @@
-# @(#)Ident: Rendering.pm 2013-08-15 23:25 pjf ;
+# @(#)Ident: Rendering.pm 2013-11-22 18:55 pjf ;
 
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( app_prefix is_arrayref distname throw );
@@ -12,7 +12,7 @@ use File::ShareDir            ( );
 use Scalar::Util            qw( blessed weaken );
 use Template;
 use Moo::Role;
-use MooX::Options;
+use Class::Usul::Options;
 
 requires qw( add_leader appldir builder config dist_module exec_perms file
              incdir initial_wd io loc log perms stash testdir vcs yorn );
@@ -192,7 +192,7 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 

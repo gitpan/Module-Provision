@@ -1,10 +1,10 @@
-# @(#)Ident: Provision.pm 2013-08-19 13:58 pjf ;
+# @(#)Ident: Provision.pm 2013-11-22 19:00 pjf ;
 
 package Module::Provision;
 
 use 5.010001;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 
@@ -16,7 +16,6 @@ with    q(Module::Provision::TraitFor::VCS);
 with    q(Module::Provision::TraitFor::AddingFiles);
 with    q(Module::Provision::TraitFor::PrereqDifferences);
 with    q(Module::Provision::TraitFor::CPANDistributions);
-with    q(Class::Usul::TraitFor::UntaintedGetopts);
 
 1;
 
@@ -32,7 +31,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision>
 
 =head1 Synopsis
 

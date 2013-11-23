@@ -1,15 +1,15 @@
-# @(#)Ident: CreatingDistributions.pm 2013-09-03 12:33 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-11-22 18:55 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( emit throw trim );
 use Class::Usul::Types      qw( NonEmptySimpleStr );
 use Moo::Role;
-use MooX::Options;
+use Class::Usul::Options;
 
 requires qw( appbase appldir branch builder chdir config exec_perms
              homedir incdir io method output next_argv project_file
@@ -184,7 +184,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.25.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

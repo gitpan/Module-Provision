@@ -1,14 +1,14 @@
-# @(#)Ident: CPANDistributions.pm 2013-09-03 12:33 pjf ;
+# @(#)Ident: CPANDistributions.pm 2013-11-21 23:30 pjf ;
 
 package Module::Provision::TraitFor::CPANDistributions;
 
 use namespace::sweep;
-use version;  our $VERSION = qv( sprintf '0.24.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version;  our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Crypt::Util qw( decrypt_from_config encrypt_for_config
                                  is_encrypted );
-use Class::Usul::Functions   qw( throw );
+use Class::Usul::Functions   qw( ensure_class_loaded throw );
 use Class::Usul::Types       qw( NonEmptySimpleStr );
 use English                  qw( -no_match_vars );
 use HTTP::Request::Common    qw( POST );
@@ -17,7 +17,7 @@ use Scalar::Util             qw( blessed );
 use Moo::Role;
 
 requires qw( add_leader config debug distname dist_version dumper
-             ensure_class_loaded info io loc log next_argv output yorn );
+             info io loc log next_argv output yorn );
 
 # Private attributes
 has '_debug_http_method' => is => 'ro', isa => NonEmptySimpleStr,
@@ -35,9 +35,9 @@ sub cpan_upload : method {
 
    -f $file or throw $self->loc( 'File [_1] not found', $file );
 
-   $self->ensure_class_loaded( 'CPAN::Uploader' );
+   ensure_class_loaded( 'CPAN::Uploader' );
 
-   my $args   = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
+   my $args   = $self->_read_rc_file; $args->{subdir} //= lc $self->distname;
    my $prompt = $self->add_leader( $self->loc( 'Really upload to CPAN' ) );
 
    exists $args->{dry_run}
@@ -49,7 +49,7 @@ sub cpan_upload : method {
 
 sub delete_cpan_files : method {
    my $self   = shift;
-   my $args   = $self->_read_pauserc; $args->{subdir} //= lc $self->distname;
+   my $args   = $self->_read_rc_file; $args->{subdir} //= lc $self->distname;
    my $files  = $self->_convert_versions_to_paths( $self->extra_argv, $args );
    my $prompt = $self->loc( 'Really delete files from CPAN' );
       $prompt = $self->add_leader( $prompt );
@@ -69,10 +69,10 @@ sub delete_cpan_files : method {
 }
 
 sub set_cpan_password : method {
-   my $self = shift; my $args = $self->_read_pauserc;
+   my $self = shift; my $args = $self->_read_rc_file;
 
    $args->{password} = $self->next_argv or throw $self->loc( 'No password' );
-   $self->_write_pauserc( $args );
+   $self->_write_rc_file( $args );
    return OK;
 }
 
@@ -102,7 +102,8 @@ sub _delete_files {
 
    $self->info( 'Registering to delete files with the [_1] web server',
                 { args => [ $target ] } );
-   $self->ensure_class_loaded( 'LWP::UserAgent' );
+
+   ensure_class_loaded( 'LWP::UserAgent' );
 
    my $agent   = LWP::UserAgent->new;
 
@@ -146,10 +147,10 @@ sub _log_http_debug {
    return;
 }
 
-sub _read_pauserc {
+sub _read_rc_file {
    my $self = shift; my $dir = $self->config->my_home; my $attr = {};
 
-   for ($self->io( [ $dir, q(.pause) ] )->chomp->getlines) {
+   for ($self->io( [ $dir, '.pause' ] )->chomp->getlines) {
       ($_ and $_ !~ m{ \A \s* \# }mx) or next;
 
       my ($k, $v) = m{ \A \s* (\w+) (?: \s+ (.+))? \z }mx;
@@ -199,7 +200,7 @@ sub _ua_string {
    return "${class}/${ver}";
 }
 
-sub _write_pauserc {
+sub _write_rc_file {
    my ($self, $attr) = @_;
 
    my $file = $self->config->my_home->catfile( '.pause' );
@@ -232,7 +233,7 @@ Module::Provision::TraitFor::CPANDistributions - Uploads/Deletes distributions t
 
 =head1 Version
 
-This documents version v0.24.$Rev: 1 $ of
+This documents version v0.25.$Rev: 1 $ of
 L<Module::Provision::TraitFor::CPANDistributions>
 
 =head1 Description
