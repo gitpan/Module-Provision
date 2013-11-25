@@ -1,15 +1,16 @@
-# @(#)Ident: Config.pm 2013-11-22 22:51 pjf ;
+# @(#)Ident: Config.pm 2013-11-25 12:00 pjf ;
 
 package Module::Provision::Config;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( fullname loginid logname untaint_cmdline
                                 untaint_identifier );
-use File::DataClass::Types  qw( HashRef NonEmptySimpleStr Path SimpleStr );
+use File::DataClass::Types  qw( ArrayRef HashRef NonEmptySimpleStr
+                                Path SimpleStr );
 
 extends qw(Class::Usul::Config::Programs);
 
@@ -59,6 +60,11 @@ has 'tag_message'      => is => 'lazy', isa => NonEmptySimpleStr,
 has 'template_index'   => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'index.json';
 
+has 'test_env_vars'    => is => 'lazy', isa => ArrayRef,
+   documentation       => 'Set these environment vars to true when testing',
+   default             => sub {
+      [ qw( AUTHOR_TESTING TEST_MEMORY TEST_SPELLING ) ] };
+
 has 'vcs'              => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'git';
 
@@ -102,7 +108,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.25.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.26.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 
@@ -135,6 +141,11 @@ Defines the following attributes;
 =item C<repository>
 
 =item C<template_index>
+
+=item C<test_env_vars>
+
+Array reference. Set these environment vars to true when testing. Defaults
+to; C<AUTHOR_TESTING TEST_MEMORY>, and C<TEST_SPELLING>
 
 =item C<vcs>
 

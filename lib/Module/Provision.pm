@@ -1,10 +1,10 @@
-# @(#)Ident: Provision.pm 2013-11-22 19:00 pjf ;
+# @(#)Ident: Provision.pm 2013-11-25 16:04 pjf ;
 
 package Module::Provision;
 
 use 5.010001;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 
@@ -31,7 +31,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.25.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.26.$Rev: 1 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -266,6 +266,13 @@ removed from, or updated in the project file
    module-provision prove
 
 Runs the projects tests
+
+=head2 select_project
+
+   cd $(module_provision -q select_project 2>&1 1>/dev/tty)
+
+Displays a list of available projects. Calls C<edit_project> on the selected
+option
 
 =head2 set_branch
 

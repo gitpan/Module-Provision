@@ -1,13 +1,13 @@
-# @(#)Ident: CreatingDistributions.pm 2013-11-22 18:55 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-11-25 16:00 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.25.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
-use Class::Usul::Functions  qw( emit throw trim );
-use Class::Usul::Types      qw( NonEmptySimpleStr );
+use Class::Usul::Functions  qw( emit emit_to throw trim );
+use Class::Usul::Types      qw( ArrayRef NonEmptySimpleStr );
 use Moo::Role;
 use Class::Usul::Options;
 
@@ -16,9 +16,9 @@ requires qw( appbase appldir branch builder chdir config exec_perms
              quiet render_templates run_cmd stash testdir vcs );
 
 # Object attributes (public)
-option 'editor'  => is => 'lazy', isa => NonEmptySimpleStr,
-   documentation => 'Which text editor to use',
-   default       => sub { $_[ 0 ]->config->editor };
+option 'editor'     => is => 'lazy', isa => NonEmptySimpleStr,
+   documentation    => 'Which text editor to use',
+   default          => sub { $_[ 0 ]->config->editor }, format => 's';
 
 # Construction
 around '_build_appldir' => sub {
@@ -132,11 +132,26 @@ sub prove : method {
 
    my $cmd = $self->_get_test_command( $self->next_argv );
 
-   $ENV{AUTHOR_TESTING} = TRUE; $ENV{TEST_MEMORY} = TRUE;
-   $ENV{TEST_SPELLING}  = TRUE;
+   __set_env_true( @{ $self->config->test_env_vars } );
+
    $self->output ( 'Testing [_1]', { args => [ $self->appldir ] } );
    $self->run_cmd( $cmd, $self->quiet ? {} : { out => 'stdout' } );
    return OK;
+}
+
+sub select_project : method {
+   my $self     = shift;
+   my @projects = $self->base->all_dirs;
+   my @options  = map { $_->basename } @projects;
+   my $prompt   = 'Select a project from the following list';
+   my $index    = $self->get_option( $prompt, undef, TRUE, undef, \@options );
+
+   $index < 0 and return FAILED;
+   $self->chdir( my $dir = $projects[ $index ]->catdir( 'master' ) );
+   emit_to *STDERR, $dir;
+
+   return Module::Provision->new
+      ( method => 'edit_project', noask => TRUE, quiet => TRUE )->run;
 }
 
 sub show_tab_title : method {
@@ -150,7 +165,7 @@ sub show_tab_title : method {
 
 # Private methods
 sub _create_mask {
-   return oct q(0777) ^ $_[ 0 ]->exec_perms;
+   return oct '0777' ^ $_[ 0 ]->exec_perms;
 }
 
 sub _get_test_command {
@@ -161,6 +176,11 @@ sub _get_test_command {
 
 sub _project_file_path {
    return $_[ 0 ]->appldir->catfile( $_[ 0 ]->project_file );
+}
+
+# Private functions
+sub __set_env_true {
+   $ENV{ $_ } = TRUE for (@_); return;
 }
 
 1;
@@ -184,7 +204,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.25.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.26.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 
@@ -265,6 +285,14 @@ Calls L</generate_metadata> with the create flag set to C<FALSE>
    $exit_code = $self->prove;
 
 Returns the exit code
+
+=head2 select_project - List available projects and select one to edit
+
+   $exit_code = $self->select_project
+
+Use from the shell like this:
+
+   cd $(module_provision -q select_project 2>&1 1>/dev/tty)
 
 =head2 show_tab_title - Display the tab title for the current distribution
 
