@@ -1,4 +1,4 @@
-# @(#)$Ident: DZ_Build.PL 2013-09-03 12:35 pjf ;
+# @(#)$Ident: Build.PL 2013-12-06 14:30 pjf ;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ my $name     = 'Module-Provision'; $name =~ s{ - }{::}gmx;
 $] >= $perl_ver or $ENV{PERL5_CPANPLUS_IS_VERSION}
    or whimper "Minimum required Perl version is ${perl_ver}";
 
-Module::Build->subclass( code => do { local $/; <DATA> } )->new(
+Module::Build->new(
   'module_name' => $name,
   'notes'       => { min_perl_version => $perl_ver },
   'build_requires' => {
@@ -32,10 +32,12 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
     'Config::Tiny' => '2.13',
     'Date::Format' => '2.24',
     'Dist::Zilla' => '4.300033',
+    'Dist::Zilla::Plugin::AbstractFromPOD' => 'v0.2.0',
+    'Dist::Zilla::Plugin::LicenseFromModule' => '0.03',
     'Dist::Zilla::Plugin::ManifestInRoot' => 'v0.1.0',
     'Dist::Zilla::Plugin::Meta::Dynamic::Config' => '0.04',
     'Dist::Zilla::Plugin::ModuleBuild::Custom' => '4.16',
-    'Dist::Zilla::Plugin::ReadmeAnyFromPod' => '0.120120',
+    'Dist::Zilla::Plugin::ReadmeAnyFromPod' => '0.133290',
     'Dist::Zilla::Plugin::Signature' => '1.100930',
     'Dist::Zilla::Plugin::VersionFromModule' => '0.08',
     'File::DataClass' => 'v0.25.0',
@@ -64,9 +66,3 @@ Module::Build->subclass( code => do { local $/; <DATA> } )->new(
 )->create_build_script;
 
 exit 0;
-
-__DATA__
-
-sub _normalize_prereqs { # Dynamic config
-   my $self = shift; my $p = $self->SUPER::_normalize_prereqs; return $p;
-}

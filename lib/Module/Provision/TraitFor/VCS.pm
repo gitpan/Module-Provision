@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::VCS;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( is_win32 throw );
@@ -321,7 +321,7 @@ Module::Provision::TraitFor::VCS - Version Control
 
 =head1 Version
 
-This documents version v0.26.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
+This documents version v0.27.$Rev: 1 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 

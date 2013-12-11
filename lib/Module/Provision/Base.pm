@@ -1,9 +1,9 @@
-# @(#)Ident: Base.pm 2013-11-22 18:54 pjf ;
+# @(#)Ident: Base.pm 2013-11-26 12:27 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
@@ -217,7 +217,7 @@ sub _build_project {
       $prev = $dir; $dir = $dir->parent;
    }
 
-   throw $self->loc( 'Path [_1] contains no project files', $dir );
+   throw $self->loc( 'Path [_1] contains no project files', $self->initial_wd );
    return; # Never reached
 }
 
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.26.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.27.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 

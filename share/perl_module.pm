@@ -6,9 +6,9 @@ package [% module %];
 use namespace::sweep;
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
+use Moo;
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( throw );
-use Moo;
 
 extends q(Class::Usul::Programs);
 

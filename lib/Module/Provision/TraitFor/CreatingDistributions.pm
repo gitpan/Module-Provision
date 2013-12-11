@@ -1,13 +1,15 @@
-# @(#)Ident: CreatingDistributions.pm 2013-11-25 16:00 pjf ;
+# @(#)Ident: CreatingDistributions.pm 2013-11-26 23:34 pjf ;
 
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( emit emit_to throw trim );
 use Class::Usul::Types      qw( ArrayRef NonEmptySimpleStr );
+use English                 qw( -no_match_vars );
+use IO::Handle;
 use Moo::Role;
 use Class::Usul::Options;
 
@@ -148,7 +150,10 @@ sub select_project : method {
 
    $index < 0 and return FAILED;
    $self->chdir( my $dir = $projects[ $index ]->catdir( 'master' ) );
-   emit_to *STDERR, $dir;
+
+   my $io = IO::Handle->new; $io->fdopen( 3, 'w' );
+
+   emit_to $io, $dir; $io->close;
 
    return Module::Provision->new
       ( method => 'edit_project', noask => TRUE, quiet => TRUE )->run;
@@ -204,7 +209,7 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
 =head1 Version
 
-This documents version v0.26.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
+This documents version v0.27.$Rev: 1 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 

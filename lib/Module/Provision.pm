@@ -1,10 +1,10 @@
-# @(#)Ident: Provision.pm 2013-11-25 16:04 pjf ;
+# @(#)Ident: Provision.pm 2013-11-26 13:36 pjf ;
 
 package Module::Provision;
 
 use 5.010001;
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.26.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 
@@ -31,7 +31,7 @@ Module::Provision - Create Perl distributions with VCS and selectable toolchain
 
 =head1 Version
 
-This documents version v0.26.$Rev: 1 $ of L<Module::Provision>
+This documents version v0.27.$Rev: 1 $ of L<Module::Provision>
 
 =head1 Synopsis
 
@@ -269,7 +269,7 @@ Runs the projects tests
 
 =head2 select_project
 
-   cd $(module_provision -q select_project 2>&1 1>/dev/tty)
+   cd $(module_provision -q select_project 3>&1 1>/dev/tty 2>/dev/null)
 
 Displays a list of available projects. Calls C<edit_project> on the selected
 option
