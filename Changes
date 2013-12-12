@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.29.1    2013-12-12 21:26:25
+          - Remove prereqs below min_perl_ver
+
 0.28.1    2013-12-12 14:16:26
           - Allow CPAN Testing to smoke below min_perl_ver
 

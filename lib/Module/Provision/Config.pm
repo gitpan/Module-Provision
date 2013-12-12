@@ -3,7 +3,7 @@
 package Module::Provision::Config;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.28.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Constants;
@@ -108,7 +108,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.28.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.29.$Rev: 1 $ of L<Module::Provision::Config>
 
 =head1 Description
 
