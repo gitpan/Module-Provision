@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.28.1    2013-12-12 14:16:26
+          - Allow CPAN Testing to smoke below min_perl_ver
+
 0.27.1    2013-12-11 17:23:36
           - Dropped create_readme_md from share/Build.PL
             Closes RT#91320

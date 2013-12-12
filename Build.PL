@@ -1,4 +1,4 @@
-# @(#)$Ident: Build.PL 2013-12-06 14:30 pjf ;
+# @(#)$Ident: Build.PL 2013-12-12 10:14 pjf ;
 
 use strict;
 use warnings;
@@ -10,7 +10,10 @@ sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
 my $perl_ver = 5.010001;
 my $name     = 'Module-Provision'; $name =~ s{ - }{::}gmx;
 
-$] >= $perl_ver or $ENV{PERL5_CPANPLUS_IS_VERSION}
+$] >= $perl_ver
+   or $ENV{AUTOMATED_TESTING}
+   or $ENV{PERL_CPAN_REPORTER_CONFIG}
+   or $ENV{PERL5_CPANPLUS_IS_VERSION}
    or whimper "Minimum required Perl version is ${perl_ver}";
 
 Module::Build->new(
@@ -54,7 +57,6 @@ Module::Build->new(
     'Moo' => '1.003001',
     'Perl::Version' => '1.011',
     'Pod::Eventual' => '0.093330',
-    'Pod::Markdown' => '1.500',
     'Template' => '2.22',
     'Type::Tiny' => '0.012',
     'namespace::sweep' => '0.006',

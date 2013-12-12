@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.28.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( app_prefix is_arrayref distname throw );
@@ -192,7 +192,7 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
 =head1 Version
 
-This documents version v0.27.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
+This documents version v0.28.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 

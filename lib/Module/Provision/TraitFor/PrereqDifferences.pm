@@ -3,7 +3,7 @@
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.28.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile ensure_class_loaded
@@ -322,7 +322,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.27.$Rev: 1 $ of
+This documents version v0.28.$Rev: 1 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description

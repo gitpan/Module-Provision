@@ -1,4 +1,4 @@
-# @(#)$Ident: DZ_Build.PL 2013-12-06 14:21 pjf ;
+# @(#)$Ident: DZ_Build.PL 2013-12-12 11:40 pjf ;
 
 use strict;
 use warnings;
@@ -10,7 +10,10 @@ sub whimper { print {*STDOUT} $_[ 0 ]."\n"; exit 0 }
 my $perl_ver = ##{ $meta2{prereqs}->{runtime}->{requires}->{perl} ##};
 my $name     = '##{ $zilla->name ##}'; $name =~ s{ - }{::}gmx;
 
-$] >= $perl_ver or $ENV{PERL5_CPANPLUS_IS_VERSION}
+$] >= $perl_ver
+   or $ENV{AUTOMATED_TESTING}
+   or $ENV{PERL_CPAN_REPORTER_CONFIG}
+   or $ENV{PERL5_CPANPLUS_IS_VERSION}
    or whimper "Minimum required Perl version is ${perl_ver}";
 
 Module::Build->new(

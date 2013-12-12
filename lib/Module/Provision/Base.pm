@@ -3,7 +3,7 @@
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.27.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.28.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
@@ -322,7 +322,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.27.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.28.$Rev: 1 $ of L<Module::Provision::Base>
 
 =head1 Description
 
