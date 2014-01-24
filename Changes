@@ -1,5 +1,16 @@
 Revision history for Module::Provision
 
+0.31.2    2014-01-24 21:04:29
+          - Updated dependencies
+          - Select project does better job of picking the project dir
+
+0.30.1    2014-01-15 18:05:13
+          - Using Unexpected exception classes
+          - Stopped using C::U::File::io
+          - Apply C::U::T::MetaData for get_package_meta method
+          - Stopped localizing error messages
+          - Added update_file method to copy from template dir
+
 0.29.1    2013-12-12 21:26:25
           - Remove prereqs below min_perl_ver
 
@@ -53,150 +64,3 @@ Revision history for Module::Provision
             c.f. df2446e9-6c38-1014-8bcf-004655012b15. Cannot see error
             because of RT#87575. Toolchain updated
           - Moved D::Z::P::ManifestInRoot to own dist
-
-0.17.22   2013-08-03 20:22:50
-          - Moved Moo::Role to after function imports
-          - Another new method for CPANTesting min Perl ver
-          - New method for CPANTesting min Perl ver
-          - Added fremen and frogman to tier gruber
-          - Aborting Bingoes failed see df276fba-f57c-11e2-8c80-50d7c5c10595
-            No choice but to send this smoker to sleep 10 while 1.
-            Chris Williams, put my pause id in your stop list
-          - Fixed distname double definition bug
-          - Bumped File::DataClass dependency
-          - Added dump_stash
-          - List methods displays abstracts
-          - Added branch_file attribute
-          - Prove now runs individual test scripts
-          - Added set_branch
-          - Mooified
-
-0.16.3    2013-06-25 16:26:24
-          - Commit msg hook prefers message file content
-
-0.15.10   2013-05-23 23:02:32
-          - Better version diff in ::PrereqDiffereces
-          - Fixed bug ::PrereqDifference::_consolidate
-          - Updated ::Base POD
-          - Enhanced CPAN Testing exception method
-          - Simplified ::Base::chdir
-          - Bumped Class::Usul version
-          - Renamed C::U::Functions say to emit
-          - Added requires to ::CPANDists
-          - Added password encryption to ::CPANDists
-          - Combined CPAN roles into ::CPANDistributions
-          - Added ::TraitFor::DeletingFromCPAN
-
-0.14.3    2013-05-11 22:25:05
-          - Improved guess work in PrereqDiffs
-          - Added ::TraitFor::UploadingToCPAN
-          - Added ::TraitFor::PrereqDifferences
-
-0.13.4    2013-05-11 04:12:04
-          - Updated POD
-          - Added _should_add_tag to ::VCS
-          - Updated POD, added mission use statement
-          - Added release tagging and version number prompting
-
-0.12.7    2013-05-10 21:47:56
-          - Uses fullname, logname, and loginid from C:U:Functions
-          - Added osname output to 01always_pass.t
-          - Added chdir public method in ::Base
-          - Improved SVN detection logic
-          - Modify appldir builder if creating a dist
-          - Avoid calling getpwuid on WinShite
-          - Added missing dependencies
-
-0.11.1    2013-05-04 21:21:14
-          - Mitigated problems with branches
-          - inc::Bob gets better git remote detection
-          - Attribute refactoring and POD updates
-
-0.10.1    2013-05-04 01:05:42
-          - Fixed author_id attribute
-          - Created ::Config to allow attributes from config file
-
-0.9.10    2013-05-03 20:42:32
-          - Added edit_project and show_tab_title methods
-          - Bob removes MANIFEST.bak with distclean
-          - Abstracted builders with ::Base
-          - Updated README.md
-          - Fixed test
-          - Split out even more traits
-          - Fixed spelling
-          - Fixed version numbers
-          - Refactored into base class plus traits
-
-0.8.4     2013-05-01 19:25:21
-          - Replaced no_vcs option with vcs type none
-          - Can now mp distmeta
-          - Try untaint with higher exception level on MSWin32
-          - Bumped version on C:U
-          - New templates directory ~/.module_provision
-
-0.7.8     2013-04-28 23:58:23
-          - Bumped versions on F:DC and C:U
-          - Stopped Stauner CPAN Testing - 0a7335a2-af67-11e2-99d1-ca991c44ed51
-          - Stopped Konig   CPAN Testin  - 07224fc0-aed9-11e2-9633-3d74c1508286
-          - Stopped Ciornii CPAN Testing - 07d44483-6c00-1014-9401-8524c7768a8d
-          - Added informational ouput to subcommands
-          - Updated POD
-          - Stopped precommit hook change update_version code
-          - Removed italics from abstract in POD
-          - Added Rev keyword reset to update_version for git VCS
-
-0.6.59    2013-04-24 05:10:52
-          - Added ipc_srlock file to MANIFEST.SKIP
-          - Tests use t directory as tempdir
-
-0.5.57    2013-04-23 23:55:58
-          - Added POD for update methods
-          - Added Dist::Zilla::Plugin::ManifestInRoot :(
-          - Added update_copyright_year and update_version
-
-0.4.54    2013-04-23 00:22:42
-          - Author tests now detect using $ENV{AUTHOR_TESTING}
-          - Added comments to share/dist.ini and share/MI_Makefile.PL
-          - Fixed spelling mistakes
-          - Updated usage strings
-          - Ignore meta files if VCS is SVN
-          - Added 50 character text formatting to gitcommit-msg
-          - Removed 45 character restriction on Git log header lines
-          - Added support for command line abstracts
-
-0.3.46    2013-04-16 23:18:07
-          - Documented Emacs usage
-          - Added optional v to distname in MANIFEST.SKIP
-          - Added more tests
-          - Added share to no_index
-          - Bumped Class::Usul version number. Updated POD
-          - Added author_id to stash
-          - Added DZ and MI builders
-          - Can create a test distribution in t with relative paths
-          - Updated POD. Added novcs attribute
-          - Propagated .gitpre-commit to share dir
-          - Added .gitignore-rev to skip Rev keyword expansion in share dir
-          - Use Perl::Version for better changelog headers
-
-0.2.37    2013-04-05 14:00:09
-          - Releasing
-          - Renamed t/test_script.t to t/10test_script.t for consistancy
-
-0.1.35    2013-04-05 13:37:11
-          - Automated git commit messages from Changes file
-
-0.1.34    2013-04-02
-          - Added commit-msg hook
-          - Updated inc::Bob to v1.11
-
-0.1.30    2013-04-02
-          - Updated inc::Bob to v1.9
-          - Add global revision number to .gitpre-commit
-          - Fixed file creation permissions
-
-0.1.2     2013-03-27
-          - Fixed repository for Git in metadata
-          - Updated inc::Bob to 1.8
-
-0.1.1     2013-03-27
-          - Created master

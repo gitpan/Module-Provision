@@ -1,21 +1,23 @@
-# @(#)Ident: AddingFiles.pm 2013-06-30 18:47 pjf ;
+# @(#)Ident: AddingFiles.pm 2014-01-10 19:11 pjf ;
 
 package Module::Provision::TraitFor::AddingFiles;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile throw );
+use Scalar::Util            qw( blessed );
+use Unexpected::Functions   qw( Unspecified );
 use Moo::Role;
 
-requires qw( add_to_vcs appldir binsdir exec_perms libdir loc method
-             module_abstract next_argv output project
-             render_template stash testdir );
+requires qw( add_to_vcs appldir binsdir exec_perms expand_tuple libdir
+             loc method module_abstract next_argv output project
+             render_template stash template_dir template_list testdir );
 
 # Construction
 around 'generate_metadata' => sub {
-   my ($next, $self, @args) = @_; my $mdf = $self->$next( @args );
+   my ($orig, $self, @args) = @_; my $mdf = $orig->( $self, @args );
 
    $mdf and $self->appldir->catfile( $mdf )->exists
         and $self->add_to_vcs( $mdf );
@@ -52,18 +54,43 @@ sub test : method {
    return OK;
 }
 
+sub update_file : method {
+   my $self   = shift;
+   my $target = $self->next_argv
+      or throw class => Unspecified, args => [ 'Target' ];
+   my $index  = {};
+
+   for my $t (map { my $k = $_->[ 0 ]; my $v = $_->[ 1 ];
+                    $_->[ 1 ] = $v->relative( $self->appldir ); $_ }
+              map { my $k = $_->[ 0 ]; my $v = $_->[ 1 ];
+                    $v->is_dir and $_->[ 1 ] = $v->catfile( $k ); $_ }
+              map { $self->expand_tuple( $_ ) } @{ $self->template_list } ) {
+      $index->{ $t->[ 1 ]->pathname } = $t->[ 0 ];
+   }
+
+   exists $index->{ $target }
+      or throw error => 'File [_1] not in template map', args => [ $target ];
+
+   my $source = $self->template_dir->catfile( $index->{ $target } );
+
+   $source->exists or throw error => 'File [_1] not found', args => [ $source ];
+   $source->copy( $target );
+   return OK;
+}
+
 # Private methods
 sub _get_target {
    my ($self, $dir, $f) = @_;
 
-   my $car      = $self->next_argv or throw $self->loc( 'No target specified' );
+   my $car = $self->next_argv
+      or throw class => Unspecified, args => [ 'Target' ];
    my $abstract = $self->next_argv
                || ($self->method eq 'program' ? $self->_program_abstract
                                               : $self->module_abstract );
 
    $self->project; # Force evaluation of lazy attribute
 
-   my $target   = $self->$dir->catfile( $f ? $f->( $car ) : $car );
+   my $target = $self->$dir->catfile( $f ? $f->( $car ) : $car );
 
    $target->perms( $self->perms )->assert_filepath;
 
@@ -100,7 +127,7 @@ Module::Provision::TraitFor::AddingFiles - Adds additional files to the project
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of L<Module::Provision::TraitFor::AddingFiles>
+This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::AddingFiles>
 
 =head1 Description
 
@@ -136,6 +163,13 @@ Creates a new program specified by the program name on the command line
    $exit_code = $self->test;
 
 Creates a new test specified by the test file name on the command line
+
+=head2 update_file - Updates a project file with one from the template directory
+
+   $exit_code = $self->update;
+
+After changes have been made to template files the command can be used to
+update individual project files
 
 =head1 Diagnostics
 

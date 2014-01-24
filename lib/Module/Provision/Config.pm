@@ -1,9 +1,9 @@
-# @(#)Ident: Config.pm 2013-11-25 12:00 pjf ;
+# @(#)Ident: Config.pm 2014-01-14 19:52 pjf ;
 
 package Module::Provision::Config;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Constants;
@@ -50,6 +50,9 @@ has 'module_abstract'  => is => 'lazy', isa => NonEmptySimpleStr,
 
 has 'repository'       => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'repository';
+
+has 'seed_file'        => is => 'lazy', isa => Path, coerce => Path->coercion,
+   default             => sub { [ qw( ~ .ssh pause.key ) ] };
 
 has 'signing_key'      => is => 'lazy', isa => SimpleStr,
    default             => NUL;
@@ -108,7 +111,7 @@ Module::Provision::Config - Attributes set from the config file
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of L<Module::Provision::Config>
+This documents version v0.31.$Rev: 2 $ of L<Module::Provision::Config>
 
 =head1 Description
 

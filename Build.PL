@@ -1,4 +1,4 @@
-# @(#)$Ident: Build.PL 2013-12-12 21:42 pjf ;
+# @(#)$Ident: DZ_Build.PL 2013-12-14 14:19 pjf ;
 
 use strict;
 use warnings;
@@ -11,7 +11,6 @@ my $perl_ver = 5.010001;
 my $name     = 'Module-Provision'; $name =~ s{ - }{::}gmx;
 my $prereqs  = {
   'build_requires' => {
-    'File::DataClass' => 'v0.25.0',
     'Module::Build' => '0.4004',
     'Test::Requires' => '0.06',
     'version' => '0.88'
@@ -23,7 +22,7 @@ my $prereqs  = {
   'requires' => {
     'CPAN::Uploader' => '0.103004',
     'Class::Null' => '2.101420',
-    'Class::Usul' => 'v0.33.0',
+    'Class::Usul' => 'v0.37.0',
     'Config::Tiny' => '2.13',
     'Date::Format' => '2.24',
     'Dist::Zilla' => '4.300033',
@@ -35,7 +34,7 @@ my $prereqs  = {
     'Dist::Zilla::Plugin::ReadmeAnyFromPod' => '0.133290',
     'Dist::Zilla::Plugin::Signature' => '1.100930',
     'Dist::Zilla::Plugin::VersionFromModule' => '0.08',
-    'File::DataClass' => 'v0.25.0',
+    'File::DataClass' => 'v0.33.0',
     'File::ShareDir' => '1.02',
     'File::Slurp' => '9999.13',
     'HTTP::Message' => '6.06',
@@ -50,12 +49,14 @@ my $prereqs  = {
     'Perl::Version' => '1.011',
     'Pod::Eventual' => '0.093330',
     'Template' => '2.22',
-    'Type::Tiny' => '0.012',
+    'Type::Tiny' => '0.030',
+    'Unexpected' => 'v0.22.0',
     'namespace::sweep' => '0.006',
     'perl' => '5.010001'
-  }, };
+  },
+};
 
-unless ($] >= $perl_ver) {
+if ($] < $perl_ver) {
    $ENV{AUTOMATED_TESTING}
       or $ENV{PERL_CPAN_REPORTER_CONFIG}
       or $ENV{PERL5_CPANPLUS_IS_VERSION}

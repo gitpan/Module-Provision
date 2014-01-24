@@ -1,9 +1,9 @@
-# @(#)Ident: UpdatingContent.pm 2013-07-11 14:57 pjf ;
+# @(#)Ident: UpdatingContent.pm 2014-01-06 16:00 pjf ;
 
 package Module::Provision::TraitFor::UpdatingContent;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( throw );
@@ -58,7 +58,7 @@ sub update_version_post_hook { # Can be modified by applied traits
 sub update_version_pre_hook { # Can be modified by applied traits
    my ($self, @args) = @_;
 
-   ($args[ 0 ] and $args[ 1 ]) or throw $self->loc( 'Insufficient arguments' );
+   ($args[ 0 ] and $args[ 1 ]) or throw 'Insufficient arguments';
 
    return @args;
 }
@@ -97,7 +97,7 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of
+This documents version v0.31.$Rev: 2 $ of
 L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description

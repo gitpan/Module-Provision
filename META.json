@@ -24,7 +24,6 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "File::DataClass" : "v0.25.0",
             "Module::Build" : "0.4004",
             "Test::Requires" : "0.06",
             "version" : "0.88"
@@ -40,7 +39,7 @@
          "requires" : {
             "CPAN::Uploader" : "0.103004",
             "Class::Null" : "2.101420",
-            "Class::Usul" : "v0.33.0",
+            "Class::Usul" : "v0.37.0",
             "Config::Tiny" : "2.13",
             "Date::Format" : "2.24",
             "Dist::Zilla" : "4.300033",
@@ -52,7 +51,7 @@
             "Dist::Zilla::Plugin::ReadmeAnyFromPod" : "0.133290",
             "Dist::Zilla::Plugin::Signature" : "1.100930",
             "Dist::Zilla::Plugin::VersionFromModule" : "0.08",
-            "File::DataClass" : "v0.25.0",
+            "File::DataClass" : "v0.33.0",
             "File::ShareDir" : "1.02",
             "File::Slurp" : "9999.13",
             "HTTP::Message" : "6.06",
@@ -67,7 +66,8 @@
             "Perl::Version" : "1.011",
             "Pod::Eventual" : "0.093330",
             "Template" : "2.22",
-            "Type::Tiny" : "0.012",
+            "Type::Tiny" : "0.030",
+            "Unexpected" : "v0.22.0",
             "namespace::sweep" : "0.006",
             "perl" : "5.010001"
          }
@@ -76,43 +76,43 @@
    "provides" : {
       "Module::Provision" : {
          "file" : "lib/Module/Provision.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::Base" : {
          "file" : "lib/Module/Provision/Base.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::Config" : {
          "file" : "lib/Module/Provision/Config.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::AddingFiles" : {
          "file" : "lib/Module/Provision/TraitFor/AddingFiles.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::CPANDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CPANDistributions.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::CreatingDistributions" : {
          "file" : "lib/Module/Provision/TraitFor/CreatingDistributions.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::PrereqDifferences" : {
          "file" : "lib/Module/Provision/TraitFor/PrereqDifferences.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::Rendering" : {
          "file" : "lib/Module/Provision/TraitFor/Rendering.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::UpdatingContent" : {
          "file" : "lib/Module/Provision/TraitFor/UpdatingContent.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       },
       "Module::Provision::TraitFor::VCS" : {
          "file" : "lib/Module/Provision/TraitFor/VCS.pm",
-         "version" : "v0.29.1"
+         "version" : "v0.31.2"
       }
    },
    "release_status" : "stable",
@@ -131,6 +131,6 @@
          "web" : "http://github.com/pjfl/p5-module-provision"
       }
    },
-   "version" : "0.29.1"
+   "version" : "0.31.2"
 }
 

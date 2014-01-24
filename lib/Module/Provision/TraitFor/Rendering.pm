@@ -1,21 +1,22 @@
-# @(#)Ident: Rendering.pm 2013-11-22 18:55 pjf ;
+# @(#)Ident: Rendering.pm 2014-01-12 02:27 pjf ;
 
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
-use Class::Usul::Functions  qw( app_prefix is_arrayref distname throw );
+use Class::Usul::Functions  qw( app_prefix is_arrayref distname io throw );
 use File::DataClass::Types  qw( ArrayRef Bool Directory Path SimpleStr );
 use File::ShareDir            ( );
 use Scalar::Util            qw( blessed weaken );
 use Template;
+use Unexpected::Functions   qw( Unspecified );
 use Moo::Role;
 use Class::Usul::Options;
 
 requires qw( add_leader appldir builder config dist_module exec_perms file
-             incdir initial_wd io loc log perms stash testdir vcs yorn );
+             incdir initial_wd loc log perms stash testdir vcs yorn );
 
 # Object attributes (public)
 option 'force'        => is => 'ro',   isa => Bool, default => FALSE,
@@ -25,33 +26,49 @@ option 'force'        => is => 'ro',   isa => Bool, default => FALSE,
 option 'templates'    => is => 'ro',   isa => SimpleStr, default => NUL,
    documentation      => 'Non default location of the code templates';
 
-# Object attributes (private)
-has '_template_dir'   => is => 'lazy', isa => Directory,
+has 'template_dir'    => is => 'lazy', isa => Directory,
    coerce             => Directory->coercion, init_arg => undef;
 
+has 'template_list'   => is => 'lazy', isa => ArrayRef, init_arg => undef;
+
+# Object attributes (private)
 has '_template_index' => is => 'lazy', isa => Path, coerce => Path->coercion,
    init_arg           => undef;
-
-has '_template_list'  => is => 'lazy', isa => ArrayRef, init_arg => undef;
 
 # Public methods
 sub dump_stash : method {
    my $self = shift; $self->dumper( $self->stash ); return OK;
 }
 
+sub expand_tuple {
+   my ($self, $tuple) = @_;
+
+   for (my $i = 0, my $max = @{ $tuple }; $i < $max; $i++) {
+      if (is_arrayref $tuple->[ $i ]) {
+         $tuple->[ $i ]->[ 0 ] = $self->_deref_tmpl( $tuple->[ $i ]->[ 0 ] );
+         $tuple->[ $i ] = io( $tuple->[ $i ] );
+      }
+      else {
+         $tuple->[ $i ] = $self->_deref_tmpl( $tuple->[ $i ] );
+      }
+   }
+
+   return $tuple;
+}
+
 sub init_templates : method {
-   my $self = shift; $self->_template_list; return OK;
+   my $self = shift; $self->template_list; return OK;
 }
 
 sub render_template {
    my ($self, $template, $target) = @_;
 
-   $template or throw $self->loc( 'No template specified' );
-   $target   or throw $self->loc( 'No template target specified' );
+   $template or throw class => Unspecified, args => [ 'Template' ];
+   $target   or throw class => Unspecified, args => [ 'Template target' ];
 
    $target->exists and $target->is_dir
       and $target = $target->catfile( $template );
-   $template = $self->_template_dir->catfile( $template );
+   $template = $self->template_dir->catfile( $template );
 
    $template->exists or
       return $self->log->warn( $self->loc( 'Path [_1] not found', $template ) );
@@ -75,17 +92,7 @@ sub render_template {
 sub render_templates {
    my $self = shift; $self->output( 'Rendering templates' );
 
-   for my $tuple (@{ $self->_template_list }) {
-      for (my $i = 0, my $max = @{ $tuple }; $i < $max; $i++) {
-         if (is_arrayref $tuple->[ $i ]) {
-            $tuple->[ $i ]->[ 0 ] = $self->_deref_tmpl( $tuple->[ $i ]->[ 0 ] );
-            $tuple->[ $i ] = $self->io( $tuple->[ $i ] );
-         }
-         else {
-            $tuple->[ $i ] = $self->_deref_tmpl( $tuple->[ $i ] );
-         }
-      }
-
+   for my $tuple (map { $self->expand_tuple( $_ ) } @{ $self->template_list }) {
       $self->render_template( @{ $tuple } );
    }
 
@@ -93,16 +100,16 @@ sub render_templates {
 }
 
 # Private methods
-sub _build__template_dir {
+sub _build_template_dir {
    my $self  = shift;
    my $class = blessed $self;
    my $tgt   = $self->templates
-             ? $self->io( [ $self->templates ] )->absolute( $self->initial_wd )
-             : $self->io( [ $self->config->my_home, '.'.(app_prefix $class) ] );
+             ? io( [ $self->templates ] )->absolute( $self->initial_wd )
+             : io( [ $self->config->my_home, '.'.(app_prefix $class) ] );
 
    $tgt->exists and return $tgt; $tgt->mkpath( $self->exec_perms );
 
-   my $dist  = $self->io( File::ShareDir::dist_dir( distname $class ) );
+   my $dist  = io( File::ShareDir::dist_dir( distname $class ) );
 
    $_->copy( $tgt ) for ($dist->all_files);
 
@@ -110,10 +117,10 @@ sub _build__template_dir {
 }
 
 sub _build__template_index {
-   return $_[ 0 ]->_template_dir->catfile( $_[ 0 ]->config->template_index );
+   return $_[ 0 ]->template_dir->catfile( $_[ 0 ]->config->template_index );
 }
 
-sub _build__template_list {
+sub _build_template_list {
    my $self = shift; my $index = $self->_template_index;
 
    my $data; $index->exists and $data = $self->file->data_load
@@ -192,7 +199,7 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of L<Module::Provision::TraitFor::Rendering>
+This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 
@@ -218,6 +225,15 @@ Overwrite the output files if they already exist
 Location of the code templates in the users home directory. Defaults to
 F<.module_provision>
 
+=item C<template_dir>
+
+Directory where the templates live
+
+=item C<template_list>
+
+Data structure that maps the files in the template directory to the files
+in the project directory
+
 =back
 
 =head1 Subroutines/Methods
@@ -227,6 +243,12 @@ F<.module_provision>
    $exit_code = $self->dump_stash;
 
 Uses the internal dumper method to produce a pretty coloured listing
+
+=head2 expand_tuple
+
+   $tuple = $self->expand_tuple( $tuple );
+
+Expands the references in the passed tuple
 
 =head2 init_templates - Initialize the template directory
 
@@ -244,8 +266,8 @@ Renders a single template using L<Template>
 
    $self->render_templates;
 
-Renders the list of templates in C<< $self->_template_list >> be
-repeatedly calling calling L<Template> passing in the C<< $self->stash >>.
+Renders the list of templates in C<< $self->template_list >> be
+repeatedly calling calling L</render_template>
 
 =head1 Diagnostics
 

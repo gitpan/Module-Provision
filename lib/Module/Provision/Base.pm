@@ -1,21 +1,22 @@
-# @(#)Ident: Base.pm 2013-11-26 12:27 pjf ;
+# @(#)Ident: Base.pm 2014-01-11 14:11 pjf ;
 
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
-use Class::Usul::Functions  qw( app_prefix class2appdir classdir throw );
+use Class::Usul::Constants;
+use Class::Usul::Functions  qw( app_prefix class2appdir classdir io throw );
 use Class::Usul::Options;
 use Class::Usul::Time       qw( time2str );
 use English                 qw( -no_match_vars );
-use File::DataClass::Constants;
 use File::DataClass::Types  qw( ArrayRef Directory HashRef NonEmptySimpleStr
                                 Object OctalNum Path PositiveInt SimpleStr );
 use Module::Metadata;
 use Perl::Version;
 use Type::Utils             qw( enum );
+use Unexpected::Functions   qw( Unspecified );
 
 extends q(Class::Usul::Programs);
 
@@ -85,7 +86,7 @@ has 'incdir'          => is => 'lazy', isa => Path, coerce => Path->coercion,
    default            => sub { [ $_[ 0 ]->appldir, 'inc' ] };
 
 has 'initial_wd'      => is => 'ro',   isa => Directory,
-   default            => sub { $_[ 0 ]->io( CURDIR ) };
+   default            => sub { io()->cwd };
 
 has 'libdir'          => is => 'lazy', isa => Path, coerce => Path->coercion,
    default            => sub { [ $_[ 0 ]->appldir, 'lib' ] };
@@ -108,9 +109,9 @@ has '_license_keys'   => is => 'lazy', isa => HashRef;
 sub chdir {
    my ($self, $dir) = @_;
 
-         $dir or throw $self->loc( 'Directory not specified in chdir' );
-   chdir $dir or throw $self->loc( 'Directory [_1] cannot chdir: [_2]',
-                                   $dir, $OS_ERROR );
+         $dir or throw class => Unspecified, args => [ 'directory' ];
+   chdir $dir or throw error => 'Directory [_1] cannot chdir: [_2]',
+                       args  => [ $dir, $OS_ERROR ];
    return $dir;
 }
 
@@ -170,7 +171,7 @@ sub _build_dist_version {
 }
 
 sub _build_exec_perms {
-   return (($_[ 0 ]->perms & oct q(0444)) >> 2) | $_[ 0 ]->perms;
+   return (($_[ 0 ]->perms & oct '0444') >> 2) | $_[ 0 ]->perms;
 }
 
 sub _build_homedir {
@@ -181,21 +182,21 @@ sub _build__license_keys {
    return {
       perl       => 'Perl_5',
       perl_5     => 'Perl_5',
-      apache     => [ map { "Apache_$_" } qw(1_1 2_0) ],
+      apache     => [ map { "Apache_$_" } qw( 1_1 2_0 ) ],
       artistic   => 'Artistic_1_0',
       artistic_2 => 'Artistic_2_0',
-      lgpl       => [ map { "LGPL_$_" } qw(2_1 3_0) ],
+      lgpl       => [ map { "LGPL_$_" } qw( 2_1 3_0 ) ],
       bsd        => 'BSD',
-      gpl        => [ map { "GPL_$_" } qw(1 2 3) ],
+      gpl        => [ map { "GPL_$_" } qw( 1 2 3 ) ],
       mit        => 'MIT',
-      mozilla    => [ map { "Mozilla_$_" } qw(1_0 1_1) ], };
+      mozilla    => [ map { "Mozilla_$_" } qw( 1_0 1_1 ) ], };
 }
 
 sub _build_manifest_paths {
    my $self = shift;
 
    return [ grep { $_->exists }
-            map  { $self->io( __parse_manifest_line( $_ )->[ 0 ] ) }
+            map  { io( __parse_manifest_line( $_ )->[ 0 ] ) }
             grep { not m{ \A \s* [\#] }mx }
             $self->appldir->catfile( 'MANIFEST' )->chomp->getlines ];
 }
@@ -211,13 +212,14 @@ sub _build_project {
       for my $file (grep { $_->exists }
                     map  { $dir->catfile( $BUILDERS{ $_ } ) } __builders()) {
          $module = __get_module_from( $file->all ) and return $module;
-         throw $self->loc( 'File [_1] contains no module name', $file );
+         throw error => 'File [_1] contains no module name', args => [ $file ];
       }
 
       $prev = $dir; $dir = $dir->parent;
    }
 
-   throw $self->loc( 'Path [_1] contains no project files', $self->initial_wd );
+   throw error => 'Path [_1] contains no project files',
+         args  => [ $self->initial_wd ];
    return; # Never reached
 }
 
@@ -263,9 +265,9 @@ sub _build_vcs {
    my $self = shift; my $appbase = $self->appbase;
 
    return $appbase->catdir( '.git'            )->exists ? 'git'
-        : $appbase->catdir( qw(master .git)   )->exists ? 'git'
+        : $appbase->catdir( qw( master .git ) )->exists ? 'git'
         : $appbase->catdir( '.svn'            )->exists ? 'svn'
-        : $appbase->catdir( qw(trunk  .svn)   )->exists ? 'svn'
+        : $appbase->catdir( qw( trunk  .svn ) )->exists ? 'svn'
         : $appbase->catdir( $self->repository )->exists ? 'svn'
                                                         : 'none';
 }
@@ -276,7 +278,7 @@ sub __builders {
 }
 
 sub __distname {
-   (my $y = $_[ 0 ] || q()) =~ s{ :: }{-}gmx; return $y;
+   (my $y = $_[ 0 ] || NUL) =~ s{ :: }{-}gmx; return $y;
 }
 
 sub __get_module_from { # Return main module name from contents of project file
@@ -322,7 +324,7 @@ Module::Provision::Base - Immutable data object
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of L<Module::Provision::Base>
+This documents version v0.31.$Rev: 2 $ of L<Module::Provision::Base>
 
 =head1 Description
 

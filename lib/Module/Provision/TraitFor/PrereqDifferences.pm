@@ -1,20 +1,22 @@
-# @(#)Ident: PrereqDifferences.pm 2013-11-23 13:27 pjf ;
+# @(#)Ident: PrereqDifferences.pm 2014-01-12 02:35 pjf ;
 
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.29.%d', q$Rev: 1 $ =~ /\d+/gmx );
+use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile ensure_class_loaded
-                                is_member emit throw );
+                                is_member emit io );
 use Config::Tiny;
 use English                 qw( -no_match_vars );
 use Module::Metadata;
 use Perl::Version;
 use Moo::Role;
 
-requires qw( appldir builder chdir debug get_meta io libdir
+with q(Class::Usul::TraitFor::MetaData);
+
+requires qw( appldir builder chdir debug get_package_meta libdir
              manifest_paths next_argv output project_file run_cmd );
 
 # Public methods
@@ -125,7 +127,7 @@ sub _filter_dependents {
    my $core_modules = $Module::CoreList::version{ $perl_version };
    my $dir          = $self->builder eq 'DZ'
                     ? $self->distname.'-'.$self->dist_version : undef;
-   my $provides     = $self->get_meta( $dir )->provides;
+   my $provides     = $self->get_package_meta( $dir )->provides;
 
    return $self->_consolidate( { map   { $_ => $used->{ $_ }              }
                                  grep  { not exists $core_modules->{ $_ } }
@@ -156,7 +158,7 @@ sub _is_perl_source {
 
    $path =~ m{ (?: \.pm | \.t | \.pl ) \z }imx and return TRUE;
 
-   my $line = $self->io( $path )->getline; $line or return FALSE;
+   my $line = io( $path )->getline; $line or return FALSE;
 
    return $line =~ m{ \A \#! (?: .* ) perl (?: \s | \z ) }mx ? TRUE : FALSE;
 }
@@ -322,7 +324,7 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
 =head1 Version
 
-This documents version v0.29.$Rev: 1 $ of
+This documents version v0.31.$Rev: 2 $ of
 L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description
