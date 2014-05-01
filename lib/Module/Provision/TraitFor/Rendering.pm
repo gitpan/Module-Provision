@@ -1,9 +1,6 @@
-# @(#)Ident: Rendering.pm 2014-01-12 02:27 pjf ;
-
 package Module::Provision::TraitFor::Rendering;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( app_prefix is_arrayref distname io throw );
@@ -196,10 +193,6 @@ Module::Provision::TraitFor::Rendering - Renders Templates
 
    extends 'Module::Provision::Base';
    with    'Module::Provision::TraitFor::Rendering';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::Rendering>
 
 =head1 Description
 

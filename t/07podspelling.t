@@ -1,11 +1,8 @@
-# @(#)Ident: 07podspelling.t 2014-01-10 19:10 pjf ;
-
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
-use File::Spec::Functions   qw( catdir catfile updir );
-use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, 'lib' );
+use File::Spec::Functions qw( catdir catfile updir );
+use FindBin               qw( $Bin );
+use lib               catdir( $Bin, updir, 'lib' );
 
 use Test::More;
 use Test::Requires { version => 0.88 };

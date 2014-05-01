@@ -1,5 +1,8 @@
 Revision history for Module::Provision
 
+0.32.1    2014-05-01 15:32:09
+          - Removed Ident and VERSION lines
+
 0.31.2    2014-01-24 21:04:29
           - Updated dependencies
           - Select project does better job of picking the project dir

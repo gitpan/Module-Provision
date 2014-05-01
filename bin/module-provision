@@ -1,9 +1,7 @@
 #!/usr/bin/env perl
-# @(#)Ident: module-provision 2013-08-21 12:18 pjf ;
 
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Module::Provision;
 
@@ -37,10 +35,6 @@ Display man page / method help / option descriptions / usage strings
 Lists the methods available in this program
 
 =back
-
-=head1 VERSION
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision>
 
 =head1 DESCRIPTION
 

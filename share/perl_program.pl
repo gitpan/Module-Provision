@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# @(#)Ident: perl_program.pl 2013-10-24 21:07 pjf ;
 
 use strict;
 use warnings;
@@ -14,8 +13,6 @@ BEGIN {
 
    -f $path and (do $path or die $EVAL_ERROR || "Path ${path} not done\n");
 }
-
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use [% module %];
 
@@ -48,10 +45,6 @@ Display man page / method help  / usage strings
 Lists the methods available in this program
 
 =back
-
-=head1 VERSION
-
-This documents version v0.1.$Rev: 1 $ of C<[% program_name %]>
 
 =head1 DESCRIPTION
 

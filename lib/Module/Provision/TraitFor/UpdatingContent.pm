@@ -1,9 +1,6 @@
-# @(#)Ident: UpdatingContent.pm 2014-01-06 16:00 pjf ;
-
 package Module::Provision::TraitFor::UpdatingContent;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( throw );
@@ -94,11 +91,6 @@ Module::Provision::TraitFor::UpdatingContent - Perform search and replace on pro
 
    extends 'Module::Provision::Base';
    with    'Module::Provision::TraitFor::UpdatingContent';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of
-L<Module::Provision::TraitFor::UpdatingContent>
 
 =head1 Description
 

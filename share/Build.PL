@@ -1,13 +1,3 @@
-# @(#)$Ident: Build.PL 2013-12-11 17:20 pjf ;
-
-# Local Variables:
-# mode: perl
-# eval: (load-project-state "[% appdir %]")
-# tab-title: [% project %]
-# tab-width: 3
-# End:
-# vim: expandtab shiftwidth=3:
-
 use strict;
 use warnings;
 use version; our $VERSION = qv( '0.1' );
@@ -95,3 +85,11 @@ sub __get_svn_repository {
            (split q( ), (grep { m{ \A URL: }mx }
                             qx{ svn info })[ 0 ])[ 1 ])[ 0 ];
 }
+
+# Local Variables:
+# mode: perl
+# eval: (load-project-state "[% appdir %]")
+# tab-title: [% project %]
+# tab-width: 3
+# End:
+# vim: expandtab shiftwidth=3:

@@ -3,18 +3,18 @@ abstract: 'Create Perl distributions with VCS and selectable toolchain'
 author:
   - 'Peter Flanigan, C<< <pjfl@cpan.org> >>'
 build_requires:
-  Module::Build: 0.4004
-  Test::Requires: 0.06
-  version: 0.88
+  Module::Build: '0.4004'
+  Test::Requires: '0.06'
+  version: '0.88'
 configure_requires:
-  Module::Build: 0.4004
-  version: 0.88
+  Module::Build: '0.4004'
+  version: '0.88'
 dynamic_config: 1
 generated_by: 'Dist::Zilla version 5.006, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Module-Provision
 no_index:
   directory:
@@ -25,71 +25,71 @@ no_index:
 provides:
   Module::Provision:
     file: lib/Module/Provision.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::Base:
     file: lib/Module/Provision/Base.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::Config:
     file: lib/Module/Provision/Config.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::AddingFiles:
     file: lib/Module/Provision/TraitFor/AddingFiles.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::CPANDistributions:
     file: lib/Module/Provision/TraitFor/CPANDistributions.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::CreatingDistributions:
     file: lib/Module/Provision/TraitFor/CreatingDistributions.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::PrereqDifferences:
     file: lib/Module/Provision/TraitFor/PrereqDifferences.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::Rendering:
     file: lib/Module/Provision/TraitFor/Rendering.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::UpdatingContent:
     file: lib/Module/Provision/TraitFor/UpdatingContent.pm
-    version: v0.31.2
+    version: v0.32.1
   Module::Provision::TraitFor::VCS:
     file: lib/Module/Provision/TraitFor/VCS.pm
-    version: v0.31.2
+    version: v0.32.1
 requires:
-  CPAN::Uploader: 0.103004
-  Class::Null: 2.101420
-  Class::Usul: v0.37.0
-  Config::Tiny: 2.13
-  Date::Format: 2.24
-  Dist::Zilla: 4.300033
+  CPAN::Uploader: '0.103004'
+  Class::Null: '2.101420'
+  Class::Usul: v0.41.0
+  Config::Tiny: '2.13'
+  Date::Format: '2.24'
+  Dist::Zilla: '4.300033'
   Dist::Zilla::Plugin::AbstractFromPOD: v0.2.0
-  Dist::Zilla::Plugin::LicenseFromModule: 0.03
+  Dist::Zilla::Plugin::LicenseFromModule: '0.03'
   Dist::Zilla::Plugin::ManifestInRoot: v0.1.0
-  Dist::Zilla::Plugin::Meta::Dynamic::Config: 0.04
-  Dist::Zilla::Plugin::ModuleBuild::Custom: 4.16
-  Dist::Zilla::Plugin::ReadmeAnyFromPod: 0.133290
-  Dist::Zilla::Plugin::Signature: 1.100930
-  Dist::Zilla::Plugin::VersionFromModule: 0.08
-  File::DataClass: v0.33.0
-  File::ShareDir: 1.02
-  File::Slurp: 9999.13
-  HTTP::Message: 6.06
-  LWP: 6.04
-  LWP::Protocol::https: 6.03
-  Module::Install: 1.06
-  Module::Install::AutoLicense: 0.08
-  Module::Install::ReadmeFromPod: 0.20
-  Module::Install::ReadmeMarkdownFromPod: 0.03
-  Module::Metadata: 1.000011
-  Moo: 1.003001
-  Perl::Version: 1.011
-  Pod::Eventual: 0.093330
-  Template: 2.22
-  Type::Tiny: 0.030
+  Dist::Zilla::Plugin::Meta::Dynamic::Config: '0.04'
+  Dist::Zilla::Plugin::ModuleBuild::Custom: '4.16'
+  Dist::Zilla::Plugin::ReadmeAnyFromPod: '0.133290'
+  Dist::Zilla::Plugin::Signature: '1.100930'
+  Dist::Zilla::Plugin::VersionFromModule: '0.08'
+  File::DataClass: v0.35.0
+  File::ShareDir: '1.02'
+  File::Slurp: '9999.13'
+  HTTP::Message: '6.06'
+  LWP: '6.04'
+  LWP::Protocol::https: '6.03'
+  Module::Install: '1.06'
+  Module::Install::AutoLicense: '0.08'
+  Module::Install::ReadmeFromPod: '0.20'
+  Module::Install::ReadmeMarkdownFromPod: '0.03'
+  Module::Metadata: '1.000011'
+  Moo: '1.004002'
+  Perl::Version: '1.011'
+  Pod::Eventual: '0.093330'
+  Template: '2.22'
+  Type::Tiny: '0.030'
   Unexpected: v0.22.0
-  namespace::sweep: 0.006
-  perl: 5.010001
+  namespace::sweep: '0.006'
+  perl: '5.010001'
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Module-Provision
   homepage: https://metacpan.org/author/PJFL
   license: http://dev.perl.org/licenses/
   repository: git://github.com/pjfl/p5-module-provision.git
-version: 0.31.2
+version: 0.32.1

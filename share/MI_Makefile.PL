@@ -2,7 +2,6 @@ use [% perl %];
 use strict;
 use warnings FATAL => 'all';
 use inc::Module::Install;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 name     '[% distname %]';
 all_from '[% dist_module %]';

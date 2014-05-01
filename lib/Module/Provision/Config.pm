@@ -1,9 +1,6 @@
-# @(#)Ident: Config.pm 2014-01-14 19:52 pjf ;
-
 package Module::Provision::Config;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Constants;
@@ -108,10 +105,6 @@ Module::Provision::Config - Attributes set from the config file
    extends 'Class::Usul::Programs';
 
    has '+config_class' => default => sub { 'Module::Provision::Config' };
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::Config>
 
 =head1 Description
 

@@ -1,9 +1,6 @@
-# @(#)Ident: PrereqDifferences.pm 2014-01-12 02:35 pjf ;
-
 package Module::Provision::TraitFor::PrereqDifferences;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile ensure_class_loaded
@@ -321,11 +318,6 @@ Module::Provision::TraitFor::PrereqDifferences - Displays a prerequisite differe
 
    extends 'Module::Provision::Base';
    with    'Module::Provision::TraitFor::PrereqDifferences';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of
-L<Module::Provision::TraitFor::PrereqDifferences>
 
 =head1 Description
 

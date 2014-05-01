@@ -1,9 +1,6 @@
-# @(#)Ident: AddingFiles.pm 2014-01-10 19:11 pjf ;
-
 package Module::Provision::TraitFor::AddingFiles;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile throw );
@@ -124,10 +121,6 @@ Module::Provision::TraitFor::AddingFiles - Adds additional files to the project
 
    extends 'Module::Provision::Base';
    with    'Module::Provision::TraitFor::AddingFiles';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::AddingFiles>
 
 =head1 Description
 

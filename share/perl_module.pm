@@ -1,5 +1,3 @@
-# @(#)Ident: perl_module.pm 2013-08-12 15:11 pjf ;
-
 package [% module %];
 
 [% use_perl %]
@@ -28,10 +26,6 @@ __END__
 
    use [% module %];
    # Brief but working code examples
-
-=head1 Version
-
-This documents version v0.1.$Rev: 1 $ of L<[% module %]>
 
 =head1 Description
 

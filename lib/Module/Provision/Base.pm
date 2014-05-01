@@ -1,9 +1,6 @@
-# @(#)Ident: Base.pm 2014-01-11 14:11 pjf ;
-
 package Module::Provision::Base;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Moo;
 use Class::Usul::Constants;
@@ -258,7 +255,7 @@ sub _build_stash {
             prefix         => (split m{ :: }mx, lc $project)[ -1 ],
             project        => $project,
             use_perl       => $perl_code,
-            version        => $VERSION, };
+            version        => $self->VERSION, };
 }
 
 sub _build_vcs {
@@ -321,10 +318,6 @@ Module::Provision::Base - Immutable data object
    use Moose;
 
    extends 'Module::Provision::Base';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::Base>
 
 =head1 Description
 

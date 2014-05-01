@@ -1,9 +1,6 @@
-# @(#)Ident: VCS.pm 2014-01-10 21:02 pjf ;
-
 package Module::Provision::TraitFor::VCS;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( io is_win32 throw );
@@ -319,10 +316,6 @@ Module::Provision::TraitFor::VCS - Version Control
 
    use Module::Provision::TraitFor::VCS;
    # Brief but working code examples
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::VCS>
 
 =head1 Description
 

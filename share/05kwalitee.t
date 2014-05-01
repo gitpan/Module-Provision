@@ -1,11 +1,8 @@
-# @(#)Ident: 05kwalitee.t 2013-12-06 14:39 pjf ;
-
 use strict;
 use warnings;
-use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
-use File::Spec::Functions   qw( catdir updir );
-use FindBin                 qw( $Bin );
-use lib                 catdir( $Bin, updir, 'lib' );
+use File::Spec::Functions qw( catdir updir );
+use FindBin               qw( $Bin );
+use lib               catdir( $Bin, updir, 'lib' );
 
 use Test::More;
 

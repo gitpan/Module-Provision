@@ -1,9 +1,6 @@
-# @(#)Ident: CreatingDistributions.pm 2014-01-17 12:32 pjf ;
-
 package Module::Provision::TraitFor::CreatingDistributions;
 
 use namespace::sweep;
-use version; our $VERSION = qv( sprintf '0.31.%d', q$Rev: 2 $ =~ /\d+/gmx );
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( emit emit_to io trim );
@@ -212,10 +209,6 @@ Module::Provision::TraitFor::CreatingDistributions - Create distributions
 
    extends 'Module::Provision::Base';
    with    'Module::Provision::TraitFor::CreatingDistributions';
-
-=head1 Version
-
-This documents version v0.31.$Rev: 2 $ of L<Module::Provision::TraitFor::CreatingDistributions>
 
 =head1 Description
 
