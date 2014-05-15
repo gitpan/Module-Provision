@@ -35,6 +35,7 @@ share/dist.ini
 share/gitcommit-msg
 share/gitignore
 share/gitpre-commit
+share/perl_localenv
 share/perl_module.pm
 share/perl_program.pl
 t/01always_pass.t

@@ -36,7 +36,6 @@ my $prereqs  = {
     'Dist::Zilla::Plugin::VersionFromModule' => '0.08',
     'File::DataClass' => 'v0.35.0',
     'File::ShareDir' => '1.02',
-    'File::Slurp' => '9999.13',
     'HTTP::Message' => '6.06',
     'LWP' => '6.04',
     'LWP::Protocol::https' => '6.03',
