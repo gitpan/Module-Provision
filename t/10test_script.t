@@ -17,6 +17,7 @@ BEGIN {
 }
 
 use Test::Requires "${perl_ver}";
+use Test::Requires 'Hash::MoreUtils';
 use Test::Requires { Moo => 1.003001 };
 use Cwd qw( getcwd );
 use File::DataClass::IO;

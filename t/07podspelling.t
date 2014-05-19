@@ -50,6 +50,7 @@ TinyDesk
 distmeta
 distname
 inline
+localenv
 metadata
 pathname
 pathnames

@@ -282,7 +282,7 @@ sub __get_module_from { # Return main module name from contents of project file
    return
       (map    { s{ [-] }{::}gmx; $_ }
        map    { m{ \A [q\'\"] }mx ? eval $_ : $_ }
-       map    { m{ \A \s* (?:module|name) \s+ [=]?[>]? \s* ([^,;]+) [,;]? }imx }
+       map    { m{ \A \s* (?:module_name|name) \s+ [=]?[>]? \s* ([^,;]+) [,;]? }imx }
        grep   { m{ \A \s*   (module|name) }imx }
        split m{ [\n] }mx, $_[ 0 ])[ 0 ];
 }

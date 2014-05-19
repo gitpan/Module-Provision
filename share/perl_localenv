@@ -67,21 +67,21 @@ __END__
 
 =head1 NAME
 
-mcp-localenv - I<One line abstract describing the programs purpose>
+perl-localenv - I<One line abstract describing the programs purpose>
 
 =head1 SYNOPSIS
 
 =over 3
 
-=item B<mcp-localenv> B<> I<>
+=item B<perl-localenv> B<> I<>
 
 I<Command line description>
 
-=item B<mcp-localenv> B<-H> | B<-h> I<[method]> | B<-?>
+=item B<perl-localenv> B<-H> | B<-h> I<[method]> | B<-?>
 
 Display man page / method help  / usage strings
 
-=item B<mcp-localenv> B<list_methods>
+=item B<perl-localenv> B<list_methods>
 
 Lists the methods available in this program
 

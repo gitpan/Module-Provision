@@ -30,7 +30,7 @@ Module::Build->new
       dist_version_from   => $class_path,
       license             => '[% license %]' || 'perl',
       meta_merge          => __get_resources(),
-      module_name         => $module,
+      module_name         => '[% project %]',
       no_index            => { directory => [ qw( examples inc share t ) ] },
       notes               => {
          min_perl_version => $perl_ver,
@@ -54,7 +54,7 @@ sub __get_resources {
 
    $resources->{bugtracker} = $tracker.$distname;
    $home_page and $resources->{homepage} = $home_page;
-   $resources->{license} = 'http://dev.perl.org/licenses/';
+   $resources->{license} = [ 'http://dev.perl.org/licenses/' ];
 
    # Only get repository info when authoring a distribution
    my $repo; -f 'MANIFEST.SKIP' and $repo = __get_repository()
