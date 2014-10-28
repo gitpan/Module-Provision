@@ -1,7 +1,7 @@
 package [% module %];
 
 [% use_perl %]
-use namespace::sweep;
+use namespace::autoclean;
 use version; our $VERSION = qv( sprintf '0.1.%d', q$Rev: 1 $ =~ /\d+/gmx );
 
 use Moo;

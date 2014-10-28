@@ -1,6 +1,6 @@
 package Module::Provision::TraitFor::Rendering;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( app_prefix is_arrayref distname io throw );
@@ -138,7 +138,8 @@ sub _build_template_list {
                      [ '05kwalitee.t',    '_testdir'     ],
                      [ '06yaml.t',        '_testdir'     ],
                      [ '07podspelling.t', '_testdir'     ],
-                     [ '10test_script.t', '_testdir'     ], ];
+                     [ '10test_script.t', '_testdir'     ],
+                     [ 'boilerplate.pm',  '_testdir'     ], ];
    my $vcs = {
       git => [ [ 'gitcommit-msg', [ '_appldir', '.gitcommit-msg' ] ],
                [ 'gitignore',     [ '_appldir', '.gitignore'     ] ],
@@ -243,7 +244,7 @@ Uses the internal dumper method to produce a pretty coloured listing
 
 Expands the references in the passed tuple
 
-=head2 init_templates - Initialize the template directory
+=head2 init_templates - Initialise the template directory
 
    $exit_code = $self->init_templates;
 

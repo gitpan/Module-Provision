@@ -1,6 +1,6 @@
 package Module::Provision::TraitFor::CreatingDistributions;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( emit emit_to io trim );
@@ -177,7 +177,7 @@ sub _create_mask {
 }
 
 sub _get_test_command {
-   return $_[ 1 ]                  ? 'prove '.$_[ 1 ]
+   return $_[ 1 ]                  ? 'prove -lv '.$_[ 1 ]
         : $_[ 0 ]->builder eq 'DZ' ? 'dzil test'
                                    : 'prove t';
 }

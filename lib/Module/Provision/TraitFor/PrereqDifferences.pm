@@ -1,6 +1,6 @@
 package Module::Provision::TraitFor::PrereqDifferences;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( classfile ensure_class_loaded
@@ -133,21 +133,22 @@ sub _filter_dependents {
 }
 
 sub _filter_build_requires_paths {
-   return [ grep { m{ \.t \z }mx } @{ $_[ 1 ] } ];
+   return [ grep { m{ (?: \.pm | \.t ) \z }mx }
+            grep { m{ \A t \b }mx } @{ $_[ 1 ] } ];
 }
 
 sub _filter_configure_requires_paths {
    my $file = $_[ 0 ]->project_file;
 
-   return [ grep { m{ \A inc }mx or $_ eq $file } @{ $_[ 1 ] } ];
+   return [ grep { m{ \A inc }mx || $_ eq $file } @{ $_[ 1 ] } ];
 }
 
 sub _filter_requires_paths {
    my $file    = $_[ 0 ]->project_file;
    my $pattern = $file eq 'dist.ini' ? '(?: Build.PL | Makefile.PL )' : $file;
 
-   return [ grep { not m{ \A inc }mx and not m{ \.t \z }mx
-                      and not m{ \A $pattern \z }mx } @{ $_[ 1 ] } ];
+   return [ grep {     not m{ \A (?: inc | t ) \b }mx
+                   and not m{ \A $pattern \z }mx } @{ $_[ 1 ] } ];
 }
 
 sub _is_perl_source {

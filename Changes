@@ -1,5 +1,18 @@
 Revision history for Module::Provision
 
+0.36.1    2014-10-28 13:45:12
+          - Fixed spelling
+
+0.35.11   2014-10-28 13:29:54
+          - Added release method to ::VCS
+          - Added t::boilerplate.pm
+          - Add .pm files to prereq_diffs for build_requires
+          - Ignore t/* files in prereq_diffs for requires
+          - Replaced namespace::sweep with namespace::autoclean
+          - Added fury badge
+          - Better parsing of module name from project file
+          - Validate args in call to update_copyright_year
+
 0.34.1    2014-05-19 12:45:10
           - c6a96d00-df30-11e3-84c4-fc77f9652e90 Test::Requires Hash::MoreUtils
 

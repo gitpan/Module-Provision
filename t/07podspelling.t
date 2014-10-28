@@ -47,14 +47,17 @@ RCS
 SVN
 SYSV
 TinyDesk
+decrypt
 distmeta
 distname
 inline
 localenv
+merchantability
 metadata
 pathname
 pathnames
 pre
+selectable
 stderr
 toolchain
 tuple

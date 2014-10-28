@@ -1,9 +1,10 @@
 package Module::Provision::TraitFor::UpdatingContent;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
-use Class::Usul::Functions  qw( throw );
+use Class::Usul::Functions qw( throw );
+use Unexpected::Functions  qw( Unspecified );
 use Moo::Role;
 
 requires qw( appldir loc manifest_paths next_argv output );
@@ -21,6 +22,10 @@ sub update_copyright_year : method {
    my $self = shift; my ($from, $to) = $self->_get_update_args;
 
    my $prefix = $self->loc( 'Copyright (c)' );
+
+   $prefix or throw class => Unspecified, args => [ 'prefix' ];
+   $from   or throw class => Unspecified, args => [ 'from'   ];
+   $to     or throw class => Unspecified, args => [ 'to'     ];
 
    $self->output( 'Updating copyright year' );
 
@@ -45,7 +50,7 @@ sub update_version : method {
       $self->substitute_version( $path, $from, $to );
    }
 
-   $self->update_version_post_hook;
+   $self->update_version_post_hook( $from, $to );
    return OK;
 }
 

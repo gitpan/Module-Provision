@@ -80,7 +80,7 @@ Directory containing the configuration file
 
 =item B<-L        >
 
-Loads the specified language message catalog
+Loads the specified language message catalogue
 
 =item B<-n        >
 
@@ -130,7 +130,7 @@ Send reports to address below
 
 =head1 AUTHOR
 
-Peter Flanigan, C<< <Support at RoxSoft dot co dot uk> >>
+Peter Flanigan, C<< <pjfl@cpan.org> >>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -13,12 +13,12 @@ if (-f $change_file) {
    open my $in, '<', $message_file
       or die "Path ${message_file} cannot open: ${OS_ERROR}";
 
-   my $message = do { local $RS = undef; <$in> }; close $in;
+   my $message; { local $RS = undef; $message = <$in> }; close $in;
 
    open $in, '<', $change_file
       or die "File ${change_file} cannot open: ${OS_ERROR}";
 
-   my $changes = do { local $RS = undef; <$in> }; close $in;
+   my $changes; { local $RS = undef; $changes = <$in> }; close $in;
    my ($ver)   = $changes =~ m{ ^ v? ([0-9]+[.][0-9]+) }mx; $ver ||= '0.1';
    my ($entry) = $changes =~ m{ [\n][\n] (.*?) [\n][\n] }msx;
 

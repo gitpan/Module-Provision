@@ -1,6 +1,6 @@
 package Module::Provision::TraitFor::CPANDistributions;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
 use Class::Usul::Crypt::Util qw( decrypt_from_config encrypt_for_config

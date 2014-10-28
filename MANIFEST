@@ -20,7 +20,6 @@ lib/Module/Provision/TraitFor/VCS.pm
 share/01always_pass.t
 share/02pod.t
 share/03podcoverage.t
-share/04critic.t
 share/05kwalitee.t
 share/06yaml.t
 share/07podspelling.t
@@ -30,6 +29,7 @@ share/Changes
 share/DZ_Build.PL
 share/MANIFEST.SKIP
 share/MI_Makefile.PL
+share/boilerplate.pm
 share/data_dumper.pm
 share/dist.ini
 share/gitcommit-msg

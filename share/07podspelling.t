@@ -41,3 +41,4 @@ __DATA__
 [% first_name %]
 [% last_name %]
 [% project %]
+merchantability

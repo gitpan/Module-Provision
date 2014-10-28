@@ -139,11 +139,11 @@ Send reports to address below
 
 =head1 AUTHOR
 
-Peter Flanigan, C<< <Support at RoxSoft dot co dot uk> >>
+[% author %], C<< <[% author_email %]> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2014 Peter Flanigan
+Copyright (c) [% copyright_year %] [% copyright %]
 
 This is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

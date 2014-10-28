@@ -17,10 +17,9 @@ sub diag_version {
 }
 
 sub diag_env {
-   my $var = shift;
+   my $k = shift; my $v = exists $ENV{ $k } ? $ENV{ $k } : 'undef';
 
-   return warn sprintf "  \$%-30s   %s\n", $var, exists $ENV{ $var }
-                                                      ? $ENV{ $var } : 'undef';
+   return warn sprintf "  \$%-30s   %s\n", $k, $v;
 }
 
 warn "\nOS: ${osname}, Host: ${host}\n";

@@ -1,10 +1,10 @@
 package Module::Provision::TraitFor::VCS;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Class::Usul::Constants;
 use Class::Usul::Functions  qw( io is_win32 throw );
-use Class::Usul::Types      qw( Bool );
+use Class::Usul::Types      qw( Bool Str );
 use Perl::Version;
 use Scalar::Util            qw( blessed );
 use Unexpected::Functions   qw( Unspecified );
@@ -15,8 +15,10 @@ requires qw( add_leader appbase appldir branch chdir config default_branch
              loc next_argv output quiet run_cmd vcs );
 
 # Public attributes
-has 'no_auto_rev' => is => 'ro', isa => Bool, default => FALSE,
-   documentation  => 'Do not turn on Revision keyword expansion';
+has 'no_auto_rev'  => is => 'ro',  isa => Bool, default => FALSE,
+   documentation   => 'Do not turn on Revision keyword expansion';
+
+has '_new_version' => is => 'rwp', isa => Str;
 
 # Construction
 around 'dist_post_hook' => sub {
@@ -39,22 +41,25 @@ around 'substitute_version' => sub {
 around 'update_version_pre_hook' => sub {
    my ($next, $self, @args) = @_;
 
-   my @vnums = $self->_get_version_numbers( @args );
-
-# TODO: Add tag after commit of the x.x.1 version
-#   $self->_should_add_tag( @vnums ) and $self->_add_tag( $vnums[ 0 ] );
-   return $self->$next( @vnums );
+   return $self->$next( $self->_get_version_numbers( @args ) );
 };
 
-after 'update_version_post_hook' => sub {
-   $_[ 0 ]->vcs eq 'git' and $_[ 0 ]->_reset_rev_file( FALSE ); return;
+around 'update_version_post_hook' => sub {
+   my ($next, $self, @args) = @_; $self->_set__new_version( $args[ 1 ] );
+
+   my $result = $self->$next( @args );
+
+   $self->vcs eq 'git' and $self->_reset_rev_file( FALSE );
+
+   return $result;
 };
 
 # Public methods
 sub add_hooks : method {
    my $self = shift;
 
-   $self->vcs eq 'git' and $self->_add_git_hooks( 'commit-msg', 'pre-commit' );
+   $self->vcs eq 'git' and $self->_add_git_hooks( @{ $self->config->hooks } );
+
    return OK;
 }
 
@@ -70,7 +75,17 @@ sub add_to_vcs {
 sub get_emacs_state_file_path {
    my ($self, $file) = @_; my $home = $self->config->my_home;
 
-   return $home->catfile( qw( .emacs.d config ), "state.${file}" );
+   return $home->catfile( '.emacs.d', 'config', "state.${file}" );
+}
+
+sub release : method {
+   my $self = shift;
+
+   $self->update_version; $self->_commit_release;
+
+   $self->_add_tag( $self->_new_version );
+
+   return OK;
 }
 
 sub set_branch : method {
@@ -100,7 +115,7 @@ sub _add_git_hooks {
    my ($self, @hooks) = @_;
 
    for my $hook (grep { -e ".git${_}" } @hooks) {
-      my $dest = $self->appldir->catfile( qw(.git hooks), $hook );
+      my $dest = $self->appldir->catfile( '.git', 'hooks', $hook );
 
       $dest->exists and $dest->unlink; link ".git${hook}", $dest;
       chmod $self->exec_perms, ".git${hook}";
@@ -165,6 +180,26 @@ sub _add_to_svn {
    return;
 }
 
+sub _commit_release {
+   my $self = shift; my $msg = $self->config->tag_message;
+
+   $self->vcs eq 'git' and $self->_commit_release_to_git( $msg );
+   $self->vcs eq 'svn' and $self->_commit_release_to_svn( $msg );
+   return;
+}
+
+sub _commit_release_to_git {
+   my ($self, $msg) = @_;
+
+   $self->run_cmd( 'git add .'  ); $self->run_cmd( "git commit -m '${msg}'" );
+
+   return;
+}
+
+sub _commit_release_to_svn {
+   # TODO: Fill this in
+}
+
 sub _get_rev_file {
    my $self = shift; ($self->no_auto_rev or $self->vcs ne 'git') and return;
 
@@ -201,13 +236,12 @@ sub _get_version_numbers {
 
 sub _initialize_git {
    my $self = shift;
-   my $msg  = $self->loc( 'Initialized by [_1]', blessed $self );
+   my $msg  = $self->loc( 'Initialised by [_1]', blessed $self );
 
-   $self->chdir( $self->appldir );
+   $self->chdir( $self->appldir ); $self->run_cmd( 'git init' );
 
-   $self->run_cmd( 'git init'   ); $self->add_hooks;
+   $self->add_hooks; $self->_commit_release_to_git( $msg );
 
-   $self->run_cmd( 'git add .'  ); $self->run_cmd( "git commit -m '${msg}'" );
    return;
 }
 
@@ -220,7 +254,7 @@ sub _initialize_svn {
 
    my $branch = $self->branch;
    my $url    = 'file://'.$repository->catdir( $branch );
-   my $msg    = $self->loc( 'Initialized by [_1]', $class );
+   my $msg    = $self->loc( 'Initialised by [_1]', $class );
 
    $self->run_cmd( "svn import ${branch} ${url} -m '${msg}'" );
 
@@ -243,7 +277,7 @@ sub _initialize_svn {
 sub _initialize_vcs {
    my $self = shift;
 
-   $self->vcs ne 'none' and $self->output( 'Initializing VCS' );
+   $self->vcs ne 'none' and $self->output( 'Initialising VCS' );
    $self->vcs eq 'git'  and $self->_initialize_git;
    $self->vcs eq 'svn'  and $self->_initialize_svn;
    return;
@@ -325,7 +359,7 @@ Interface to Version Control Systems
 
 Modifies
 L<Module::Provision::TraitFor::CreatingDistributions/dist_post_hook>
-where it initializes the VCS, ignore meta files and resets the
+where it initialises the VCS, ignore meta files and resets the
 revision number file
 
 Modifies
@@ -373,6 +407,12 @@ Add the target file to the VCS
 
 Returns the L<File::DataClass::IO> object for the path to the Emacs editor's
 state file
+
+=head2 release - Update version, commit and tag
+
+   $exit_code = $self->release;
+
+Updates the distribution version, commits the change and tags the new release
 
 =head2 set_branch - Set the VCS branch name
 

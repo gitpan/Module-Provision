@@ -1,6 +1,6 @@
 package Module::Provision::Config;
 
-use namespace::sweep;
+use namespace::autoclean;
 
 use Moo;
 use Class::Usul::Constants;
@@ -35,6 +35,9 @@ has 'editor'           => is => 'lazy', isa => NonEmptySimpleStr,
 
 has 'home_page'        => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'http://example.com';
+
+has 'hooks'            => is => 'lazy', isa => ArrayRef[NonEmptySimpleStr],
+   default             => sub { [ 'commit-msg', 'pre-commit' ] };
 
 has 'license'          => is => 'lazy', isa => NonEmptySimpleStr,
    default             => 'perl';
@@ -129,6 +132,8 @@ Defines the following attributes;
 =item C<editor>
 
 =item C<home_page>
+
+=item C<hooks>
 
 =item C<license>
 
